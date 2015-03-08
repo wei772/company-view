@@ -7,6 +7,13 @@ app.config(function($stateProvider, $urlRouterProvider) {
         .state('login', {
             url: "/",
             templateUrl: "/views/login.html"
+        })
+        .state('home', {
+            url: "/home",
+            templateUrl: "/views/home.html"
+        }).state('register', {
+            url: "/register",
+            templateUrl: "/views/register.html"
         });
 });
 

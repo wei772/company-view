@@ -12,10 +12,6 @@
         <param-name>contextConfigLocation</param-name>
         <param-value>/WEB-INF/spring.xml</param-value>
     </context-param>
-
-    <welcome-file-list>
-        <welcome-file>home.html</welcome-file>
-    </welcome-file-list>
     
     <filter>
         <filter-name>requestMonitoringFilter</filter-name>

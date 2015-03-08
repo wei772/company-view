@@ -1,0 +1,51 @@
+<div class="container">
+    <div id="registrationError" style="display: none" class="alert alert-danger" role="alert">
+        <span class="typcn typcn-warning-outline" aria-hidden="true"></span>
+        <span class="sr-only">Error:</span>
+        <span style="display: inline" id="registrationErrorMessage"></span>
+    </div>
+
+    <form ng-submit="register()" ng-controller="RegistrationController" novalidate>
+        <div class="form-group">
+            <label for="email">E-mail address</label>
+            <input type="email" ng-model="email" class="form-control" id="email" placeholder="email">
+        </div>
+
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" ng-model="username" class="form-control" id="username" placeholder="username">
+        </div>
+
+        <div class="form-group">
+            <label for="firstName">First name</label>
+            <input type="text" ng-model="firstName" class="form-control" id="firstName" placeholder="first name">
+        </div>
+
+        <div class="form-group">
+            <label for="lastName">Last name</label>
+            <input type="password" ng-model="lastName" class="form-control" id="lastName" placeholder="last name">
+        </div>
+
+        <div class="form-group">
+            <label for="orgName">Organisation name</label>
+            <input type="text" ng-model="orgName" class="form-control" id="orgName" placeholder="organisation name">
+        </div>
+
+        <div class="form-group">
+            <label for="telephone">Telephone nr</label>
+            <input type="text" ng-model="telephone" class="form-control" id="telephone" placeholder="telephone">
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" ng-model="password" class="form-control" id="password" placeholder="password">
+        </div>
+
+        <div class="form-group">
+            <label for="passwordConf">Password confirm</label>
+            <input type="password" ng-model="passwordConf" class="form-control" id="passwordConf" placeholder="password">
+        </div>
+
+        <button type="submit" class="btn btn-default">Register</button>
+    </form>
+</div>

@@ -1,3 +1,15 @@
 <div class="container">
-    asd
+    <form class="form-inline"  ng-submit="login()" ng-controller="LoginController" novalidate>
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" ng-model="username" class="form-control" id="username" placeholder="Username">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" ng-model="password" class="form-control" id="password" placeholder="Password">
+        </div>
+        <input type="submit" class="btn btn-default" value="Log in">
+    </form>
+
+    <a ng-href="/register">Register</a>
 </div>

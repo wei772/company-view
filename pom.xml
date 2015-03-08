@@ -149,7 +149,7 @@
     </dependencies>
 
     <build>
-        <finalName>vinyl</finalName>
+        <finalName>company-view</finalName>
 
         <pluginManagement>
             <plugins>
@@ -157,6 +157,22 @@
                     <groupId>org.jasig.maven</groupId>
                     <artifactId>sass-maven-plugin</artifactId>
                     <version>${sass-compiler.version}</version>
+                    <executions>
+                        <execution>
+                            <id>css-generation</id>
+                            <phase>generate-resources</phase>
+                            <goals>
+                                <goal>update-stylesheets</goal>
+                            </goals>
+                            <configuration>
+                                <sassSourceDirectory>${basedir}/src/main/webapp/</sassSourceDirectory>
+                                <destination>${project.build.directory}/scss_compiled</destination>
+                                <includes>
+                                    <include>**/*.scss</include>
+                                </includes>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -169,6 +185,17 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <webResources combine.children="append">
+                        <resource>
+                            <directory>${project.build.directory}/scss_compiled</directory>
+                        </resource>
+                    </webResources>
                 </configuration>
             </plugin>
 

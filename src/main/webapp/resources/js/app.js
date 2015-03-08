@@ -12,7 +12,10 @@ app.config(function($stateProvider, $urlRouterProvider) {
 
 // Removes # from URL.
 app.config(['$locationProvider', function($locationProvider){
-    $locationProvider.html5Mode(true).hashPrefix('!');
+    $locationProvider.html5Mode({
+        enabled: true,
+        requireBase: false
+    }).hashPrefix('!');
 }]);
 
 // Adds authorization header.

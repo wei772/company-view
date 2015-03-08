@@ -1,6 +1,6 @@
-var vinylControllers = angular.module('vinylControllers', []);
+var appControllers = angular.module('appControllers', []);
 //vinylControllers.controller('LoginController', loginController);
-vinylControllers.controller('NavbarController', navbarController)
+appControllers.controller('NavbarController', navbarController)
 
 /*
 function loginController($scope, $http, $window, $location) {

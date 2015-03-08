@@ -4,15 +4,15 @@
     </appender>
 
     <appender name="dailyAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>./vinyl-data/logs/daily.log</File>
+        <File>./app-data/logs/daily.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>./vinyl-data/logs/daily.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <FileNamePattern>./app-data/logs/daily.%d{yyyy-MM-dd}.log</FileNamePattern>
             <maxHistory>7</maxHistory>
         </rollingPolicy>
         <encoder><Pattern>%d{HH:mm:ss.SSS} [%level] [%logger] [%thread] %msg %n</Pattern></encoder>
     </appender>
 
-    <logger name="ee.frozbit.vinyl" additivity="false">
+    <logger name="ee.idu.vc" additivity="false">
         <level value="INFO"/>
         <appender-ref ref="dailyAppender"/>
         <appender-ref ref="consoleAppender"/>

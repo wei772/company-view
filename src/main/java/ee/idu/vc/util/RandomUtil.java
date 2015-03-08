@@ -1,4 +1,4 @@
-package ee.frozbit.vinyl.util;
+package ee.idu.vc.util;
 
 import java.security.SecureRandom;
 import java.util.Random;

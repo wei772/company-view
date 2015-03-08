@@ -1,7 +1,7 @@
-package ee.frozbit.vinyl.filter;
+package ee.idu.vc.filter;
 
 import ch.qos.logback.classic.Logger;
-import ee.frozbit.vinyl.util.RandomUtil;
+import ee.idu.vc.util.RandomUtil;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.GenericFilterBean;
 

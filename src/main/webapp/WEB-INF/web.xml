@@ -13,6 +13,10 @@
         <param-value>/WEB-INF/spring.xml</param-value>
     </context-param>
 
+    <welcome-file-list>
+        <welcome-file>home.html</welcome-file>
+    </welcome-file-list>
+    
     <filter>
         <filter-name>requestMonitoringFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>

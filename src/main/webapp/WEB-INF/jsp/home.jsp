@@ -10,10 +10,11 @@
     <script src="/js/angular.min.js"></script>
     <script src="/js/angular-ui-router.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/functions.js"></script>
     <script src="/js/controllers.js"></script>
     <script src="/js/app.js"></script>
 </head>
 <body>
-<div ui-view></div>
+    <div ui-view></div>
 </body>
 </html>

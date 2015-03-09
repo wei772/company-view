@@ -35,6 +35,7 @@ function registrationController($scope, $http, $window, $location) {
 
 function loginController($scope, $http, $window, $location) {
     $scope.login = function() {
+        $scope.isRequestingLogin = true;
         var request = $http({
             url: '/login',
             contentType: "application/json",
@@ -44,15 +45,16 @@ function loginController($scope, $http, $window, $location) {
         });
 
         request.success(function(data) {
+            $scope.isRequestingLogin = false;
             var user = {username: data.username, token: data.token};
             $window.sessionStorage.user = JSON.stringify(user);
             $location.path('/home');
         });
 
         request.error(function(status, data, response, header) {
+            $scope.isRequestingLogin = false;
             delete $window.sessionStorage.user;
-            document.getElementById('username').classList.add('has-error');
-            document.getElementById('password').classList.add('has-error');
+            addLoginErrorHighlights();
         });
     };
 };

@@ -1,7 +1,71 @@
-$font-stack:    Helvetica, sans-serif;
-$primary-color: #333;
+$main-bgr-img: url('../images/background.png') repeat;
 
-body {
-  font: 100% $font-stack;
-  color: $primary-color;
+@mixin light-background {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.cv-body {
+  background: $main-bgr-img;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #222222;
+}
+
+.cv-login {
+  @mixin login-block {
+    text-align: center;
+    vertical-align: middle;
+    min-width: 250px;
+  }
+
+  .cv-login-top {
+    @include login-block;
+    margin-top: 50px;
+    margin-bottom: 25px;
+
+    .cv-login-title {
+      font-size: 40px;
+    }
+
+    .cv-login-desc {
+      font-size: 20px;
+    }
+  }
+
+  .cv-login-body {
+    @include light-background;
+    margin: 0 auto;
+    padding: 20px;
+    min-width: 300px;
+    max-width: 450px;
+
+    .cv-login-form {
+      margin: 0;
+      padding: 0;
+
+      .input-group {
+        margin-bottom: 15px;
+      }
+
+      .input-group-addon {
+        font-size: 28px;
+      }
+    }
+  }
+
+  .cv-login-bot {
+    @include login-block;
+    margin-top: 25px;
+    margin-bottom: 50px;
+
+    .cv-login-register {
+      font-size: 20px;
+    }
+  }
 }

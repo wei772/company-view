@@ -14,5 +14,9 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
-    <mvc:view-controller path="/" view-name="home"/>
+    <!-- angular-js mapped paths, see the app.js script -->
+    <mvc:view-controller path="/" view-name="angular"/>
+    <mvc:view-controller path="/home" view-name="angular"/>
+    <mvc:view-controller path="/register" view-name="angular"/>
+    <mvc:view-controller path="/404" view-name="404"/>
 </beans>

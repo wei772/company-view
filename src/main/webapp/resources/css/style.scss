@@ -1,7 +1,56 @@
 $main-bgr-img: url('../images/background.png') repeat;
+$font-helvetica: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
 @mixin light-background {
   background-color: rgba(255, 255, 255, 0.8);
+}
+
+.cv-custom-404 {
+  position: fixed;
+  font-family: $font-helvetica;
+  font-size: 24px;
+  color: #222222;
+  text-align: center;
+
+  margin: 0;
+  padding: 0;
+  top: 50%;
+  left: 50%;
+  width: 250px;
+  height: 300px;
+  transform: translate(-50%, -50%);
+
+  img {
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .description {
+    font-size: 16px;
+
+    a {
+      color: #3071a9;
+    }
+
+    a:link {
+      text-decoration: none;
+    }
+
+    a:visited {
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+      color: #269abc;
+    }
+
+    a:active {
+      text-decoration: underline;
+      color: #269abc;
+    }
+  }
 }
 
 .cv-body {
@@ -13,7 +62,7 @@ $main-bgr-img: url('../images/background.png') repeat;
   right: 0;
   min-width: 100%;
   min-height: 100%;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: $font-helvetica;
   color: #222222;
 }
 

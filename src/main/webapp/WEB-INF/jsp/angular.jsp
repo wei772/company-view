@@ -14,7 +14,7 @@
     <script src="/js/controllers.js"></script>
     <script src="/js/app.js"></script>
 </head>
-<body>
+<body class="cv-body">
     <div ui-view></div>
 </body>
 </html>

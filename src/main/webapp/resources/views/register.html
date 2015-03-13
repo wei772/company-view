@@ -1,51 +1,79 @@
-<div class="container">
-    <div id="registrationError" style="display: none" class="alert alert-danger" role="alert">
-        <span class="typcn typcn-warning-outline" aria-hidden="true"></span>
-        <span class="sr-only">Error:</span>
-        <span style="display: inline" id="registrationErrorMessage"></span>
+<div class="container cv-outersystem">
+    <div class="cv-top-block">
+        <p class="cv-title">Company View</p>
+        <p class="cv-description">Please fill the fields in order to register.</p>
     </div>
 
-    <form ng-submit="register()" ng-controller="RegistrationController" novalidate>
-        <div class="form-group">
-            <label for="email">E-mail address</label>
-            <input type="email" ng-model="email" class="form-control" id="email" placeholder="email">
-        </div>
+    <div id="register-fail-message"></div>
 
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" ng-model="username" class="form-control" id="username" placeholder="username">
-        </div>
+    <div class="jumbotron cv-registration-block" ng-controller="RegistrationController">
+        <form ng-submit="register()" role="form" class="cv-form row" novalidate>
+            <div class="form-group col-lg-12" id="cv-username-field">
+                <label>Username
+                    <input ng-model="username" ng-disabled="isRegistering" type="text" class="form-control" onkeydown="removeRegistrationErrorHighlights()">
+                </label>
+            </div>
 
-        <div class="form-group">
-            <label for="firstName">First name</label>
-            <input type="text" ng-model="firstName" class="form-control" id="firstName" placeholder="first name">
-        </div>
+            <div class="form-group col-lg-6 at-left" id="cv-email-field">
+                <label>E-mail address
+                    <input ng-model="email" ng-disabled="isRegistering" type="text" class="form-control" onkeydown="removeRegistrationErrorHighlights()">
+                </label>
+            </div>
 
-        <div class="form-group">
-            <label for="lastName">Last name</label>
-            <input type="password" ng-model="lastName" class="form-control" id="lastName" placeholder="last name">
-        </div>
+            <div class="form-group col-lg-6 at-right" id="cv-emailconf-field">
+                <label>Confirm e-mail address
+                    <input ng-model="emailConf" ng-disabled="isRegistering" type="text" class="form-control" onkeydown="removeRegistrationErrorHighlights()">
+                </label>
+            </div>
 
-        <div class="form-group">
-            <label for="orgName">Organisation name</label>
-            <input type="text" ng-model="orgName" class="form-control" id="orgName" placeholder="organisation name">
-        </div>
+            <div class="form-group col-lg-6 at-left" id="cv-firstname-field">
+                <label>First name
+                    <input ng-model="firstName" ng-disabled="isRegistering" type="text" class="form-control" onkeydown="removeRegistrationErrorHighlights()">
+                </label>
+            </div>
 
-        <div class="form-group">
-            <label for="telephone">Telephone nr</label>
-            <input type="text" ng-model="telephone" class="form-control" id="telephone" placeholder="telephone">
-        </div>
+            <div class="form-group col-lg-6 at-right" id="cv-lastname-field">
+                <label>Last name
+                    <input ng-model="lastName" ng-disabled="isRegistering" type="text" class="form-control" onkeydown="removeRegistrationErrorHighlights()">
+                </label>
+            </div>
 
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" ng-model="password" class="form-control" id="password" placeholder="password">
-        </div>
+            <div class="form-group" id="cv-organisation-field">
+                <label>Organisation
+                    <input ng-model="organisation" ng-disabled="isRegistering" type="text" class="form-control" onkeydown="removeRegistrationErrorHighlights()">
+                </label>
+            </div>
 
-        <div class="form-group">
-            <label for="passwordConf">Password confirm</label>
-            <input type="password" ng-model="passwordConf" class="form-control" id="passwordConf" placeholder="password">
-        </div>
+            <div class="form-group" id="cv-telephone-field">
+                <label>Telephone or mobile phone number
+                    <input ng-model="telephone" ng-disabled="isRegistering" type="text" class="form-control" onkeydown="removeRegistrationErrorHighlights()">
+                </label>
+            </div>
 
-        <button type="submit" class="btn btn-default">Register</button>
-    </form>
+            <div class="form-group" id="cv-address-field">
+                <label>Address
+                    <input ng-model="address" ng-disabled="isRegistering" type="text" class="form-control" onkeydown="removeRegistrationErrorHighlights()">
+                </label>
+            </div>
+
+            <div class="form-group col-lg-6 at-left" id="cv-password-field">
+                <label>Password
+                    <input ng-model="password" ng-disabled="isRegistering" type="password" class="form-control" onkeydown="removeRegistrationErrorHighlights()">
+                </label>
+            </div>
+
+            <div class="form-group col-lg-6 at-right" id="cv-passwordconf-field">
+                <label>Password confirmation
+                    <input ng-model="passwordConf" ng-disabled="isRegistering" type="password" class="form-control" onkeydown="removeRegistrationErrorHighlights()">
+                </label>
+            </div>
+
+            <button ng-disabled="isRegistering" class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+        </form>
+    </div>
+
+    <div class="cv-bot-block">
+        <p class="cv-info">It is required to fill all the fields in order to register.</p>
+        <p class="cv-info">Already have an account? <a ng-href="/">Login here.</a></p>
+    </div>
 </div>

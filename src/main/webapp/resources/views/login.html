@@ -1,32 +1,32 @@
-<div class="container cv-body cv-login">
-    <div class="cv-login-top">
-        <p class="cv-login-title">Company View</p>
-        <p class="cv-login-desc">Please login with your company account.</p>
+<div class="container cv-outersystem">
+    <div class="cv-top-block">
+        <p class="cv-title">Company View</p>
+        <p class="cv-description">Please login with your company account.</p>
     </div>
 
-    <div class="jumbotron cv-login-body" ng-controller="LoginController">
-        <form ng-submit="login()" role="form" class="cv-login-form" novalidate>
+    <div id="login-fail-message"></div>
+
+    <div class="jumbotron cv-login-block" ng-controller="LoginController">
+        <form ng-submit="login()" role="form" class="cv-form" novalidate>
             <div class="input-group" id="cv-username-field">
                 <span class="input-group-addon">
                     <span class="typcn typcn-user"></span>
                 </span>
-                <input ng-model="username" ng-disabled="isRequestingLogin" type="text" class="form-control input-lg" placeholder="username" onkeydown="removeLoginErrorHighlights()">
+                <input ng-model="username" ng-disabled="isRequestingLogin" type="text" class="form-control input-lg" placeholder="username" onkeydown="removeErrorHighlights(['cv-username-field', 'cv-password-field'])">
             </div>
 
             <div class="input-group" id="cv-password-field">
                 <span class="input-group-addon">
                     <span class="typcn typcn-key"></span>
                 </span>
-                <input ng-model="password" ng-disabled="isRequestingLogin" type="password" class="form-control input-lg" placeholder="password" onkeydown="removeLoginErrorHighlights()">
+                <input ng-model="password" ng-disabled="isRequestingLogin" type="password" class="form-control input-lg" placeholder="password" onkeydown="removeErrorHighlights(['cv-username-field', 'cv-password-field'])">
             </div>
 
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+            <button ng-disabled="isRequestingLogin" class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
         </form>
     </div>
 
-    <div class="cv-login-bot">
-        <p class="cv-login-register">
-            Don't have an account? <a ng-href="/register">Register here.</a>
-        </p>
+    <div class="cv-bot-block">
+        <p class="cv-info">Don't have an account? <a ng-href="/register">Register here.</a></p>
     </div>
 </div>

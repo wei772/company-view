@@ -1,37 +1,41 @@
 var appControllers = angular.module('appControllers', []);
-//appControllers.controller('NavbarController', navbarController);
 appControllers.controller('LoginController', loginController);
 appControllers.controller('RegistrationController', registrationController);
 
 function registrationController($scope, $http, $window, $location) {
     $scope.register = function() {
+        $scope.isRegistering = true;
+
         var request = $http({
             url: '/register',
             contentType: "application/json",
             dataType: "json",
             method: 'POST',
             params: {
-                'email': $scope.email,
-                'password': $scope.password,
                 'username': $scope.username,
+                'email': $scope.email,
+                'emailConf': $scope.emailConf,
                 'firstName': $scope.firstName,
                 'lastName': $scope.lastName,
-                'orgName': $scope.orgName,
+                'organisation': $scope.organisation,
                 'telephone': $scope.telephone,
-                'address': $scope.address
+                'address': $scope.address,
+                'password': $scope.password,
+                'passwordConf': $scope.passwordConf
             }
         });
 
         request.success(function(data) {
-            $location.path('/login');
+            $scope.isRegistering = false;
+            // TODO: WHEN UNSUCCESSFUL, ADD HIGHLIGHTS
         });
 
-        request.error(function(status, data, response, header) {
-            document.getElementById('registrationError').style.display = "";
-            document.getElementById('registrationErrorMessage').innerHTML = "something went bad";
+        request.error(function() {
+            $scope.isRegistering = false;
+            showFailMessage("register-fail-message", "Failed to register.", "Server responded stuff I'm not able to parse or identify.");
         });
     };
-};
+}
 
 function loginController($scope, $http, $window, $location) {
     $scope.login = function() {
@@ -46,26 +50,18 @@ function loginController($scope, $http, $window, $location) {
 
         request.success(function(data) {
             $scope.isRequestingLogin = false;
-            var user = {username: data.username, token: data.token};
-            $window.sessionStorage.user = JSON.stringify(user);
-            $location.path('/home');
+            alert("login undone.");
+            // TODO: WHEN UNSUCCESSFUL, ADD HIGHLIGHTS
+            //var user = {username: data.username, token: data.token};
+            //$window.sessionStorage.token = JSON.stringify(user);
+            //$location.path('/home');
         });
 
-        request.error(function(status, data, response, header) {
+        request.error(function() {
             $scope.isRequestingLogin = false;
-            delete $window.sessionStorage.user;
-            addLoginErrorHighlights();
+            //delete $window.sessionStorage.token;
+            showFailMessage("login-fail-message", "Failed to login.", "Server responded stuff I'm not able to parse or identify.");
+            addErrorHighlights(['cv-username-field', 'cv-password-field']);
         });
     };
-};
-/*
-function navbarController($scope, $http, $window, $location) {
-    $scope.logout = function() {
-        delete $window.sessionStorage.user;
-        $location.path('/');
-    };
-
-    $scope.isActive = function(route) {
-        return route === $location.path();
-    }
-}*/
+}

@@ -24,6 +24,9 @@
         <nekohtml.version>1.9.21</nekohtml.version>
         <tomcat7.version>2.2</tomcat7.version>
         <jackson.version>2.3.0</jackson.version>
+        <liquibase.version>3.3.2</liquibase.version>
+        <liquibase-slf4j.version>1.2.1</liquibase-slf4j.version>
+        <apache-commons.version>2.1</apache-commons.version>
     </properties>
 
     <dependencies>
@@ -64,11 +67,25 @@
             <scope>compile</scope>
         </dependency>
 
-        <!-- H2 database -->
+        <!-- Database stuff -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>${h2db.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>${liquibase.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <version>${apache-commons.version}</version>
             <scope>compile</scope>
         </dependency>
 
@@ -129,6 +146,13 @@
             <groupId>org.slf4j</groupId>
             <artifactId>jul-to-slf4j</artifactId>
             <version>${slf4j.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.mattbertolini</groupId>
+            <artifactId>liquibase-slf4j</artifactId>
+            <version>${liquibase-slf4j.version}</version>
             <scope>compile</scope>
         </dependency>
 

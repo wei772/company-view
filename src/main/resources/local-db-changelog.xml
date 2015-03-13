@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <preConditions>
+        <dbms type="h2"/>
+    </preConditions>
+
+    <changeSet id="1" author="frozbit">
+        <createTable tableName="User">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="userId" type="int not null"/>
+            <column name="token" type="uuid not null"/>
+            <column name="creationDate" type="timestamp not null"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

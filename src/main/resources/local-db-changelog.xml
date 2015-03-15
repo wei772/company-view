@@ -5,8 +5,8 @@
     </preConditions>
 
     <changeSet id="1" author="frozbit">
-        <createTable tableName="User">
-            <column name="id" type="int" autoIncrement="true">
+        <createTable tableName="Token">
+            <column name="tokenId" type="int" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
             <column name="userId" type="int not null"/>

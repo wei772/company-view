@@ -2,17 +2,18 @@ var app = angular.module('app', ['ui.router', 'appControllers']);
 
 app.config(function($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.when('', '/');
+    $urlRouterProvider.when('/', function ($location, $window) {
+        if (!$window.sessionStorage.authInfo) $location.path('/login');
+    });
 
     $stateProvider
         .state('login', {
-            url: "/",
+            url: "/login",
             templateUrl: "/views/login.html"
-        })
-        .state('home', {
-            url: "/home",
+        }).state('home', {
+            url: "/",
             templateUrl: "/views/home.html"
-        })
-        .state('register', {
+        }).state('register', {
             url: "/register",
             templateUrl: "/views/register.html"
         });

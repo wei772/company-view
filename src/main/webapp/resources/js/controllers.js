@@ -50,17 +50,19 @@ function loginController($scope, $http, $window, $location) {
 
         request.success(function(data) {
             $scope.isRequestingLogin = false;
-            alert("login undone.");
-            // TODO: WHEN UNSUCCESSFUL, ADD HIGHLIGHTS
-            //var user = {username: data.username, token: data.token};
-            //$window.sessionStorage.token = JSON.stringify(user);
-            //$location.path('/home');
+            if (!data.success) {
+                addErrorHighlights(['cv-username-field', 'cv-password-field']);
+                showFailMessage('login-fail-message', 'Login failed.', data.message);
+            } else {
+                $window.sessionStorage.authInfo = {username: $scope.username, token: data.token};
+                $location.path('/');
+            }
         });
 
         request.error(function() {
             $scope.isRequestingLogin = false;
             //delete $window.sessionStorage.token;
-            showFailMessage("login-fail-message", "Failed to login.", "Server responded stuff I'm not able to parse or identify.");
+            showFailMessage("login-fail-message", "Failed to login.", "Server might be down.");
             addErrorHighlights(['cv-username-field', 'cv-password-field']);
         });
     };

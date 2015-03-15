@@ -40,9 +40,10 @@ public class RequestMonitoringFilter extends GenericFilterBean {
     private String normalizeURI(HttpServletRequest request) {
         StringBuilder builder = new StringBuilder(normalize(request.getRequestURI()) + "?");
         for (Object param : request.getParameterMap().keySet()) {
-            String params = Arrays.toString(request.getParameterValues(param.toString()));
-            builder.append(normalize(param.toString())).append("=");
-            builder.append(normalize(params)).append("&");
+            String key = normalize(param.toString());
+            String values = normalize(Arrays.toString(request.getParameterValues(param.toString())));
+            if (key.contains("password")) values = "[***]";
+            builder.append(key).append("=").append(values).append("&");
         }
         return builder.substring(0, builder.length() - 1);
     }

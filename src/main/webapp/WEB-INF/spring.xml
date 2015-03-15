@@ -9,7 +9,6 @@
        http://www.springframework.org/schema/context/spring-context.xsd">
     <mvc:annotation-driven/>
     <context:component-scan base-package="ee.idu.vc"/>
-
     <bean name="requestMonitoringFilterBean" class="ee.idu.vc.filter.RequestMonitoringFilter"/>
 
     <!-- Local data storage setup with liquibase -->

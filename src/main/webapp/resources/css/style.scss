@@ -35,10 +35,8 @@ body {height: 100%;}
   .cv-form {margin: 0; padding: 0;
     .input-group {margin-bottom: 15px;}
     .input-group-addon {font-size: 28px;}
-    .form-group {padding: 0;}
+    .form-group {padding: 0 5px;}
     label {width: 100%;}
-    .at-right {padding-left: 10px;} // should remove this and just add padding to both sides.
-    .at-left {padding-right: 10px;}
   }
 
   .cv-bot-block {@include top-bot-block; margin-top: 25px; margin-bottom: 50px;

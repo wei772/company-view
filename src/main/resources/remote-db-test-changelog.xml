@@ -89,4 +89,52 @@
                                  referencedTableName="KontoStaatus"
                                  referencedColumnNames="kontoStaatusID"/>
     </changeSet>
+
+    <changeSet id="3" author="frozbit">
+        <insert tableName="KontoStaatus">
+            <column name="nimetus" value="inactive"/>
+        </insert>
+        <insert tableName="KontoStaatus">
+            <column name="nimetus" value="unconfirmed"/>
+        </insert>
+        <insert tableName="KontoStaatus">
+            <column name="nimetus" value="banned"/>
+        </insert>
+        <insert tableName="KontoStaatus">
+            <column name="nimetus" value="active"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="4" author="frozbit">
+        <insert tableName="KasutajaTyyp">
+            <column name="nimetus" value="company"/>
+        </insert>
+        <insert tableName="KasutajaTyyp">
+            <column name="nimetus" value="student"/>
+        </insert>
+        <insert tableName="KasutajaTyyp">
+            <column name="nimetus" value="university staff"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="5" author="KontoSyndmuseTyyp">
+        <insert tableName="KasutajaTyyp">
+            <column name="nimetus" value="account creation"/>
+        </insert>
+        <insert tableName="KasutajaTyyp">
+            <column name="nimetus" value="account confirmation"/>
+        </insert>
+        <insert tableName="KasutajaTyyp">
+            <column name="nimetus" value="account banning"/>
+        </insert>
+        <insert tableName="KasutajaTyyp">
+            <column name="nimetus" value="account unbanning"/>
+        </insert>
+        <insert tableName="KasutajaTyyp">
+            <column name="nimetus" value="account deactivation"/>
+        </insert>
+        <insert tableName="KasutajaTyyp">
+            <column name="nimetus" value="account activation"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

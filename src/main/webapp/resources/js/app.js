@@ -2,21 +2,30 @@ var app = angular.module('app', ['ui.router', 'appControllers']);
 
 app.config(function($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.when('', '/');
-    $urlRouterProvider.when('/', function ($location, $window) {
-        if (!$window.sessionStorage.authInfo) $location.path('/login');
-    });
-
     $stateProvider
         .state('login', {
             url: "/login",
-            templateUrl: "/views/login.html"
+            templateUrl: "/views/login.html",
+            data: {requireLogin: false}
         }).state('home', {
             url: "/",
-            templateUrl: "/views/home.html"
+            templateUrl: "/views/home.html",
+            data: {requireLogin: true}
         }).state('register', {
             url: "/register",
-            templateUrl: "/views/register.html"
+            templateUrl: "/views/register.html",
+            data: {requireLogin: false}
         });
+});
+
+app.run(function ($rootScope, $window, $location) {
+    $rootScope.$on('$stateChangeStart', function (event, toState) {
+        var requireLogin = toState.data.requireLogin;
+        if (requireLogin && !$window.localStorage.authInfo) {
+            console.log("User is not authenticated, redirecting to login.");
+            $location.path("/login");
+        }
+    });
 });
 
 // Removes # from URL.
@@ -27,14 +36,12 @@ app.config(['$locationProvider', function($locationProvider){
     }).hashPrefix('!');
 }]);
 
-// Adds authorization header.
-/*
 app.factory('tokenInterceptor', function ($rootScope, $q, $window) {
     return {
         request: function (config) {
             config.headers = config.headers || {};
-            if ($window.sessionStorage.user) {
-                config.headers.Authorization = $window.sessionStorage.user;
+            if ($window.localStorage.authInfo) {
+                config.headers.Authorization = JSON.stringify($window.localStorage.authInfo);
             }
             return config;
         },
@@ -48,4 +55,3 @@ app.factory('tokenInterceptor', function ($rootScope, $q, $window) {
 app.config(function ($httpProvider) {
     $httpProvider.interceptors.push('tokenInterceptor');
 });
-*/

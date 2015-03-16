@@ -1,18 +1,18 @@
 package ee.idu.vc.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name = "KasutajaTyyp")
+@Table(name = "`KasutajaTyyp`")
 public class UserType {
+    public static final String COMPANY = "company", STUDENT = "student", UNI_STAFF = "university staff";
+
     @Id
-    @Column(name = "kasutajaTyypID")
+    @GeneratedValue
+    @Column(name = "`kasutajaTyypID`")
     private Long userTypeId;
 
-    @Column(name = "nimetus")
+    @Column(name = "`nimetus`")
     private String typeName;
 
     public Long getUserTypeId() {

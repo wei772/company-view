@@ -1,9 +1,6 @@
 package ee.idu.vc.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -12,6 +9,7 @@ import java.util.UUID;
 @Table(name = "Token")
 public class Token implements Serializable {
     @Id
+    @GeneratedValue
     @Column(name = "tokenId")
     private Long tokenId;
 

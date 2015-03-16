@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/mvc
-       http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context
-       http://www.springframework.org/schema/context/spring-context.xsd">
-    <mvc:annotation-driven/>
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
     <context:component-scan base-package="ee.idu.vc"/>
+    <mvc:annotation-driven/>
+    <tx:annotation-driven transaction-manager="remoteDBTransactionManager"/>
     <bean name="requestMonitoringFilterBean" class="ee.idu.vc.filter.RequestMonitoringFilter"/>
+
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
     <!-- Local data storage setup with liquibase -->
     <bean id="localDBDataSource" class="org.apache.commons.dbcp2.BasicDataSource">
@@ -21,7 +29,7 @@
 
     <bean id="localDBSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="dataSource" ref="localDBDataSource"/>
-        <property name="packagesToScan" value="ee.idu.vc.model"/>
+        <property name="packagesToScan" value="ee.idu.vc"/>
     </bean>
 
     <bean id="localDBTransactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
@@ -36,14 +44,14 @@
     <!-- Remote data storage setup (currently using test db created with liquibase) -->
     <bean id="remoteDBDataSource" class="org.apache.commons.dbcp2.BasicDataSource">
         <property name="driverClassName" value="org.postgresql.Driver"/>
-        <property name="url" value="jdbc:postgresql://localhost:5432/cv-test-db"/>
+        <property name="url" value="jdbc:postgresql://localhost:5432/postgres"/>
         <property name="username" value="postgres"/>
         <property name="password" value="goodpass"/>
     </bean>
 
     <bean id="remoteDBSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="dataSource" ref="remoteDBDataSource"/>
-        <property name="packagesToScan" value="ee.idu.vc.model"/>
+        <property name="packagesToScan" value="ee.idu.vc"/>
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL9Dialect</prop>

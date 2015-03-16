@@ -21,7 +21,7 @@ body {height: 100%;}
   @mixin top-bot-block {text-align: center; vertical-align: middle; min-width: 250px;}
 
   #login-fail-message {padding: 0; max-width: 450px; min-width: 300px; margin: 0 auto;}
-  #register-fail-message {padding: 0; max-width: 600px; min-width: 400px; margin: 0 auto;}
+  #register-message {padding: 0; max-width: 600px; min-width: 400px; margin: 0 auto;}
 
   .cv-top-block {@include top-bot-block; margin-top: 50px; margin-bottom: 25px;
     .cv-title {font-size: 40px;}

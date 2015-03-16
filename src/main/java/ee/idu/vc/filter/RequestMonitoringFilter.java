@@ -26,6 +26,7 @@ public class RequestMonitoringFilter extends GenericFilterBean {
         String requestInfo = getRequestInfo((HttpServletRequest) request);
         long startTime = System.currentTimeMillis();
         try {
+            log.debug("Serving " + requestInfo);
             chain.doFilter(request, response);
             log.info("[" + deltaFrom(startTime) + " ms] served " + requestInfo);
         } catch (Throwable throwable) {

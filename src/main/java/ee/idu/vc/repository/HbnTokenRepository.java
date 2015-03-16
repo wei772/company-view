@@ -2,7 +2,6 @@ package ee.idu.vc.repository;
 
 import ch.qos.logback.classic.Logger;
 import ee.idu.vc.model.Token;
-import ee.idu.vc.model.User;
 import ee.idu.vc.util.CVUtil;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -34,11 +33,9 @@ public class HbnTokenRepository implements TokenRepository {
     @Override
     public Token getMostRecent(Long userId) {
         if (userId == null) return null;
-
-        Criteria criteria = currentSession().createCriteria(User.class);
+        Criteria criteria = currentSession().createCriteria(Token.class);
         criteria.add(eq("userId", userId)).addOrder(Order.desc("creationDate"));
         Token token = CVUtil.tolerantCast(Token.class, criteria.setMaxResults(1).uniqueResult());
-
         log.debug("Most recent token for user " + userId + " is: " + (token == null ? "none" : token.getToken()) + ".");
         return token;
     }

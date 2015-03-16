@@ -2,7 +2,7 @@ var appControllers = angular.module('appControllers', []);
 appControllers.controller('LoginController', loginController);
 appControllers.controller('RegistrationController', registrationController);
 
-function registrationController($scope, $http, $window, $location) {
+function registrationController($scope, $http, $timeout, $location) {
     $scope.register = function() {
         $scope.isRegistering = true;
 
@@ -27,12 +27,33 @@ function registrationController($scope, $http, $window, $location) {
 
         request.success(function(data) {
             $scope.isRegistering = false;
-            // TODO: WHEN UNSUCCESSFUL, ADD HIGHLIGHTS
+            if (!data.success) {
+                if (data.errorFields) {
+                    // If password has error then mark both, password and passwordConf red. Same goes to e-mail.
+                    addBothIfOneExists(data.errorFields, "password", "passwordConf");
+                    addBothIfOneExists(data.errorFields, "email", "emailConf");
+
+                    var fieldIds = convertFieldNamesToFieldIds(data.errorFields);
+                    addErrorHighlights(fieldIds);
+
+                    var errorMessages = data.errorMessages;
+                    var index;
+                    var message = "<ul class='list-unstyled'>";
+                    for (index = 0; index < errorMessages.length; index += 1) {
+                        message += "<li>" + errorMessages[index] + "</li>";
+                    }
+                    message += "</ul>";
+                    showFailMessage("register-message", "Failed to register.", message)
+                }
+            } else {
+                showSuccessMessage("register-message", "Account created.", "Redirecting in 4 seconds...");
+                $timeout(function() {$location.path("/login");}, 4000);
+            }
         });
 
         request.error(function() {
             $scope.isRegistering = false;
-            showFailMessage("register-fail-message", "Failed to register.", "Server responded stuff I'm not able to parse or identify.");
+            showFailMessage("register-message", "Failed to register.", "Server might be down or broken.");
         });
     };
 }
@@ -54,15 +75,15 @@ function loginController($scope, $http, $window, $location) {
                 addErrorHighlights(['cv-username-field', 'cv-password-field']);
                 showFailMessage('login-fail-message', 'Login failed.', data.message);
             } else {
-                $window.sessionStorage.authInfo = {username: $scope.username, token: data.token};
-                $location.path('/');
+                $window.localStorage.authInfo = {username: $scope.username, token: data.token};
+                $location.path("/");
             }
         });
 
         request.error(function() {
             $scope.isRequestingLogin = false;
-            //delete $window.sessionStorage.token;
-            showFailMessage("login-fail-message", "Failed to login.", "Server might be down.");
+            delete $window.localStorage.token;
+            showFailMessage("login-fail-message", "Failed to login.", "Server might be down or broken.");
             addErrorHighlights(['cv-username-field', 'cv-password-field']);
         });
     };

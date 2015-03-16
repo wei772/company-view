@@ -4,39 +4,44 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "Kasutaja")
+@Table(name = "`Kasutaja`")
 public class User implements Serializable {
     @Id
-    @Column(name = "kasutajaID")
+    @GeneratedValue
+    @Column(name = "`kasutajaID`")
     private Long userId;
 
-    @Column(name = "eesnimi")
+    @Column(name = "`eesnimi`")
     private String firstName;
 
-    @Column(name = "perekonnanimi")
+    @Column(name = "`perekonnanimi`")
     private String lastName;
 
-    @Column(name = "konto_nimi")
+    @Column(name = "`konto_nimi`", unique = true)
     private String username;
 
-    @Column(name = "email")
+    @Column(name = "`email`", unique = true)
     private String email;
 
-    @Column(name = "organisatsiooni_nimi")
+    @Column(name = "`organisatsiooni_nimi`")
     private String organisationName;
 
-    @Column(name = "password")
+    @Column(name = "`parool`")
     private String password;
 
-    @Column(name = "tel_nr")
+    @Column(name = "`tel_nr`")
     private String telephoneNumber;
 
-    @Column(name = "aadress")
+    @Column(name = "`aadress`")
     private String address;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "kasutajaTyypID")
+    @JoinColumn(name = "`kasutajaTyypID`")
     private UserType userType;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "`kontoStaatusID`")
+    private AccountStatus accountStatus;
 
     public Long getUserId() {
         return userId;
@@ -116,5 +121,17 @@ public class User implements Serializable {
 
     public void setUserType(UserType userType) {
         this.userType = userType;
+    }
+
+    public AccountStatus getAccountStatus() {
+        return accountStatus;
+    }
+
+    public void setAccountStatus(AccountStatus accountStatus) {
+        this.accountStatus = accountStatus;
+    }
+
+    public boolean isStatusName(String statusName) {
+        return accountStatus.getStatusName().trim().equalsIgnoreCase(statusName);
     }
 }

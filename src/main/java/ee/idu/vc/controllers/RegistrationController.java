@@ -84,7 +84,7 @@ public class RegistrationController {
         user.setFirstName(form.getFirstName());
         user.setLastName(form.getLastName());
         user.setOrganisationName(form.getOrganisation());
-        user.setAccountStatus(accountStatusRepository.findByName(AccountStatus.UNCONFIRMED));
+        user.setAccountStatus(accountStatusRepository.findByName(AccountStatus.ACTIVE));
         user.setUserType(userTypeRepository.findByName(UserType.COMPANY));
         userRepository.create(user);
     }

@@ -20,7 +20,6 @@ public class LoginController {
     private static final long TOKEN_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7; // A week.
     private static final String MSG_BANNED = "Account has been banned.";
     private static final String MSG_INVALID_LOGIN = "Invalid username or password.";
-    private static final String MSG_UNCONFIRMED = "Account has not been confirmed by an administrator.";
 
     @Autowired
     private UserRepository userRepository;
@@ -40,7 +39,6 @@ public class LoginController {
         User user = userRepository.findByCredentials(loginForm.getUsername(), loginForm.getPassword());
         if (user == null) return CVUtil.jsonSimpleFailureMessage(MSG_INVALID_LOGIN);
         if (user.isStatusName(AccountStatus.BANNED)) return CVUtil.jsonSimpleFailureMessage(MSG_BANNED);
-        if (user.isStatusName(AccountStatus.UNCONFIRMED)) return CVUtil.jsonSimpleFailureMessage(MSG_UNCONFIRMED);
         return jsonTokenMessage(handleTokenRetrieval(user));
     }
 

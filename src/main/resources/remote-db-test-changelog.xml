@@ -5,7 +5,7 @@
     </preConditions>
 
     <changeSet id="1" author="frozbit">
-        <comment>Date created: 15.03.2015</comment>
+        <comment>Date created: 15.03.2015, built on top of postgres 9.4</comment>
         <sql>
             CREATE TABLE KontoStaatus (
                 kontoStaatusID SERIAL PRIMARY KEY,

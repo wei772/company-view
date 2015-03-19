@@ -44,7 +44,7 @@
     <!-- Remote data storage setup (currently using test db created with liquibase) -->
     <bean id="remoteDBDataSource" class="org.apache.commons.dbcp2.BasicDataSource">
         <property name="driverClassName" value="org.postgresql.Driver"/>
-        <property name="url" value="jdbc:postgresql://localhost:5432/postgres"/>
+        <property name="url" value="jdbc:postgresql://localhost:5432/cv"/>
         <property name="username" value="postgres"/>
         <property name="password" value="goodpass"/>
     </bean>

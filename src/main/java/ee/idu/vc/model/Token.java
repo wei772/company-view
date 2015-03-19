@@ -9,7 +9,7 @@ import java.util.UUID;
 @Table(name = "Token")
 public class Token implements Serializable {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tokenId")
     private Long tokenId;
 

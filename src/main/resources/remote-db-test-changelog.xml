@@ -6,135 +6,59 @@
 
     <changeSet id="1" author="frozbit">
         <comment>Date created: 15.03.2015</comment>
-        
-        <createTable tableName="KontoStaatus">
-            <column name="kontoStaatusID" type="int" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="nimetus" type="char(64) not null"/>
-        </createTable>
+        <sql>
+            CREATE TABLE KontoStaatus (
+                kontoStaatusID SERIAL PRIMARY KEY,
+                nimetus TEXT NOT NULL
+            );
 
-        <createTable tableName="KasutajaTyyp">
-            <column name="kasutajaTyypID" type="int" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="nimetus" type="text not null"/>
-        </createTable>
+            CREATE TABLE KasutajaTyyp (
+                kasutajaTyypID SERIAL PRIMARY KEY,
+                nimetus TEXT NOT NULL
+            );
 
-        <createTable tableName="KontoSyndmuseTyyp">
-            <column name="kontoSyndmuseTyypID" type="int" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="nimetus" type="text not null"/>
-        </createTable>
+            CREATE TABLE KontoSyndmuseTyyp (
+                kontoSyndmuseTyypID SERIAL PRIMARY KEY,
+                nimetus TEXT NOT NULL
+            );
 
-        <createTable tableName="Kasutaja">
-            <column name="kasutajaID" type="int" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="kasutajaTyypID" type="int not null"/>
-            <column name="kontoStaatusID" type="int not null"/>
-            <column name="aadress" type="text"/>
-            <column name="eesnimi" type="text not null"/>
-            <column name="email" type="text not null"/>
-            <column name="konto_nimi" type="text not null"/>
-            <column name="matrikli_kood" type="text"/>
-            <column name="organisatsiooni_nimi" type="text"/>
-            <column name="parool" type="text not null"/>
-            <column name="perekonnanimi" type="text not null"/>
-            <column name="tel_nr" type="text"/>
-        </createTable>
+            CREATE TABLE Kasutaja (
+                kasutajaID SERIAL PRIMARY KEY,
+                kasutajaTyypID INT NOT NULL REFERENCES KasutajaTyyp(kasutajaTyypID),
+                kontoStaatusID INT NOT NULL REFERENCES KontoStaatus(kontoStaatusID),
+                aadress TEXT NOT NULL,
+                eesnimi TEXT NOT NULL,
+                email TEXT NOT NULL,
+                konto_nimi TEXT NOT NULL,
+                matrikli_kood TEXT,
+                organisatsiooni_nimi TEXT,
+                parool TEXT NOT NULL,
+                perekonnanimi TEXT NOT NULL,
+                tel_nr TEXT NOT NULL
+            );
 
-        <createTable tableName="KontoSyndmus">
-            <column name="kontoSyndmusID" type="int" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="kontoSyndmuseTyypID" type="int not null"/>
-            <column name="kasutajaID" type="int not null"/>
-            <column name="vana_staatus" type="int not null"/>
-            <column name="uus_staatus" type="int not null"/>
-            <column name="loodud" type="timestamp not null"/>
-        </createTable>
-    </changeSet>
+            CREATE TABLE KontoSyndmus (
+                kontoSyndmusID SERIAL PRIMARY KEY,
+                kontoSyndmuseTyypID INT NOT NULL REFERENCES KontoSyndmuseTyyp(kontoSyndmuseTyypID),
+                kasutajaID INT NOT NULL REFERENCES Kasutaja(kasutajaID),
+                vana_staatus INT NOT NULL REFERENCES KontoStaatus(kontoStaatusID),
+                uus_staatus INT NOT NULL REFERENCES KontoStaatus(kontoStaatusID),
+                loodud TIMESTAMP NOT NULL
+            );
 
-    <changeSet id="2" author="frozbit">
-        <comment>Date created: 15.03.2015</comment>
-        <addForeignKeyConstraint baseTableName="Kasutaja" baseColumnNames="kasutajaTyypID"
-                                 constraintName="FK_Kasutaja_KasutajaTyyp"
-                                 referencedTableName="KasutajaTyyp"
-                                 referencedColumnNames="kasutajaTyypID"/>
+            INSERT INTO KontoStaatus (nimetus) VALUES ('inactive');
+            INSERT INTO KontoStaatus (nimetus) VALUES ('banned');
+            INSERT INTO KontoStaatus (nimetus) VALUES ('active');
 
-        <addForeignKeyConstraint baseTableName="Kasutaja" baseColumnNames="kontoStaatusID"
-                                 constraintName="FK_Kasutaja_KontoStaatus"
-                                 referencedTableName="KontoStaatus"
-                                 referencedColumnNames="kontoStaatusID"/>
+            INSERT INTO KasutajaTyyp (nimetus) VALUES ('company');
+            INSERT INTO KasutajaTyyp (nimetus) VALUES ('student');
+            INSERT INTO KasutajaTyyp (nimetus) VALUES ('university staff');
 
-        <addForeignKeyConstraint baseTableName="KontoSyndmus" baseColumnNames="kontoSyndmuseTyypID"
-                                 constraintName="FK_KontoSyndmus_KontoSyndmuseTyyp"
-                                 referencedTableName="KontoSyndmuseTyyp"
-                                 referencedColumnNames="kontoSyndmuseTyypID"/>
-
-        <addForeignKeyConstraint baseTableName="KontoSyndmus" baseColumnNames="kasutajaID"
-                                 constraintName="FK_KontoSyndmus_Kasutaja"
-                                 referencedTableName="Kasutaja"
-                                 referencedColumnNames="kasutajaID"/>
-
-        <addForeignKeyConstraint baseTableName="KontoSyndmus" baseColumnNames="vana_staatus"
-                                 constraintName="FK_vana_staatus"
-                                 referencedTableName="KontoStaatus"
-                                 referencedColumnNames="kontoStaatusID"/>
-
-        <addForeignKeyConstraint baseTableName="KontoSyndmus" baseColumnNames="uus_staatus"
-                                 constraintName="FK_uus_staatus"
-                                 referencedTableName="KontoStaatus"
-                                 referencedColumnNames="kontoStaatusID"/>
-    </changeSet>
-
-    <changeSet id="3" author="frozbit">
-        <insert tableName="KontoStaatus">
-            <column name="nimetus" value="inactive"/>
-        </insert>
-        <insert tableName="KontoStaatus">
-            <column name="nimetus" value="unconfirmed"/>
-        </insert>
-        <insert tableName="KontoStaatus">
-            <column name="nimetus" value="banned"/>
-        </insert>
-        <insert tableName="KontoStaatus">
-            <column name="nimetus" value="active"/>
-        </insert>
-    </changeSet>
-
-    <changeSet id="4" author="frozbit">
-        <insert tableName="KasutajaTyyp">
-            <column name="nimetus" value="company"/>
-        </insert>
-        <insert tableName="KasutajaTyyp">
-            <column name="nimetus" value="student"/>
-        </insert>
-        <insert tableName="KasutajaTyyp">
-            <column name="nimetus" value="university staff"/>
-        </insert>
-    </changeSet>
-
-    <changeSet id="5" author="KontoSyndmuseTyyp">
-        <insert tableName="KasutajaTyyp">
-            <column name="nimetus" value="account creation"/>
-        </insert>
-        <insert tableName="KasutajaTyyp">
-            <column name="nimetus" value="account confirmation"/>
-        </insert>
-        <insert tableName="KasutajaTyyp">
-            <column name="nimetus" value="account banning"/>
-        </insert>
-        <insert tableName="KasutajaTyyp">
-            <column name="nimetus" value="account unbanning"/>
-        </insert>
-        <insert tableName="KasutajaTyyp">
-            <column name="nimetus" value="account deactivation"/>
-        </insert>
-        <insert tableName="KasutajaTyyp">
-            <column name="nimetus" value="account activation"/>
-        </insert>
+            INSERT INTO KontoSyndmuseTyyp (nimetus) VALUES ('account creation');
+            INSERT INTO KontoSyndmuseTyyp (nimetus) VALUES ('account banning');
+            INSERT INTO KontoSyndmuseTyyp (nimetus) VALUES ('account unbanning');
+            INSERT INTO KontoSyndmuseTyyp (nimetus) VALUES ('account deactivation');
+            INSERT INTO KontoSyndmuseTyyp (nimetus) VALUES ('account activation');
+        </sql>
     </changeSet>
 </databaseChangeLog>

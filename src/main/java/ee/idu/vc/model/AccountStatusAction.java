@@ -4,30 +4,30 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "`KontoSyndmus`")
+@Table(name = "KontoSyndmus")
 public class AccountStatusAction {
     @Id
-    @GeneratedValue
-    @Column(name = "`kontoSyndmusID`")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "kontoSyndmusID")
     private Long accountActionId;
 
-    @Column(name = "`loodud`")
+    @Column(name = "loodud")
     private Timestamp created;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "`kontoSyndmuseTyypID`")
+    @JoinColumn(name = "kontoSyndmuseTyypID")
     private AccountActionType accountActionType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "`kasutajaID`")
+    @JoinColumn(name = "kasutajaID")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "`vana_staatus`")
+    @JoinColumn(name = "vana_staatus")
     private AccountStatus oldAccountStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "`uus_staatus`")
+    @JoinColumn(name = "uus_staatus")
     private AccountStatus newAccountStatus;
 
     public Long getAccountActionId() {

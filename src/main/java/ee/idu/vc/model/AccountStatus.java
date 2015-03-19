@@ -3,17 +3,16 @@ package ee.idu.vc.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "`KontoStaatus`")
+@Table(name = "KontoStaatus")
 public class AccountStatus {
-    public static final String INACTIVE = "inactive", UNCONFIRMED = "unconfirmed", BANNED = "banned",
-            ACTIVE = "active";
+    public static final String INACTIVE = "inactive", BANNED = "banned", ACTIVE = "active";
 
     @Id
-    @GeneratedValue
-    @Column(name = "`kontoStaatusID`")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "kontoStaatusID")
     private Long statusId;
 
-    @Column(name = "`nimetus`")
+    @Column(name = "nimetus")
     private String statusName;
 
     public Long getStatusId() {

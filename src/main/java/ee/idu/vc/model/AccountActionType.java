@@ -3,18 +3,17 @@ package ee.idu.vc.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "`KontoSyndmuseTyyp`")
+@Table(name = "KontoSyndmuseTyyp")
 public class AccountActionType {
-    public static final String CREATION = "account creation", CONFIRMATION = "account confirmation",
-            BANNING = "account banning", UNBANNING = "account unbanning", ACTIVATION = "account activation",
-            DEACTIVATION = "account deactivation";
+    public static final String CREATION = "account creation", BANNING = "account banning",
+            UNBANNING = "account unbanning", ACTIVATION = "account activation", DEACTIVATION = "account deactivation";
 
     @Id
-    @GeneratedValue
-    @Column(name = "`kontoSyndmuseTyypID`")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "kontoSyndmuseTyypID")
     private Long typeId;
 
-    @Column(name = "`nimetus`")
+    @Column(name = "nimetus")
     private String typeName;
 
     public Long getTypeId() {

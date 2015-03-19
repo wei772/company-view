@@ -3,16 +3,16 @@ package ee.idu.vc.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "`KasutajaTyyp`")
+@Table(name = "KasutajaTyyp")
 public class UserType {
     public static final String COMPANY = "company", STUDENT = "student", UNI_STAFF = "university staff";
 
     @Id
-    @GeneratedValue
-    @Column(name = "`kasutajaTyypID`")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "kasutajaTyypID")
     private Long userTypeId;
 
-    @Column(name = "`nimetus`")
+    @Column(name = "nimetus")
     private String typeName;
 
     public Long getUserTypeId() {

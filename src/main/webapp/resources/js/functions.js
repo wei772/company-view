@@ -75,3 +75,7 @@ function addBothIfOneExists(array, first, second) {
         array[array.length] = first;
     }
 }
+
+function hideForm(className){
+    $("."+className).hide();
+}

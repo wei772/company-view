@@ -46,8 +46,13 @@ function registrationController($scope, $http, $timeout, $location) {
                     showFailMessage("register-message", "Failed to register.", message)
                 }
             } else {
-                showSuccessMessage("register-message", "Account created.", "Redirecting in 4 seconds...");
-                $timeout(function() {$location.path("/login");}, 4000);
+                hideForm("cv-registration-block");
+                showSuccessMessage("register-message", "Account created.", "Redirecting in " + 5 + " seconds...");
+                $timeout(function() {showSuccessMessage("register-message", "Account created.", "Redirecting in " + 4 + " seconds...");}, 1000);
+                $timeout(function() {showSuccessMessage("register-message", "Account created.", "Redirecting in " + 3 + " seconds...");}, 2000);
+                $timeout(function() {showSuccessMessage("register-message", "Account created.", "Redirecting in " + 2 + " seconds...");}, 3000);
+                $timeout(function() {showSuccessMessage("register-message", "Account created.", "Redirecting in " + 1 + " seconds...");}, 4000);
+                $timeout(function() {$location.path("/login");}, 5000);
             }
         });
 

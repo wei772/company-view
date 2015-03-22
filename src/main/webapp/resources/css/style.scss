@@ -4,6 +4,7 @@ $font-helvetica: "Helvetica Neue", Helvetica, Arial, sans-serif;
 @mixin light-background {background-color: rgba(255, 255, 255, 0.8);}
 
 body {height: 100%;}
+.container{ padding-top: 50px !important; }
 .cv-custom-404 {position: absolute; font-family: $font-helvetica; font-size: 24px; color: #222222; text-align: center; margin: 0; padding: 0; top: 50%; left: 50%; width: 250px; height: 300px; transform: translate(-50%, -50%);
   img {display: block; margin-right: auto; margin-left: auto;}
 

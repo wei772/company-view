@@ -9,12 +9,32 @@ app.config(function($stateProvider, $urlRouterProvider) {
             data: {requireLogin: false}
         }).state('home', {
             url: "/",
-            templateUrl: "/views/home.html",
-            data: {requireLogin: true}
+            data: {requireLogin: true},
+            templateUrl: "/views/home.html"
         }).state('register', {
             url: "/register",
             templateUrl: "/views/register.html",
             data: {requireLogin: false}
+        }).state('users', {
+            url: "/users",
+            templateUrl: "/views/users.html",
+            data: {requireLogin: true}
+        }).state('offers', {
+            url: "/offers",
+            templateUrl: "/views/offers.html",
+            data: {requireLogin: true}
+        }).state('accountPassword', {
+            url: "/account/password",
+            templateUrl: "/views/account/password.html",
+            data: {requireLogin: true}
+        }).state('accountDetails', {
+            url: "/account/details",
+            templateUrl: "/views/account/details.html",
+            data: {requireLogin: true}
+        }).state('accountInbox', {
+            url: "/account/inbox",
+            templateUrl: "/views/account/inbox.html",
+            data: {requireLogin: true}
         });
 });
 

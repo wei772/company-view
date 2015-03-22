@@ -9,4 +9,7 @@ public interface TokenRepository {
 
     @Transactional("localDBTransactionManager")
     public Token createFreshToken(Long userId);
+
+    @Transactional("localDBTransactionManager")
+    public void updateToken(Token token);
 }

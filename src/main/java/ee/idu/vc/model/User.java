@@ -134,4 +134,22 @@ public class User implements Serializable {
     public boolean isStatusName(String statusName) {
         return accountStatus.getStatusName().trim().equalsIgnoreCase(statusName);
     }
+
+    public boolean isUserType(String userTypeName) {
+        return userType.getTypeName().trim().equalsIgnoreCase(userTypeName);
+    }
+
+    public boolean isUserTypeNameAny(String... userTypeNames) {
+        for (String userTypeName : userTypeNames) {
+            if (userType.getTypeName().trim().equalsIgnoreCase(userTypeName)) return true;
+        }
+        return false;
+    }
+
+    public boolean isAccountStatusNameAny(String... userStatusNames) {
+        for (String userStatusName : userStatusNames) {
+            if (accountStatus.getStatusName().trim().equalsIgnoreCase(userStatusName)) return true;
+        }
+        return false;
+    }
 }

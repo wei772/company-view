@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.UUID;
 
 import static org.hibernate.criterion.Restrictions.eq;
@@ -46,8 +44,13 @@ public class HbnTokenRepository implements TokenRepository {
         Token token = new Token();
         token.setUserId(userId);
         token.setToken(UUID.randomUUID());
-        token.setCreationDate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+        token.setCreationDate(CVUtil.currentTime());
         currentSession().save(token);
         return token;
+    }
+
+    @Override
+    public void updateToken(Token token) {
+        currentSession().update(token);
     }
 }

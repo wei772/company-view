@@ -15,6 +15,11 @@
     <context:component-scan base-package="ee.idu.vc"/>
     <mvc:annotation-driven/>
     <tx:annotation-driven transaction-manager="remoteDBTransactionManager"/>
+
+    <mvc:interceptors>
+        <bean class="ee.idu.vc.auth.RequireAuthInterceptor"/>
+    </mvc:interceptors>
+
     <bean name="requestMonitoringFilterBean" class="ee.idu.vc.filter.RequestMonitoringFilter"/>
 
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>

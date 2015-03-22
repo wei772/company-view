@@ -6,10 +6,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Timestamp;
+import java.util.*;
 
 public class CVUtil {
     public static String ERROR_FIELDS = "errorFields", ERROR_MESSAGES = "errorMessages";
@@ -63,5 +61,9 @@ public class CVUtil {
         objectNode.put("errorFields", listToJsonArray(errors.get(ERROR_FIELDS)));
         objectNode.put("errorMessages", listToJsonArray(errors.get(ERROR_MESSAGES)));
         return objectNode;
+    }
+
+    public static Timestamp currentTime() {
+        return new Timestamp(Calendar.getInstance().getTimeInMillis());
     }
 }

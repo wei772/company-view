@@ -12,4 +12,7 @@ public interface UserRepository extends GeneralRepository<User> {
 
     @Transactional
     public User findByUsernameIgnoreCase(String username);
+
+    @Transactional
+    public User findByUsername(String username);
 }

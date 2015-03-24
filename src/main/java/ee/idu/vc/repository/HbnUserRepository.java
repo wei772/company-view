@@ -68,6 +68,14 @@ public class HbnUserRepository implements UserRepository {
     }
 
     @Override
+    public User findByUsername(String username) {
+        if (username == null) return null;
+        Criteria criteria = currentSession().createCriteria(User.class);
+        criteria.add(eq("username", username));
+        return CVUtil.tolerantCast(User.class, criteria.uniqueResult());
+    }
+
+    @Override
     public User findById(Long id) {
         if (id == null) return null;
         return CVUtil.tolerantCast(User.class, currentSession().get(User.class, id));

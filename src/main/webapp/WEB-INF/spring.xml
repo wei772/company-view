@@ -13,7 +13,13 @@
        http://www.springframework.org/schema/tx
        http://www.springframework.org/schema/tx/spring-tx.xsd">
     <context:component-scan base-package="ee.idu.vc"/>
-    <mvc:annotation-driven/>
+
+    <mvc:annotation-driven>
+        <mvc:argument-resolvers>
+            <bean class="ee.idu.vc.auth.AuthUserArgumentResolver"/>
+        </mvc:argument-resolvers>
+    </mvc:annotation-driven>
+
     <tx:annotation-driven transaction-manager="remoteDBTransactionManager"/>
 
     <mvc:interceptors>

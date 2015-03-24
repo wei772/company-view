@@ -81,7 +81,7 @@ public class AuthenticationService {
     public User getUserMatchingRecentToken(String username, String tokenString) {
         if (CVUtil.isAnyStringEmpty(username, tokenString)) return null;
 
-        User user = userRepository.findByUsernameIgnoreCase(username);
+        User user = userRepository.findByUsername(username);
         if (user == null) return null;
 
         Token token = tokenRepository.getMostRecent(user.getUserId());

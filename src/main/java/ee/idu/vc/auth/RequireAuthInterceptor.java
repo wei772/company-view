@@ -1,8 +1,6 @@
 package ee.idu.vc.auth;
 
 import ch.qos.logback.classic.Logger;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ee.idu.vc.model.User;
 import ee.idu.vc.util.CVUtil;
 import org.slf4j.LoggerFactory;
@@ -13,84 +11,61 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 public class RequireAuthInterceptor extends HandlerInterceptorAdapter {
-    private static final String AUTHORIZATION_HEADER = "Authorization";
-    private static final String USERNAME = "username", TOKEN = "token";
-
-    private final ObjectMapper jsonMapper = new ObjectMapper();
-    { jsonMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true); }
-
     private Logger log = (Logger) LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private AuthenticationService authenticationService;
+    private AuthenticationService authService;
 
     @Override
     public boolean preHandle(HttpServletRequest req, HttpServletResponse res, Object handler) throws Exception {
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             RequireAuth authAnnotation = handlerMethod.getMethodAnnotation(RequireAuth.class);
-            if (authAnnotation != null && !checkAuthAndProceed(req, res, authAnnotation)) return false;
+            if (authAnnotation != null && !canProceed(req, res, authAnnotation)) return false;
         }
         return super.preHandle(req, res, handler);
     }
 
-    private boolean checkAuthAndProceed(HttpServletRequest req, HttpServletResponse res, RequireAuth authAnnotation)
+    private boolean canProceed(HttpServletRequest req, HttpServletResponse res, RequireAuth authAnnotation)
             throws Exception {
         validateAuthAnnotation(authAnnotation);
 
-        String authHeader = getAuthHeader(req, res);
+        String authHeader = getAuthHeader(req);
         if (authHeader == null) return sendAuthError(res, "Invalid authentication header.");
 
-        Map authMap = extractAuthHeader(authHeader);
-        if (authMap == null) return sendAuthError(res, "Could not map authorization header to JSON.");
+        Map authDetails = AuthUtil.extractAuthHeader(authHeader);
+        if (authDetails == null) return sendAuthError(res, "Could not map authorization header to JSON.");
 
-        User user = authenticateUser(authMap, authAnnotation);
+        User user = authenticateUser(authDetails, authAnnotation);
         if (user == null) return sendAuthError(res, "Failed to authenticate user.");
 
-        String cannotAuthMessage = authenticationService.checkIfCanAuth(user);
+        String cannotAuthMessage = authService.checkIfCanAuth(user);
         if (cannotAuthMessage != null) return sendAuthError(res, cannotAuthMessage);
-
-        // TODO: User is not null, add to @AuthUser annotation.
         return true;
     }
 
-    private User authenticateUser(Map authMap, RequireAuth authAnnotation) {
-        String username = authMap.get(USERNAME).toString();
-        String tokenString = authMap.get(TOKEN).toString();
+    private User authenticateUser(Map authDetails, RequireAuth authAnnotation) {
+        String username = authDetails.get(AuthUtil.USERNAME_KEY).toString();
+        String tokenString = authDetails.get(AuthUtil.TOKEN_KEY).toString();
         log.debug("Authenticating user " + username + " using token " + tokenString + ".");
 
-        User user = authenticationService.getUserMatchingRecentToken(username, tokenString);
+        User user = authService.getUserMatchingRecentToken(username, tokenString);
         if (user == null) return null;
         if (!user.isAccountStatusNameAny(authAnnotation.accountStatuses())) return null;
         if (!user.isUserTypeNameAny(authAnnotation.userTypes())) return null;
         return user;
     }
 
-    private String getAuthHeader(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String authHeader = request.getHeader(AUTHORIZATION_HEADER);
+    private String getAuthHeader(HttpServletRequest request) throws Exception {
+        String authHeader = request.getHeader(AuthUtil.AUTHORIZATION_HEADER);
         if (CVUtil.isStringEmpty(authHeader)) {
             log.debug("Authentication header is empty or null.");
             return null;
         }
         return authHeader;
-    }
-
-    private Map extractAuthHeader(String authHeaderContent) {
-        try {
-            Map params = jsonMapper.readValue(authHeaderContent, HashMap.class);
-            if (!params.containsKey(USERNAME) && !params.containsKey(TOKEN)) {
-                log.warn("Authentication header json content doesn't contain all required fields.");
-                return null;
-            }
-            return params;
-        } catch (IOException exception) {
-            log.error("Failed to map authorization header content.", exception);
-        }
-        return null;
     }
 
     private void validateAuthAnnotation(RequireAuth requireAuth) {

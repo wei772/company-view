@@ -1,6 +1,7 @@
 var appControllers = angular.module('appControllers', []);
 appControllers.controller('LoginController', loginController);
 appControllers.controller('RegistrationController', registrationController);
+appControllers.controller('NavbarController', navbarController);
 
 function registrationController($scope, $http, $timeout, $location) {
     $scope.register = function() {
@@ -66,6 +67,7 @@ function registrationController($scope, $http, $timeout, $location) {
 function loginController($scope, $http, $window, $location) {
     $scope.login = function() {
         $scope.isRequestingLogin = true;
+
         var request = $http({
             url: '/login',
             contentType: "application/json",
@@ -80,16 +82,22 @@ function loginController($scope, $http, $window, $location) {
                 addErrorHighlights(['cv-username-field', 'cv-password-field']);
                 showFailMessage('login-fail-message', 'Login failed.', data.message);
             } else {
-                $window.localStorage.authInfo = {username: $scope.username, token: data.token};
+                $window.localStorage['username'] = $scope.username;
+                $window.localStorage['token'] = data.token;
                 $location.path("/");
             }
         });
 
         request.error(function() {
             $scope.isRequestingLogin = false;
-            delete $window.localStorage.token;
+            $window.localStorage.removeItem('username');
+            $window.localStorage.removeItem('token');
             showFailMessage("login-fail-message", "Failed to login.", "Server might be down or broken.");
             addErrorHighlights(['cv-username-field', 'cv-password-field']);
         });
     };
+}
+
+function navbarController($scope, $window) {
+    $scope.username = $window.localStorage['username'];
 }

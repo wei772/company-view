@@ -41,7 +41,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
 app.run(function ($rootScope, $window, $location) {
     $rootScope.$on('$stateChangeStart', function (event, toState) {
         var requireLogin = toState.data.requireLogin;
-        if (requireLogin && !$window.localStorage.authInfo) {
+        if (requireLogin && (!$window.localStorage['username'] || !$window.localStorage['token'])) {
             console.log("User is not authenticated, redirecting to login.");
             $location.path("/login");
         }
@@ -60,8 +60,12 @@ app.factory('tokenInterceptor', function ($rootScope, $q, $window) {
     return {
         request: function (config) {
             config.headers = config.headers || {};
-            if ($window.localStorage.authInfo) {
-                config.headers.Authorization = JSON.stringify($window.localStorage.authInfo);
+            if ($window.localStorage['username'] && $window.localStorage['token']) {
+                var auth = {
+                    'username': $window.localStorage['username'].toString(),
+                    'token': $window.localStorage['token'].toString()
+                };
+                config.headers.Authorization = JSON.stringify(auth);
             }
             return config;
         },

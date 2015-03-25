@@ -100,4 +100,9 @@ function loginController($scope, $http, $window, $location) {
 
 function navbarController($scope, $window) {
     $scope.username = $window.localStorage['username'];
+
+    $scope.logout = function() {
+        $window.localStorage.removeItem('username');
+        $window.localStorage.removeItem('token');
+    }
 }

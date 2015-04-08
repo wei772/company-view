@@ -1,7 +1,68 @@
 <div ng-include="'/views/shared/navbar.html'"></div>
-<div class="container">
-    <div class="row">
-        <h1>Theme example</h1>
-        <p>This is a template showcasing the optional theme stylesheet included in Bootstrap. Use it as a starting point to create something more unique by building on or modifying it.</p>
+<div class="container cv-innersystem">
+    <div class="jumbotron cv-registration-block" ng-controller="">
+        <form ng-submit="register()" role="form" class="cv-form row" novalidate>
+            <div class="form-group col-lg-12" id="cv-username-field">
+                <label>Username
+                    <input ng-model="username" ng-disabled="isRegistering" type="text" class="form-control" onkeydown="removeErrorHighlights(['cv-username-field'])" readonly   >
+                </label>
+            </div>
+
+            <div class="form-group col-lg-6" id="cv-email-field">
+                <label>E-mail address
+                    <input ng-model="email" ng-disabled="isRegistering" type="text" class="form-control" onkeydown="removeErrorHighlights(['cv-email-field', 'cv-emailconf-field'])">
+                </label>
+            </div>
+
+            <div class="form-group col-lg-6" id="cv-emailconf-field">
+                <label>Confirm e-mail address
+                    <input ng-model="emailConf" ng-disabled="isRegistering" type="text" class="form-control" onkeydown="removeErrorHighlights(['cv-email-field', 'cv-emailconf-field'])">
+                </label>
+            </div>
+
+            <div class="form-group col-lg-6" id="cv-firstname-field">
+                <label>First name
+                    <input ng-model="firstName" ng-disabled="isRegistering" type="text" class="form-control" onkeydown="removeErrorHighlights(['cv-firstname-field'])">
+                </label>
+            </div>
+
+            <div class="form-group col-lg-6" id="cv-lastname-field">
+                <label>Last name
+                    <input ng-model="lastName" ng-disabled="isRegistering" type="text" class="form-control" onkeydown="removeErrorHighlights(['cv-lastname-field'])">
+                </label>
+            </div>
+
+            <div class="form-group" id="cv-organisation-field">
+                <label>Organisation
+                    <input ng-model="organisation" ng-disabled="isRegistering" type="text" class="form-control" onkeydown="removeErrorHighlights(['cv-organisation-field'])">
+                </label>
+            </div>
+
+            <div class="form-group" id="cv-telephone-field">
+                <label>Telephone or mobile phone number
+                    <input ng-model="telephone" ng-disabled="isRegistering" type="text" class="form-control" onkeydown="removeErrorHighlights(['cv-telephone-field'])">
+                </label>
+            </div>
+
+            <div class="form-group" id="cv-address-field">
+                <label>Address
+                    <input ng-model="address" ng-disabled="isRegistering" type="text" class="form-control" onkeydown="removeErrorHighlights(['cv-address-field'])">
+                </label>
+            </div>
+
+            <div class="form-group col-lg-6" id="cv-password-field">
+                <label>Password
+                    <input ng-model="password" ng-disabled="isRegistering" type="password" class="form-control" onkeydown="removeErrorHighlights(['cv-password-field', 'cv-passwordconf-field'])">
+                </label>
+            </div>
+
+            <div class="form-group col-lg-6" id="cv-passwordconf-field">
+                <label>Password confirmation
+                    <input ng-model="passwordConf" ng-disabled="isRegistering" type="password" class="form-control" onkeydown="removeErrorHighlights(['cv-password-field', 'cv-passwordconf-field'])">
+                </label>
+            </div>
+
+            <button ng-disabled="isRegistering" class="btn btn-lg btn-primary btn-block" type="submit">Update</button>
+        </form>
     </div>
 </div>

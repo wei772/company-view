@@ -33,7 +33,11 @@ app.config(function($stateProvider, $urlRouterProvider) {
             data: {requireLogin: true}
         }).state('accountInbox', {
             url: "/account/inbox",
-            templateUrl: "/views/account/inbox.html",
+            templateUrl: "/views/account/inbox/inbox.html",
+            data: {requireLogin: true}
+        }).state('accountInboxMessage', {
+            url: "/account/inbox/message",
+            templateUrl: "/views/account/inbox/message.html",
             data: {requireLogin: true}
         });
 });

@@ -28,14 +28,6 @@ public class AccountController {
     @Autowired
     private AccountRepository accountRepository;
 
-    @RequestMapping(value = "/account/inbox", method = RequestMethod.GET)
-    @ResponseBody
-    public ModelAndView provideAccountInboxPage() { return new ModelAndView("angular"); }
-
-    @RequestMapping(value = "/account/inbox/message", method = RequestMethod.GET)
-    @ResponseBody
-    public ModelAndView provideAccountInboxMessagePage() { return new ModelAndView("angular"); }
-
     @RequestMapping(value = "/account/password", method = RequestMethod.GET)
     @ResponseBody
     public ModelAndView providePasswordResetPage() {

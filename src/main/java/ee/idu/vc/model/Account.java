@@ -1,5 +1,7 @@
 package ee.idu.vc.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -7,6 +9,7 @@ import java.io.Serializable;
 public class Account implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long accountId;
 
     private String firstName;
@@ -14,16 +17,20 @@ public class Account implements Serializable {
     private String username;
     private String email;
     private String companyName;
-    private String passwordHash;
     private String phone;
     private String address;
 
+    @JsonIgnore
+    private String passwordHash;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "accountTypeId")
+    @JsonIgnore
     private AccountType accountType;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "accountStatusId")
+    @JsonIgnore
     private AccountStatus accountStatus;
 
     public Long getAccountId() {

@@ -1,8 +1,10 @@
 package ee.idu.vc.controllers;
 
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import ee.idu.vc.auth.AuthAccount;
 import ee.idu.vc.auth.RequireAuth;
+import ee.idu.vc.forms.UpdateDetailsForm;
 import ee.idu.vc.forms.UpdatePasswordForm;
 import ee.idu.vc.model.Account;
 import ee.idu.vc.repository.AccountRepository;
@@ -52,6 +54,29 @@ public class AccountController {
         return CVUtil.jsonSimpleSuccessMessage();
     }
 
+    @RequireAuth
+    @RequestMapping(value = "/account/mydetails", method = RequestMethod.GET, produces = "application/json")
+    public Object getAccountDetails(@AuthAccount Account account) {
+        return account;
+    }
+
+    @RequireAuth
+    @RequestMapping(value = "/account/mydetails", method = RequestMethod.POST)
+    public ObjectNode updateAccountDetails(@Valid UpdateDetailsForm form, BindingResult result,
+                                       @AuthAccount Account account) {
+        Map<String, List<String>> errors = CVUtil.extractErrors(result);
+        checkConfirmations(form, errors);
+        if (CVUtil.containsErrors(errors)) return CVUtil.jsonFailureMessageWithErrors(errors);
+        account.setCompanyName(form.getOrganisation());
+        account.setFirstName(form.getFirstName());
+        account.setLastName(form.getLastName());
+        account.setAddress(form.getAddress());
+        account.setEmail(form.getEmail());
+        account.setPhone(form.getTelephone());
+        accountRepository.update(account);
+        return CVUtil.jsonSimpleSuccessMessage();
+    }
+
     private void checkPassword(String password, Map<String, List<String>> errors, Account account) {
         if (BCrypt.checkpw(password, account.getPasswordHash())) return;
         errors.get(CVUtil.ERROR_FIELDS).add("password");
@@ -62,6 +87,12 @@ public class AccountController {
         if (Objects.equals(form.getNewPassword(), form.getNewPasswordConf())) return;
         errors.get(CVUtil.ERROR_FIELDS).add("newPasswordConf");
         errors.get(CVUtil.ERROR_MESSAGES).add("Passwords do not match.");
+    }
+
+    private void checkConfirmations(UpdateDetailsForm form, Map<String, List<String>> errors) {
+        if (Objects.equals(form.getEmail(), form.getEmailConf())) return;
+        errors.get(CVUtil.ERROR_FIELDS).add("emailConf");
+        errors.get(CVUtil.ERROR_MESSAGES).add("Emails do not match.");
     }
 
     @RequestMapping(value = "/account/details", method = RequestMethod.GET)

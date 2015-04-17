@@ -3,8 +3,62 @@ appControllers.controller('LoginController', loginController);
 appControllers.controller('RegistrationController', registrationController);
 appControllers.controller('NavbarController', navbarController);
 appControllers.controller('UpdatePasswordController', updatePasswordController);
+appControllers.controller('UpdateDetailsController', updateDetailsController);
 
-function updatePasswordController($scope, $http, $timeout, $location) {
+function updateDetailsController($scope, $http) {
+    $http.get('/account/mydetails').then(function(res){
+        $scope.username = res.data.username;
+        $scope.email = res.data.email;
+        $scope.emailConf = res.data.email;
+        $scope.firstName = res.data.firstName;
+        $scope.lastName = res.data.lastName;
+        $scope.organisation = res.data.companyName;
+        $scope.telephone = res.data.phone;
+        $scope.address = res.data.address;
+    });
+
+    $scope.updateDetails = function() {
+        $scope.isUpdating = true;
+
+        var request = $http({
+            url: '/account/mydetails',
+            contentType: "application/json",
+            dataType: "json",
+            method: 'POST',
+            params: {
+                'email': $scope.email,
+                'emailConf': $scope.emailConf,
+                'firstName': $scope.firstName,
+                'lastName': $scope.lastName,
+                'organisation': $scope.organisation,
+                'telephone': $scope.telephone,
+                'address': $scope.address
+            }
+        });
+
+        request.success(function(data) {
+            $scope.isUpdating = false;
+            if (!data.success) {
+                if (data.errorFields) {
+                    addBothIfOneExists(data.errorFields, "email", "emailConf");
+                    var errorFieldIds = convertFieldNamesToFieldIds(data.errorFields);
+                    console.log(errorFieldIds);
+                    addErrorHighlights(errorFieldIds);
+                    showFailMessage("response-message", "Failed to update details.", createErrorMessagesHtml(data.errorMessages));
+                }
+            } else {
+                showSuccessMessage("response-message", "Details changed.", "Your details have been successfully changed.");
+            }
+        });
+
+        request.error(function() {
+            $scope.isUpdating = false;
+            showFailMessage("response-message", "Failed to update details.", "Server might be down or broken.");
+        });
+    }
+}
+
+function updatePasswordController($scope, $http) {
     $scope.updatePassword = function() {
         $scope.isUpdatingPassword = true;
 

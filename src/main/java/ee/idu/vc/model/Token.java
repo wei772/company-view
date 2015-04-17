@@ -1,26 +1,25 @@
 package ee.idu.vc.model;
 
+import org.hibernate.annotations.Type;
+import org.hibernate.type.PostgresUUIDType;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.UUID;
 
 @Entity
-@Table(name = "Token")
 public class Token implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tokenId")
     private Long tokenId;
 
-    @Column(name = "userId")
-    private Long userId;
+    private Long accountId;
 
-    @Column(name = "token")
-    private UUID token;
+    @Type(type = "org.hibernate.type.PostgresUUIDType")
+    private UUID uuid;
 
-    @Column(name = "creationDate")
-    private Timestamp creationDate;
+    private Timestamp updateTime;
 
     public Long getTokenId() {
         return tokenId;
@@ -30,27 +29,27 @@ public class Token implements Serializable {
         this.tokenId = tokenId;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getAccountId() {
+        return accountId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
     }
 
-    public UUID getToken() {
-        return token;
+    public UUID getUuid() {
+        return uuid;
     }
 
-    public void setToken(UUID token) {
-        this.token = token;
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
-    public Timestamp getCreationDate() {
-        return creationDate;
+    public Timestamp getUpdateTime() {
+        return updateTime;
     }
 
-    public void setCreationDate(Timestamp creationDate) {
-        this.creationDate = creationDate;
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 }

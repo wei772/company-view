@@ -79,3 +79,18 @@ function addBothIfOneExists(array, first, second) {
 function hideForm(className){
     $("."+className).hide();
 }
+
+function createErrorMessagesHtml(errorMessages) {
+    var message = "<ul class='list-unstyled'>";
+    for (var index = 0; index < errorMessages.length; index++) {
+        message += "<li>" + errorMessages[index] + "</li>";
+    }
+    message += "</ul>";
+    return message;
+}
+
+function emptyAllInputs() {
+    $(":input").each(function() {
+        $(this).val("");
+    });
+}

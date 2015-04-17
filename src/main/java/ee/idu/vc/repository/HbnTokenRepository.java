@@ -20,7 +20,7 @@ import static org.hibernate.criterion.Restrictions.eq;
 public class HbnTokenRepository implements TokenRepository {
     private final Logger log = (Logger) LoggerFactory.getLogger(getClass());
 
-    @Qualifier("localDBSessionFactory")
+    @Qualifier("mainSessionFactory")
     @Autowired
     private SessionFactory sessionFactory;
 
@@ -29,22 +29,22 @@ public class HbnTokenRepository implements TokenRepository {
     }
 
     @Override
-    public Token getMostRecent(Long userId) {
-        if (userId == null) return null;
+    public Token getMostRecent(Long accountId) {
+        if (accountId == null) return null;
         Criteria criteria = currentSession().createCriteria(Token.class);
-        criteria.add(eq("userId", userId)).addOrder(Order.desc("creationDate"));
+        criteria.add(eq("accountId", accountId)).addOrder(Order.desc("updateTime"));
         Token token = CVUtil.tolerantCast(Token.class, criteria.setMaxResults(1).uniqueResult());
-        log.debug("Most recent token for user " + userId + " is: " + (token == null ? "none" : token.getToken()) + ".");
+        log.debug("Most recent token for user " + accountId + " is: " + (token == null ? "none" : token.getUuid()) + ".");
         return token;
     }
 
     @Override
-    public Token createFreshToken(Long userId) {
-        if (userId == null) throw new IllegalArgumentException("Argument userId cannot be null.");
+    public Token createFreshToken(Long accountId) {
+        if (accountId == null) throw new IllegalArgumentException("Argument accountId cannot be null.");
         Token token = new Token();
-        token.setUserId(userId);
-        token.setToken(UUID.randomUUID());
-        token.setCreationDate(CVUtil.currentTime());
+        token.setAccountId(accountId);
+        token.setUuid(UUID.randomUUID());
+        token.setUpdateTime(CVUtil.currentTime());
         currentSession().save(token);
         return token;
     }

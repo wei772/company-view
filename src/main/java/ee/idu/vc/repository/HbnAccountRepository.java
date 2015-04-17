@@ -1,7 +1,7 @@
 package ee.idu.vc.repository;
 
 import ch.qos.logback.classic.Logger;
-import ee.idu.vc.model.User;
+import ee.idu.vc.model.Account;
 import ee.idu.vc.util.CVUtil;
 import org.hibernate.Criteria;
 import org.hibernate.NonUniqueResultException;
@@ -18,10 +18,10 @@ import static org.hibernate.criterion.Restrictions.eq;
 import static org.hibernate.criterion.Restrictions.ilike;
 
 @Repository
-public class HbnUserRepository implements UserRepository {
+public class HbnAccountRepository implements AccountRepository {
     private final Logger log = (Logger) LoggerFactory.getLogger(getClass());
 
-    @Qualifier("remoteDBSessionFactory")
+    @Qualifier("mainSessionFactory")
     @Autowired
     private SessionFactory sessionFactory;
 
@@ -30,72 +30,60 @@ public class HbnUserRepository implements UserRepository {
     }
 
     @Override
-    public User findByCredentials(String username, String password) {
-        if (CVUtil.isAnyStringEmpty(username, password)) return null;
-
-        Criteria criteria = currentSession().createCriteria(User.class);
-        criteria.add(and(eq("username", username), eq("password", password)));
-        User user = CVUtil.tolerantCast(User.class, criteria.uniqueResult());
-
-        log.debug(user == null ? "Could not find user " + username + "." : "Found user " + username + ".");
-        return user;
-    }
-
-    @Override
-    public User findByEmailIgnoreCase(String email) {
+    public Account findByEmailIgnoreCase(String email) {
         if (email == null) return null;
-        Criteria criteria = currentSession().createCriteria(User.class);
+        Criteria criteria = currentSession().createCriteria(Account.class);
         criteria.add(ilike("email", email));
         try {
-            return CVUtil.tolerantCast(User.class, criteria.uniqueResult());
+            return CVUtil.tolerantCast(Account.class, criteria.uniqueResult());
         } catch (NonUniqueResultException exception) {
             log.warn("There are over one users with same email in the database. Returning first result.", exception);
-            return CVUtil.tolerantCast(User.class, criteria.setMaxResults(1).uniqueResult());
+            return CVUtil.tolerantCast(Account.class, criteria.setMaxResults(1).uniqueResult());
         }
     }
 
     @Override
-    public User findByUsernameIgnoreCase(String username) {
+    public Account findByUsernameIgnoreCase(String username) {
         if (username == null) return null;
-        Criteria criteria = currentSession().createCriteria(User.class);
+        Criteria criteria = currentSession().createCriteria(Account.class);
         criteria.add(ilike("username", username));
         try {
-            return CVUtil.tolerantCast(User.class, criteria.uniqueResult());
+            return CVUtil.tolerantCast(Account.class, criteria.uniqueResult());
         } catch (NonUniqueResultException exception) {
             log.warn("There are over one users with same username in the database. Returning first result.", exception);
-            return CVUtil.tolerantCast(User.class, criteria.setMaxResults(1).uniqueResult());
+            return CVUtil.tolerantCast(Account.class, criteria.setMaxResults(1).uniqueResult());
         }
     }
 
     @Override
-    public User findByUsername(String username) {
+    public Account findByUsername(String username) {
         if (username == null) return null;
-        Criteria criteria = currentSession().createCriteria(User.class);
+        Criteria criteria = currentSession().createCriteria(Account.class);
         criteria.add(eq("username", username));
-        return CVUtil.tolerantCast(User.class, criteria.uniqueResult());
+        return CVUtil.tolerantCast(Account.class, criteria.uniqueResult());
     }
 
     @Override
-    public User findById(Long id) {
+    public Account findById(Long id) {
         if (id == null) return null;
-        return CVUtil.tolerantCast(User.class, currentSession().get(User.class, id));
+        return CVUtil.tolerantCast(Account.class, currentSession().get(Account.class, id));
     }
 
     @Override
-    public void create(User user) {
+    public void create(Account user) {
         if (user == null) throw new IllegalArgumentException("Argument user cannot be null.");
-        user.setUserId(null);
+        user.setAccountId(null);
         currentSession().save(user);
     }
 
     @Override
-    public void update(User user) {
+    public void update(Account user) {
         if (user == null) throw new IllegalArgumentException("Argument user cannot be null.");
         currentSession().update(user);
     }
 
     @Override
-    public void delete(User user) {
+    public void delete(Account user) {
         throw new NotImplementedException();
     }
 

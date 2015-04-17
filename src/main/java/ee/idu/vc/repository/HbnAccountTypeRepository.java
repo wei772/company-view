@@ -1,6 +1,6 @@
 package ee.idu.vc.repository;
 
-import ee.idu.vc.model.UserType;
+import ee.idu.vc.model.AccountType;
 import ee.idu.vc.util.CVUtil;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -12,8 +12,8 @@ import org.springframework.stereotype.Repository;
 import static org.hibernate.criterion.Restrictions.eq;
 
 @Repository
-public class HbnUserTypeRepository implements UserTypeRepository {
-    @Qualifier("remoteDBSessionFactory")
+public class HbnAccountTypeRepository implements AccountTypeRepository {
+    @Qualifier("mainSessionFactory")
     @Autowired
     private SessionFactory sessionFactory;
 
@@ -22,14 +22,14 @@ public class HbnUserTypeRepository implements UserTypeRepository {
     }
 
     @Override
-    public UserType findById(Long id) {
-        return CVUtil.tolerantCast(UserType.class, currentSession().get(UserType.class, id));
+    public AccountType findById(Long id) {
+        return CVUtil.tolerantCast(AccountType.class, currentSession().get(AccountType.class, id));
     }
 
     @Override
-    public UserType findByName(String typeName) {
-        Criteria criteria = currentSession().createCriteria(UserType.class);
+    public AccountType findByName(String typeName) {
+        Criteria criteria = currentSession().createCriteria(AccountType.class);
         criteria.add(eq("typeName", typeName));
-        return CVUtil.tolerantCast(UserType.class, criteria.uniqueResult());
+        return CVUtil.tolerantCast(AccountType.class, criteria.uniqueResult());
     }
 }

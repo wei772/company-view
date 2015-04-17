@@ -13,7 +13,7 @@ import static org.hibernate.criterion.Restrictions.eq;
 
 @Repository
 public class HbnAccountStatusRepository implements AccountStatusRepository {
-    @Qualifier("remoteDBSessionFactory")
+    @Qualifier("mainSessionFactory")
     @Autowired
     private SessionFactory sessionFactory;
 

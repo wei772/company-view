@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <preConditions>
+        <dbms type="postgresql"/>
+    </preConditions>
+
+    <changeSet id="1" author="frozbit">
+        <comment>Date created: 15.03.2015</comment>
+        <sql>
+            CREATE TABLE AccountStatus (
+                accountStatusId SERIAL PRIMARY KEY,
+                statusName TEXT NOT NULL
+            );
+
+            CREATE TABLE AccountType (
+                accountTypeId SERIAL PRIMARY KEY,
+                typeName TEXT NOT NULL
+            );
+
+            CREATE TABLE Account (
+                accountId SERIAL PRIMARY KEY,
+                address TEXT,
+                firstName TEXT,
+                lastName TEXT,
+                email TEXT,
+                username TEXT NOT NULL,
+                companyName TEXT NOT NULL,
+                passwordHash TEXT NOT NULL,
+                phone TEXT,
+                accountStatusId INT NOT NULL REFERENCES AccountStatus(accountStatusId),
+                accountTypeId INT NOT NULL REFERENCES AccountType(accountTypeId)
+            );
+
+            CREATE TABLE Token (
+                tokenId SERIAL PRIMARY KEY,
+                accountId INT NOT NULL REFERENCES Account(accountId),
+                uuid UUID NOT NULL,
+                updateTime TIMESTAMP NOT NULL
+            );
+
+            INSERT INTO AccountStatus (statusName) VALUES ('inactive');
+            INSERT INTO AccountStatus (statusName) VALUES ('banned');
+            INSERT INTO AccountStatus (statusName) VALUES ('active');
+
+            INSERT INTO AccountType (typeName) VALUES ('company');
+            INSERT INTO AccountType (typeName) VALUES ('moderator');
+        </sql>
+    </changeSet>
+</databaseChangeLog>

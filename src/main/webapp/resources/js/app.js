@@ -15,13 +15,13 @@ app.config(function($stateProvider, $urlRouterProvider) {
             url: "/register",
             templateUrl: "/views/register.html",
             data: {requireLogin: false}
-        }).state('users', {
-            url: "/users",
-            templateUrl: "/views/users.html",
-            data: {requireLogin: true}
         }).state('offers', {
             url: "/offers",
-            templateUrl: "/views/offers.html",
+            templateUrl: "/views/offers/offers.html",
+            data: {requireLogin: true}
+        }).state('offer', {
+            url: "/offers/offer",
+            templateUrl: "/views/offers/offer.html",
             data: {requireLogin: true}
         }).state('accountPassword', {
             url: "/account/password",

@@ -10,7 +10,9 @@ import org.springframework.web.servlet.ModelAndView;
 public class OfferController {
     @RequestMapping(value = "/offers", method = RequestMethod.GET)
     @ResponseBody
-    public ModelAndView provideOffersPage() {
-        return new ModelAndView("angular");
-    }
+    public ModelAndView provideOffersPage() { return new ModelAndView("angular"); }
+
+    @RequestMapping(value = "/offers/offer", method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView provideOffersOfferPage() { return new ModelAndView("angular"); }
 }

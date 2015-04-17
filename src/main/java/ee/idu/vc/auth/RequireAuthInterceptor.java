@@ -1,7 +1,8 @@
 package ee.idu.vc.auth;
 
 import ch.qos.logback.classic.Logger;
-import ee.idu.vc.model.User;
+import ee.idu.vc.model.Account;
+import ee.idu.vc.model.AccountStatus;
 import ee.idu.vc.util.CVUtil;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,24 +40,22 @@ public class RequireAuthInterceptor extends HandlerInterceptorAdapter {
         Map authDetails = AuthUtil.extractAuthHeader(authHeader);
         if (authDetails == null) return sendAuthError(res, "Could not map authorization header to JSON.");
 
-        User user = authenticateUser(authDetails, authAnnotation);
-        if (user == null) return sendAuthError(res, "Failed to authenticate user.");
+        Account account = authenticateUser(authDetails, authAnnotation);
+        if (account == null) return sendAuthError(res, "Failed to authenticate user.");
 
-        String cannotAuthMessage = authService.checkIfCanAuth(user);
-        if (cannotAuthMessage != null) return sendAuthError(res, cannotAuthMessage);
-        return true;
+        return account.statusEquals(AccountStatus.BANNED) ? sendAuthError(res, "Account is banned.") : true;
     }
 
-    private User authenticateUser(Map authDetails, RequireAuth authAnnotation) {
+    private Account authenticateUser(Map authDetails, RequireAuth authAnnotation) {
         String username = authDetails.get(AuthUtil.USERNAME_KEY).toString();
         String tokenString = authDetails.get(AuthUtil.TOKEN_KEY).toString();
         log.debug("Authenticating user " + username + " using token " + tokenString + ".");
 
-        User user = authService.getUserMatchingRecentToken(username, tokenString);
-        if (user == null) return null;
-        if (!user.isAccountStatusNameAny(authAnnotation.accountStatuses())) return null;
-        if (!user.isUserTypeNameAny(authAnnotation.userTypes())) return null;
-        return user;
+        Account account = authService.authAccount(username, tokenString);
+        if (account == null) return null;
+        if (!account.hasAnyAccountStatus(authAnnotation.allowedStatuses())) return null;
+        if (!account.hasAnyAccountType(authAnnotation.userTypes())) return null;
+        return account;
     }
 
     private String getAuthHeader(HttpServletRequest request) throws Exception {
@@ -72,8 +71,8 @@ public class RequireAuthInterceptor extends HandlerInterceptorAdapter {
         if (requireAuth.userTypes() == null || requireAuth.userTypes().length == 0)
             throw new IllegalArgumentException("Auth annotation \"userTypes\" argument cannot be null or empty.");
 
-        if (requireAuth.accountStatuses() == null || requireAuth.accountStatuses().length == 0)
-            throw new IllegalArgumentException("Auth annotation \"accountStatuses\" argument cannot be null or empty.");
+        if (requireAuth.allowedStatuses() == null || requireAuth.allowedStatuses().length == 0)
+            throw new IllegalArgumentException("Auth annotation \"allowedStatuses\" argument cannot be null or empty.");
     }
 
     private boolean sendAuthError(HttpServletResponse response, String message) throws IOException {

@@ -19,7 +19,7 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.getParameterAnnotation(AuthUser.class) != null;
+        return parameter.getParameterAnnotation(AuthAccount.class) != null;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
         Map authDetails = AuthUtil.extractAuthHeader(webRequest.getHeader(AuthUtil.AUTHORIZATION_HEADER));
         String username = authDetails.get(AuthUtil.USERNAME_KEY).toString();
         String tokenString = authDetails.get(AuthUtil.TOKEN_KEY).toString();
-        return authService.getUserMatchingRecentToken(username, tokenString);
+        return authService.authAccount(username, tokenString);
     }
 
     private boolean hasMethodRequireAuthAnnotation(MethodParameter parameter) {

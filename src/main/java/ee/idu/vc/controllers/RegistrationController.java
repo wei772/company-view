@@ -2,13 +2,14 @@ package ee.idu.vc.controllers;
 
 import ee.idu.vc.forms.RegistrationForm;
 import ee.idu.vc.model.AccountStatus;
-import ee.idu.vc.model.User;
-import ee.idu.vc.model.UserType;
+import ee.idu.vc.model.Account;
+import ee.idu.vc.model.AccountType;
 import ee.idu.vc.repository.AccountStatusRepository;
-import ee.idu.vc.repository.UserRepository;
-import ee.idu.vc.repository.UserTypeRepository;
+import ee.idu.vc.repository.AccountRepository;
+import ee.idu.vc.repository.AccountTypeRepository;
 import ee.idu.vc.util.CVUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,10 +28,10 @@ public class RegistrationController {
     private AccountStatusRepository accountStatusRepository;
 
     @Autowired
-    private UserTypeRepository userTypeRepository;
+    private AccountTypeRepository accountTypeRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private AccountRepository accountRepository;
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     @ResponseBody
@@ -40,24 +41,24 @@ public class RegistrationController {
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
-    public Object register(@Valid RegistrationForm registrationForm, BindingResult bindingResult) {
+    public Object register(@Valid RegistrationForm form, BindingResult bindingResult) {
         Map<String, List<String>> errors = CVUtil.extractErrors(bindingResult);
-        checkConfirmations(registrationForm, errors);
-        checkUsername(registrationForm, errors);
-        checkEmail(registrationForm, errors);
+        checkConfirmations(form, errors);
+        checkUsername(form, errors);
+        checkEmail(form, errors);
         if (CVUtil.containsErrors(errors)) return CVUtil.jsonFailureMessageWithErrors(errors);
-        registerNewUser(registrationForm);
+        addAccountToDatabase(form);
         return CVUtil.jsonSimpleSuccessMessage();
     }
 
-    private void checkEmail(RegistrationForm registrationForm, Map<String, List<String>> errors) {
-        if (userRepository.findByEmailIgnoreCase(registrationForm.getEmail()) == null) return;
+    private void checkEmail(RegistrationForm form, Map<String, List<String>> errors) {
+        if (accountRepository.findByEmailIgnoreCase(form.getEmail()) == null) return;
         errors.get(CVUtil.ERROR_FIELDS).add("email");
         errors.get(CVUtil.ERROR_MESSAGES).add("E-mail already exists.");
     }
 
-    private void checkUsername(RegistrationForm registrationForm, Map<String, List<String>> errors) {
-        if (userRepository.findByUsernameIgnoreCase(registrationForm.getUsername()) == null) return;
+    private void checkUsername(RegistrationForm form, Map<String, List<String>> errors) {
+        if (accountRepository.findByUsernameIgnoreCase(form.getUsername()) == null) return;
         errors.get(CVUtil.ERROR_FIELDS).add("username");
         errors.get(CVUtil.ERROR_MESSAGES).add("Username already exists.");
     }
@@ -74,18 +75,18 @@ public class RegistrationController {
         }
     }
 
-    private void registerNewUser(RegistrationForm form) {
-        User user = new User();
-        user.setUsername(form.getUsername());
-        user.setPassword(form.getPassword());
-        user.setAddress(form.getAddress());
-        user.setTelephoneNumber(form.getTelephone());
-        user.setEmail(form.getEmail());
-        user.setFirstName(form.getFirstName());
-        user.setLastName(form.getLastName());
-        user.setOrganisationName(form.getOrganisation());
-        user.setAccountStatus(accountStatusRepository.findByName(AccountStatus.ACTIVE));
-        user.setUserType(userTypeRepository.findByName(UserType.COMPANY));
-        userRepository.create(user);
+    private void addAccountToDatabase(RegistrationForm form) {
+        Account account = new Account();
+        account.setUsername(form.getUsername());
+        account.setPasswordHash(BCrypt.hashpw(form.getPassword(), BCrypt.gensalt()));
+        account.setAddress(form.getAddress());
+        account.setPhone(form.getTelephone());
+        account.setEmail(form.getEmail());
+        account.setFirstName(form.getFirstName());
+        account.setLastName(form.getLastName());
+        account.setCompanyName(form.getOrganisation());
+        account.setAccountStatus(accountStatusRepository.findByName(AccountStatus.ACTIVE));
+        account.setAccountType(accountTypeRepository.findByName(AccountType.COMPANY));
+        accountRepository.create(account);
     }
 }

@@ -4,8 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import ee.idu.vc.auth.AuthenticationService;
 import ee.idu.vc.forms.LoginForm;
+import ee.idu.vc.model.AccountStatus;
 import ee.idu.vc.model.Token;
-import ee.idu.vc.model.User;
+import ee.idu.vc.model.Account;
 import ee.idu.vc.util.CVUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,8 +14,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 public class LoginController {
-    private static final String MSG_INVALID_LOGIN = "Invalid username or password.";
-
     @Autowired
     private AuthenticationService authService;
 
@@ -27,18 +26,14 @@ public class LoginController {
     @RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
     public Object login(LoginForm loginForm) {
-        User user = authService.getUserIfExists(loginForm);
-        if (user == null) return CVUtil.jsonSimpleFailureMessage(MSG_INVALID_LOGIN);
-
-        String authError = authService.checkIfCanAuth(user);
-        if (authError != null) return CVUtil.jsonSimpleFailureMessage(authError);
-
-        return jsonTokenMessage(authService.retrieveUserToken(user));
+        Account account = authService.authAccount(loginForm);
+        if (account == null) return CVUtil.jsonSimpleFailureMessage("Invalid username or password.");
+        if (account.statusEquals(AccountStatus.BANNED)) return CVUtil.jsonSimpleFailureMessage("Account is banned.");
+        return jsonTokenMessage(authService.retrieveAccountToken(account));
     }
 
-    private JsonNode jsonTokenMessage(Token userToken) {
-        if (userToken == null) throw new IllegalArgumentException("Argument userToken cannot be null.");
-        return JsonNodeFactory.instance.objectNode().put("success", true)
-                .put("token", userToken.getToken().toString());
+    private JsonNode jsonTokenMessage(Token token) {
+        if (token == null) throw new IllegalArgumentException("Argument token cannot be null.");
+        return JsonNodeFactory.instance.objectNode().put("success", true).put("token", token.getUuid().toString());
     }
 }

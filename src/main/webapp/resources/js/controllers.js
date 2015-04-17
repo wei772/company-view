@@ -2,6 +2,46 @@ var appControllers = angular.module('appControllers', []);
 appControllers.controller('LoginController', loginController);
 appControllers.controller('RegistrationController', registrationController);
 appControllers.controller('NavbarController', navbarController);
+appControllers.controller('UpdatePasswordController', updatePasswordController);
+
+function updatePasswordController($scope, $http, $timeout, $location) {
+    $scope.updatePassword = function() {
+        $scope.isUpdatingPassword = true;
+
+        var request = $http({
+            url: '/account/password',
+            contentType: "application/json",
+            dataType: "json",
+            method: 'POST',
+            params: {
+                'password': $scope.password,
+                'newPassword': $scope.newPassword,
+                'newPasswordConf': $scope.newPasswordConf
+            }
+        });
+
+        request.success(function(data) {
+            $scope.isUpdatingPassword = false;
+            if (!data.success) {
+                if (data.errorFields) {
+                    addBothIfOneExists(data.errorFields, "newPassword", "newPasswordConf");
+                    var errorFieldIds = convertFieldNamesToFieldIds(data.errorFields);
+                    console.log(errorFieldIds);
+                    addErrorHighlights(errorFieldIds);
+                    showFailMessage("response-message", "Failed to change password.", createErrorMessagesHtml(data.errorMessages));
+                }
+            } else {
+                showSuccessMessage("response-message", "Password changed.", "Your password has been successfully changed");
+                emptyAllInputs();
+            }
+        });
+
+        request.error(function() {
+            $scope.isUpdatingPassword = false;
+            showFailMessage("response-message", "Failed to change password.", "Server might be down or broken.");
+        });
+    }
+}
 
 function registrationController($scope, $http, $timeout, $location) {
     $scope.register = function() {

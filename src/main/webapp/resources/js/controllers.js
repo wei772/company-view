@@ -44,16 +44,16 @@ function updateDetailsController($scope, $http) {
                     var errorFieldIds = convertFieldNamesToFieldIds(data.errorFields);
                     console.log(errorFieldIds);
                     addErrorHighlights(errorFieldIds);
-                    showFailMessage("response-message", "Failed to update details.", createErrorMessagesHtml(data.errorMessages));
+                    showFailMessage("Failed to update details.", createErrorMessagesHtml(data.errorMessages));
                 }
             } else {
-                showSuccessMessage("response-message", "Details changed.", "Your details have been successfully changed.");
+                showSuccessMessage("Details changed.", "Your details have been successfully changed.");
             }
         });
 
         request.error(function() {
             $scope.isUpdating = false;
-            showFailMessage("response-message", "Failed to update details.", "Server might be down or broken.");
+            showFailMessage("Failed to update details.", "Server might be down or broken.");
         });
     }
 }
@@ -80,17 +80,17 @@ function updatePasswordController($scope, $http) {
                 if (data.errorFields) {
                     addBothIfOneExists(data.errorFields, "newPassword", "newPasswordConf");
                     addErrorHighlights(convertFieldNamesToFieldIds(data.errorFields));
-                    showFailMessage("response-message", "Failed to change password.", createErrorMessagesHtml(data.errorMessages));
+                    showFailMessage("Failed to change password.", createErrorMessagesHtml(data.errorMessages));
                 }
             } else {
-                showSuccessMessage("response-message", "Password changed.", "Your password has been successfully changed");
+                showSuccessMessage("Password changed.", "Your password has been successfully changed");
                 emptyAllInputs();
             }
         });
 
         request.error(function() {
             $scope.isUpdatingPassword = false;
-            showFailMessage("response-message", "Failed to change password.", "Server might be down or broken.");
+            showFailMessage("Failed to change password.", "Server might be down or broken.");
         });
     }
 }
@@ -127,22 +127,22 @@ function registrationController($scope, $http, $timeout, $location) {
                     addBothIfOneExists(data.errorFields, "email", "emailConf");
 
                     addErrorHighlights(convertFieldNamesToFieldIds(data.errorFields));
-                    showFailMessage("register-message", "Failed to register.", createErrorMessagesHtml(data.errorMessages));
+                    showFailMessage("Failed to register.", createErrorMessagesHtml(data.errorMessages));
                 }
             } else {
                 hideForm("cv-registration-block");
-                showSuccessMessage("register-message", "Account created.", "Redirecting in " + 5 + " seconds...");
-                $timeout(function() {showSuccessMessage("register-message", "Account created.", "Redirecting in " + 4 + " seconds...");}, 1000);
-                $timeout(function() {showSuccessMessage("register-message", "Account created.", "Redirecting in " + 3 + " seconds...");}, 2000);
-                $timeout(function() {showSuccessMessage("register-message", "Account created.", "Redirecting in " + 2 + " seconds...");}, 3000);
-                $timeout(function() {showSuccessMessage("register-message", "Account created.", "Redirecting in " + 1 + " seconds...");}, 4000);
+                showSuccessMessage("Account created.", "Redirecting in " + 5 + " seconds...");
+                $timeout(function() {showSuccessMessage("Account created.", "Redirecting in " + 4 + " seconds...");}, 1000);
+                $timeout(function() {showSuccessMessage("Account created.", "Redirecting in " + 3 + " seconds...");}, 2000);
+                $timeout(function() {showSuccessMessage("Account created.", "Redirecting in " + 2 + " seconds...");}, 3000);
+                $timeout(function() {showSuccessMessage("Account created.", "Redirecting in " + 1 + " seconds...");}, 4000);
                 $timeout(function() {$location.path("/login");}, 5000);
             }
         });
 
         request.error(function() {
             $scope.isRegistering = false;
-            showFailMessage("register-message", "Failed to register.", "Server might be down or broken.");
+            showFailMessage("Failed to register.", "Server might be down or broken.");
         });
     };
 }
@@ -163,7 +163,7 @@ function loginController($scope, $http, $window, $location) {
             $scope.isRequestingLogin = false;
             if (!data.success) {
                 addErrorHighlights(['cv-username-field', 'cv-password-field']);
-                showFailMessage('login-fail-message', 'Login failed.', data.errorMessages[0]);
+                showFailMessage('Login failed.', data.errorMessages[0]);
             } else {
                 $window.localStorage['username'] = $scope.username;
                 $window.localStorage['token'] = data.token;
@@ -175,7 +175,7 @@ function loginController($scope, $http, $window, $location) {
             $scope.isRequestingLogin = false;
             $window.localStorage.removeItem('username');
             $window.localStorage.removeItem('token');
-            showFailMessage("login-fail-message", "Failed to login.", "Server might be down or broken.");
+            showFailMessage("Failed to login.", "Server might be down or broken.");
             addErrorHighlights(['cv-username-field', 'cv-password-field']);
         });
     };

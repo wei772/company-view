@@ -1,4 +1,4 @@
-package ee.idu.vc.forms;
+package ee.idu.vc.controller.form;
 
 public class LoginForm {
     private String username;

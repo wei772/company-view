@@ -79,9 +79,7 @@ function updatePasswordController($scope, $http) {
             if (!data.success) {
                 if (data.errorFields) {
                     addBothIfOneExists(data.errorFields, "newPassword", "newPasswordConf");
-                    var errorFieldIds = convertFieldNamesToFieldIds(data.errorFields);
-                    console.log(errorFieldIds);
-                    addErrorHighlights(errorFieldIds);
+                    addErrorHighlights(convertFieldNamesToFieldIds(data.errorFields));
                     showFailMessage("response-message", "Failed to change password.", createErrorMessagesHtml(data.errorMessages));
                 }
             } else {
@@ -128,17 +126,8 @@ function registrationController($scope, $http, $timeout, $location) {
                     addBothIfOneExists(data.errorFields, "password", "passwordConf");
                     addBothIfOneExists(data.errorFields, "email", "emailConf");
 
-                    var fieldIds = convertFieldNamesToFieldIds(data.errorFields);
-                    addErrorHighlights(fieldIds);
-
-                    var errorMessages = data.errorMessages;
-                    var index;
-                    var message = "<ul class='list-unstyled'>";
-                    for (index = 0; index < errorMessages.length; index += 1) {
-                        message += "<li>" + errorMessages[index] + "</li>";
-                    }
-                    message += "</ul>";
-                    showFailMessage("register-message", "Failed to register.", message)
+                    addErrorHighlights(convertFieldNamesToFieldIds(data.errorFields));
+                    showFailMessage("register-message", "Failed to register.", createErrorMessagesHtml(data.errorMessages));
                 }
             } else {
                 hideForm("cv-registration-block");
@@ -174,7 +163,7 @@ function loginController($scope, $http, $window, $location) {
             $scope.isRequestingLogin = false;
             if (!data.success) {
                 addErrorHighlights(['cv-username-field', 'cv-password-field']);
-                showFailMessage('login-fail-message', 'Login failed.', data.message);
+                showFailMessage('login-fail-message', 'Login failed.', data.errorMessages[0]);
             } else {
                 $window.localStorage['username'] = $scope.username;
                 $window.localStorage['token'] = data.token;

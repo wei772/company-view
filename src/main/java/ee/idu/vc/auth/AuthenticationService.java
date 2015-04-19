@@ -1,8 +1,7 @@
 package ee.idu.vc.auth;
 
 import ch.qos.logback.classic.Logger;
-import ee.idu.vc.forms.LoginForm;
-import ee.idu.vc.model.AccountStatus;
+import ee.idu.vc.controller.form.LoginForm;
 import ee.idu.vc.model.Token;
 import ee.idu.vc.model.Account;
 import ee.idu.vc.repository.TokenRepository;

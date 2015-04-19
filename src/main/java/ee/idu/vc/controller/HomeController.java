@@ -1,4 +1,4 @@
-package ee.idu.vc.controllers;
+package ee.idu.vc.controller;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -7,7 +7,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class HomeController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
-    public ModelAndView provideRegistrationPage() {
+    public ModelAndView getAngularView() {
         return new ModelAndView("angular");
     }
 }

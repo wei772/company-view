@@ -1,8 +1,9 @@
-package ee.idu.vc.forms;
+package ee.idu.vc.controller.form;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 public class UpdatePasswordForm {
     @NotEmpty(message = "Password cannot be empty.")
@@ -37,5 +38,9 @@ public class UpdatePasswordForm {
 
     public void setNewPasswordConf(String newPasswordConf) {
         this.newPasswordConf = newPasswordConf;
+    }
+
+    public boolean newPasswordsMatch() {
+        return Objects.equals(newPassword, newPasswordConf);
     }
 }

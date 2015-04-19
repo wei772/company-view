@@ -1,4 +1,4 @@
-package ee.idu.vc.controllers;
+package ee.idu.vc.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -8,11 +8,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 public class OfferController {
-    @RequestMapping(value = "/offers", method = RequestMethod.GET)
+    @RequestMapping(value = {"/offers", "/offers/offer"}, method = RequestMethod.GET)
     @ResponseBody
-    public ModelAndView provideOffersPage() { return new ModelAndView("angular"); }
-
-    @RequestMapping(value = "/offers/offer", method = RequestMethod.GET)
-    @ResponseBody
-    public ModelAndView provideOffersOfferPage() { return new ModelAndView("angular"); }
+    public ModelAndView getAngularView() { return new ModelAndView("angular"); }
 }

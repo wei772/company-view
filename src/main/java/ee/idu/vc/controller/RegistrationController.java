@@ -1,13 +1,14 @@
-package ee.idu.vc.controllers;
+package ee.idu.vc.controller;
 
-import ee.idu.vc.forms.RegistrationForm;
+import ee.idu.vc.controller.response.JsonResponse;
+import ee.idu.vc.controller.response.SimpleResponse;
+import ee.idu.vc.controller.form.RegistrationForm;
 import ee.idu.vc.model.AccountStatus;
 import ee.idu.vc.model.Account;
 import ee.idu.vc.model.AccountType;
 import ee.idu.vc.repository.AccountStatusRepository;
 import ee.idu.vc.repository.AccountRepository;
 import ee.idu.vc.repository.AccountTypeRepository;
-import ee.idu.vc.util.CVUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.validation.BindingResult;
@@ -18,9 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 @RestController
 public class RegistrationController {
@@ -35,44 +33,29 @@ public class RegistrationController {
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     @ResponseBody
-    public ModelAndView provideRegistrationPage() {
+    public ModelAndView getAngularView() {
         return new ModelAndView("angular");
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
-    public Object register(@Valid RegistrationForm form, BindingResult bindingResult) {
-        Map<String, List<String>> errors = CVUtil.extractErrors(bindingResult);
-        checkConfirmations(form, errors);
-        checkUsername(form, errors);
-        checkEmail(form, errors);
-        if (CVUtil.containsErrors(errors)) return CVUtil.jsonFailureMessageWithErrors(errors);
+    public JsonResponse accountRegistration(@Valid RegistrationForm form, BindingResult bindResult) {
+        SimpleResponse response = new SimpleResponse(bindResult);
+        if (!form.passwordsMatch()) response.addError("passwordConf", "Passwords do not match.");
+        if (!form.emailsMatch()) response.addError("emailConf", "E-mails do not match.");
+        if (userAlreadyExists(form.getUsername())) response.addError("username", "Username already exists.");
+        if (emailAlreadyExists(form.getEmail())) response.addError("email", "E-mail already exists.");
+        if (response.hasErrors()) return response;
         addAccountToDatabase(form);
-        return CVUtil.jsonSimpleSuccessMessage();
+        return response;
     }
 
-    private void checkEmail(RegistrationForm form, Map<String, List<String>> errors) {
-        if (accountRepository.findByEmailIgnoreCase(form.getEmail()) == null) return;
-        errors.get(CVUtil.ERROR_FIELDS).add("email");
-        errors.get(CVUtil.ERROR_MESSAGES).add("E-mail already exists.");
+    private boolean userAlreadyExists(String username) {
+        return accountRepository.findByUsernameIgnoreCase(username) != null;
     }
 
-    private void checkUsername(RegistrationForm form, Map<String, List<String>> errors) {
-        if (accountRepository.findByUsernameIgnoreCase(form.getUsername()) == null) return;
-        errors.get(CVUtil.ERROR_FIELDS).add("username");
-        errors.get(CVUtil.ERROR_MESSAGES).add("Username already exists.");
-    }
-
-    private void checkConfirmations(RegistrationForm form, Map<String, List<String>> errors) {
-        if (!Objects.equals(form.getPassword(), form.getPasswordConf())) {
-            errors.get(CVUtil.ERROR_FIELDS).add("passwordConf");
-            errors.get(CVUtil.ERROR_MESSAGES).add("Passwords do not match.");
-        }
-
-        if (!Objects.equals(form.getEmail(), form.getEmailConf())) {
-            errors.get(CVUtil.ERROR_FIELDS).add("emailConf");
-            errors.get(CVUtil.ERROR_MESSAGES).add("E-mails do not match.");
-        }
+    private boolean emailAlreadyExists(String email) {
+        return accountRepository.findByEmailIgnoreCase(email) != null;
     }
 
     private void addAccountToDatabase(RegistrationForm form) {

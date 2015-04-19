@@ -4,7 +4,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.Objects;
 
 public class RegistrationForm {
     @NotEmpty(message = "First name cannot be empty.")
@@ -38,9 +37,6 @@ public class RegistrationForm {
     @NotEmpty(message = "Address cannot be empty.")
     @Size(max = 300, message = "Address is too long.")
     private String address;
-
-    private String emailConf;
-    private String passwordConf;
 
     public String getFirstName() {
         return firstName;
@@ -106,43 +102,17 @@ public class RegistrationForm {
         this.address = address;
     }
 
-    public String getEmailConf() {
-        return emailConf;
-    }
-
-    public void setEmailConf(String emailConf) {
-        this.emailConf = emailConf;
-    }
-
-    public String getPasswordConf() {
-        return passwordConf;
-    }
-
-    public void setPasswordConf(String passwordConf) {
-        this.passwordConf = passwordConf;
-    }
-
-    public boolean passwordsMatch() {
-        return Objects.equals(getPassword(), getPasswordConf());
-    }
-
-    public boolean emailsMatch() {
-        return Objects.equals(email, emailConf);
-    }
-
     @Override
     public String toString() {
         return "RegistrationForm{" +
-                "username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", emailConf='" + emailConf + '\'' +
-                ", firstName='" + firstName + '\'' +
+                "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
                 ", organisation='" + organisation + '\'' +
+                ", password='" + "***" + '\'' +
                 ", telephone='" + telephone + '\'' +
                 ", address='" + address + '\'' +
-                ", password='" + password + '\'' +
-                ", passwordConf='" + passwordConf + '\'' +
                 '}';
     }
 }

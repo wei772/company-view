@@ -41,12 +41,10 @@ public class RegistrationController {
     @ResponseBody
     public JsonResponse accountRegistration(@Valid RegistrationForm form, BindingResult bindResult) {
         SimpleResponse response = new SimpleResponse(bindResult);
-        if (!form.passwordsMatch()) response.addError("passwordConf", "Passwords do not match.");
-        if (!form.emailsMatch()) response.addError("emailConf", "E-mails do not match.");
         if (userAlreadyExists(form.getUsername())) response.addError("username", "Username already exists.");
         if (emailAlreadyExists(form.getEmail())) response.addError("email", "E-mail already exists.");
         if (response.hasErrors()) return response;
-        addAccountToDatabase(form);
+        addAccountToDB(form);
         return response;
     }
 
@@ -58,7 +56,7 @@ public class RegistrationController {
         return accountRepository.findByEmailIgnoreCase(email) != null;
     }
 
-    private void addAccountToDatabase(RegistrationForm form) {
+    private void addAccountToDB(RegistrationForm form) {
         Account account = new Account();
         account.setUsername(form.getUsername());
         account.setPasswordHash(BCrypt.hashpw(form.getPassword(), BCrypt.gensalt()));

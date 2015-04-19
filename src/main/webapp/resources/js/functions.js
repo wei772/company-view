@@ -87,3 +87,23 @@ function emptyAllInputs() {
         $(this).val("");
     });
 }
+
+function createPlainData() {
+    return {
+        'success': 'true',
+        'errorMessages': [],
+        'errorFields': []
+    };
+}
+
+function validateConfirmations(firstFieldId, secondFieldId, messages, message) {
+    var first = document.getElementById(firstFieldId).getElementsByTagName('input')[0].value;
+    var second = document.getElementById(secondFieldId).getElementsByTagName('input')[0].value;
+    console.log(first + " " + second);
+    if (first == second) return;
+    var errorFields = [];
+    errorFields.push(firstFieldId);
+    errorFields.push(secondFieldId);
+    addErrorHighlights(errorFields);
+    messages.push(message);
+}

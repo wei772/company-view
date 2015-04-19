@@ -18,8 +18,14 @@ function updateDetailsController($scope, $http) {
     });
 
     $scope.updateDetails = function() {
-        $scope.isUpdating = true;
+        var confErrors = [];
+        validateConfirmations('cv-email-field', 'cv-emailconf-field', confErrors, 'E-mails do not match.');
+        if (confErrors.length > 0) {
+            showFailMessage('Failed to change details.', createErrorMessagesHtml(confErrors));
+            return;
+        }
 
+        $scope.isUpdating = true;
         var request = $http({
             url: '/account/mydetails',
             contentType: "application/json",
@@ -27,7 +33,6 @@ function updateDetailsController($scope, $http) {
             method: 'POST',
             params: {
                 'email': $scope.email,
-                'emailConf': $scope.emailConf,
                 'firstName': $scope.firstName,
                 'lastName': $scope.lastName,
                 'organisation': $scope.organisation,
@@ -60,8 +65,14 @@ function updateDetailsController($scope, $http) {
 
 function updatePasswordController($scope, $http) {
     $scope.updatePassword = function() {
-        $scope.isUpdatingPassword = true;
+        var confErrors = [];
+        validateConfirmations('cv-newpassword-field', 'cv-newpasswordconf-field', confErrors, 'Passwords do not match.');
+        if (confErrors.length > 0) {
+            showFailMessage('Failed to change password.', createErrorMessagesHtml(confErrors));
+            return;
+        }
 
+        $scope.isUpdatingPassword = true;
         var request = $http({
             url: '/account/password',
             contentType: "application/json",
@@ -69,8 +80,7 @@ function updatePasswordController($scope, $http) {
             method: 'POST',
             params: {
                 'password': $scope.password,
-                'newPassword': $scope.newPassword,
-                'newPasswordConf': $scope.newPasswordConf
+                'newPassword': $scope.newPassword
             }
         });
 
@@ -97,8 +107,15 @@ function updatePasswordController($scope, $http) {
 
 function registrationController($scope, $http, $timeout, $location) {
     $scope.register = function() {
-        $scope.isRegistering = true;
+        var confErrors = [];
+        validateConfirmations('cv-email-field', 'cv-emailconf-field', confErrors, 'E-mails do not match.');
+        validateConfirmations('cv-password-field', 'cv-passwordconf-field', confErrors, 'Passwords do not match.');
+        if (confErrors.length > 0) {
+            showFailMessage('Failed to register.', createErrorMessagesHtml(confErrors));
+            return;
+        }
 
+        $scope.isRegistering = true;
         var request = $http({
             url: '/register',
             contentType: "application/json",
@@ -107,14 +124,12 @@ function registrationController($scope, $http, $timeout, $location) {
             params: {
                 'username': $scope.username,
                 'email': $scope.email,
-                'emailConf': $scope.emailConf,
                 'firstName': $scope.firstName,
                 'lastName': $scope.lastName,
                 'organisation': $scope.organisation,
                 'telephone': $scope.telephone,
                 'address': $scope.address,
-                'password': $scope.password,
-                'passwordConf': $scope.passwordConf
+                'password': $scope.password
             }
         });
 
@@ -125,18 +140,16 @@ function registrationController($scope, $http, $timeout, $location) {
                     // If password has error then mark both, password and passwordConf red. Same goes to e-mail.
                     addBothIfOneExists(data.errorFields, "password", "passwordConf");
                     addBothIfOneExists(data.errorFields, "email", "emailConf");
-
                     addErrorHighlights(convertFieldNamesToFieldIds(data.errorFields));
                     showFailMessage("Failed to register.", createErrorMessagesHtml(data.errorMessages));
                 }
             } else {
                 hideForm("cv-registration-block");
-                showSuccessMessage("Account created.", "Redirecting in " + 5 + " seconds...");
-                $timeout(function() {showSuccessMessage("Account created.", "Redirecting in " + 4 + " seconds...");}, 1000);
-                $timeout(function() {showSuccessMessage("Account created.", "Redirecting in " + 3 + " seconds...");}, 2000);
-                $timeout(function() {showSuccessMessage("Account created.", "Redirecting in " + 2 + " seconds...");}, 3000);
-                $timeout(function() {showSuccessMessage("Account created.", "Redirecting in " + 1 + " seconds...");}, 4000);
-                $timeout(function() {$location.path("/login");}, 5000);
+                showSuccessMessage("Account created.", "Redirecting in " + 4 + " seconds...");
+                $timeout(function() {showSuccessMessage("Account created.", "Redirecting in " + 3 + " seconds...");}, 1000);
+                $timeout(function() {showSuccessMessage("Account created.", "Redirecting in " + 2 + " seconds...");}, 2000);
+                $timeout(function() {showSuccessMessage("Account created.", "Redirecting in " + 1 + " seconds...");}, 3000);
+                $timeout(function() {$location.path("/login");}, 4000);
             }
         });
 

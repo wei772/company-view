@@ -34,10 +34,8 @@ public class AccountController {
     @RequestMapping(value = "/account/password", method = RequestMethod.POST, produces = "application/json")
     public JsonResponse updatePassword(@Valid UpdatePasswordForm form, BindingResult bindResult, @AuthAccount Account account) {
         SimpleResponse response = new SimpleResponse(bindResult);
-        if (!form.newPasswordsMatch()) response.addError("newPasswordConf", "Passwords to not match.");
         if (!BCrypt.checkpw(form.getPassword(), account.getPasswordHash())) response.addError("password", "Invalid password.");
         if (response.hasErrors()) return response;
-
         account.setPasswordHash(BCrypt.hashpw(form.getNewPassword(),  BCrypt.gensalt()));
         accountRepository.update(account);
         return response;
@@ -53,9 +51,12 @@ public class AccountController {
     @RequestMapping(value = "/account/mydetails", method = RequestMethod.POST, produces = "application/json")
     public JsonResponse updateAccountDetails(@Valid UpdateDetailsForm form, BindingResult bindResult, @AuthAccount Account account) {
         SimpleResponse response = new SimpleResponse(bindResult);
-        if (!form.emailsMatch()) response.addError("emailConf", "E-mails do not match.");
         if (response.hasErrors()) return response;
+        updateAccountInDB(account, form);
+        return response;
+    }
 
+    private void updateAccountInDB(Account account, UpdateDetailsForm form) {
         account.setCompanyName(form.getOrganisation());
         account.setFirstName(form.getFirstName());
         account.setLastName(form.getLastName());
@@ -63,6 +64,5 @@ public class AccountController {
         account.setEmail(form.getEmail());
         account.setPhone(form.getTelephone());
         accountRepository.update(account);
-        return response;
     }
 }

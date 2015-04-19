@@ -4,7 +4,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.Objects;
 
 public class UpdateDetailsForm {
     @NotEmpty(message = "First name cannot be empty.")
@@ -30,8 +29,6 @@ public class UpdateDetailsForm {
     @NotEmpty(message = "Address cannot be empty.")
     @Size(max = 300, message = "Address is too long.")
     private String address;
-
-    private String emailConf;
 
     public String getFirstName() {
         return firstName;
@@ -79,17 +76,5 @@ public class UpdateDetailsForm {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public String getEmailConf() {
-        return emailConf;
-    }
-
-    public void setEmailConf(String emailConf) {
-        this.emailConf = emailConf;
-    }
-
-    public boolean emailsMatch() {
-        return Objects.equals(getEmail(), getEmailConf());
     }
 }

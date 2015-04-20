@@ -7,7 +7,6 @@ appControllers.controller('UpdateDetailsController', updateDetailsController);
 
 function updateDetailsController($scope, $http) {
     $http.get('/account/mydetails').then(function(res){
-        $scope.username = res.data.username;
         $scope.email = res.data.email;
         $scope.emailConf = res.data.email;
         $scope.firstName = res.data.firstName;

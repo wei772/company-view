@@ -10,8 +10,9 @@ body {height: 100%;}
 .cv-content {
   @include light-background;
   @include round-corners;
-  margin: 10px;
-  .find-form {min-width: 140px;}
+  margin-top: 10px;
+  padding: 10px;
+  .search-form {min-width: 150px; margin-bottom: 10px;}
 }
 
 .cv-custom-404 {position: absolute; font-family: $font-helvetica; font-size: 24px; color: #222222; text-align: center; margin: 0; padding: 0; top: 50%; left: 50%; width: 250px; height: 300px; transform: translate(-50%, -50%);
@@ -30,36 +31,7 @@ body {height: 100%;}
   .cv-btn-do {width: 100%; min-width: 150px; max-width: 300px;}
 }
 
-#response-message {
-  padding: 0; max-width: 600px; margin: 0 auto;
-}
-
-.cv-innersystem { margin-top: 30px;
-  @mixin top-bot-block {text-align: center; vertical-align: middle; min-width: 250px;}
-
-  .list-group{
-    .message{ bottom: 10px;  }
-  }
-  .cv-top-block {@include top-bot-block; margin-top: 50px; margin-bottom: 25px;
-    .cv-title {font-size: 40px;}
-    .cv-description {font-size: 20px;}
-  }
-
-  .cv-login-block {@include light-background; margin: 0 auto; padding: 20px; min-width: 300px; max-width: 450px;}
-
-  .cv-registration-block {@include light-background; margin: 0 auto; padding: 20px; min-width: 400px; max-width: 600px;}
-
-  .cv-form {margin: 0; padding: 0;
-    .input-group {margin-bottom: 15px;}
-    .input-group-addon {font-size: 28px;}
-    .form-group {padding: 0 5px;}
-    label {width: 100%;}
-  }
-
-  .cv-bot-block {@include top-bot-block; margin-top: 25px; margin-bottom: 50px;
-    .cv-info {font-size: 20px;}
-  }
-}
+#response-message {padding: 0; margin: 0 auto;}
 
 .cv-outersystem {
   @mixin top-bot-block {text-align: center; vertical-align: middle; min-width: 250px;}

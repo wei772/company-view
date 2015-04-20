@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-public class OfferController {
-    @RequestMapping(value = {"/offers", "/offers/offer"}, method = RequestMethod.GET)
+public class TraineeshipOfferController {
+    @RequestMapping(value = {"/offer/traineeship", "/offer/traineeship/new"}, method = RequestMethod.GET)
     @ResponseBody
     public ModelAndView getAngularView() { return new ModelAndView("angular"); }
 }

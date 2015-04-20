@@ -2,9 +2,18 @@ $main-bgr-img: url('../images/background.png') repeat;
 $font-helvetica: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
 @mixin light-background {background-color: rgba(255, 255, 255, 0.8);}
+@mixin round-corners {-webkit-border-radius: 5px;-moz-border-radius: 5px;border-radius: 5px;}
 
 body {height: 100%;}
 .container{ padding-top: 50px !important; }
+
+.cv-content {
+  @include light-background;
+  @include round-corners;
+  margin: 10px;
+  .find-form {min-width: 140px;}
+}
+
 .cv-custom-404 {position: absolute; font-family: $font-helvetica; font-size: 24px; color: #222222; text-align: center; margin: 0; padding: 0; top: 50%; left: 50%; width: 250px; height: 300px; transform: translate(-50%, -50%);
   img {display: block; margin-right: auto; margin-left: auto;}
 

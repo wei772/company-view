@@ -9,7 +9,6 @@ import java.io.Serializable;
 public class Account implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Long accountId;
 
     private String firstName;

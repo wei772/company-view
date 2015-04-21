@@ -1,0 +1,56 @@
+<div ng-include="'/views/shared/navbar.html'"></div>
+<div class="container">
+    <div class="cv-content">
+        <div class="row">
+            <div class="col-md-8 col-xs-8 col-sm-8">
+                <h2>Create traineeship offer</h2>
+                <p>Fill the fields to create a new traineeship offering.</p>
+                <form role="form" novalidate>
+                    <div class="row">
+                        <div class="form-group col-sm-12 col-xs-12 col-md-12" id="cv-title-field">
+                            <label>Offer title</label>
+                            <input ng-model="title" ng-disabled="isSubmitting" type="text" class="form-control" onkeydown="removeErrorHighlights(['cv-title-field'])">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class='form-group col-sm-6 col-xs-6 col-md-6'>
+                            <label>Expiration date</label>
+                            <div class='input-group date' id='cv-expirationdate-field'>
+                                <input ng-model="expirationDate" ng-disabled="isSubmitting" type='text' class="form-control" onkeydown="removeErrorHighlights(['cv-expirationdate-field'])">
+                                <span class="input-group-addon">
+                                    <span class="typcn typcn-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-12 col-xs-12 col-md-12">
+                            <label>Offer content</label>
+                            <div id="summernote" ng-disabled="isSubmitting"></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12 col-xs-12 col-md-12">
+                            <button ng-disabled="isSubmitting" class="btn btn-md btn-primary" type="submit">Save</button>
+                            <button ng-disabled="isSubmitting" class="btn btn-md btn-primary" type="submit">Save and publish</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div ng-include="'/views/offer/traineeship/sidebar.html'"></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#summernote').summernote({height: 300});
+    $('.note-help').remove();
+    $('#cv-expirationdate-field').datetimepicker({
+        locale: 'et'
+    });
+});
+</script>

@@ -17,7 +17,11 @@ app.config(function($stateProvider, $urlRouterProvider) {
             data: {requireLogin: false}
         }).state('traineeshipOffers', {
             url: "/offer/traineeship",
-            templateUrl: "/views/offer/traineeship/traineeship-main.html",
+            templateUrl: "/views/offer/traineeship/main.html",
+            data: {requireLogin: true}
+        }).state('traineeshipNewOffer', {
+            url: "/offer/traineeship/new",
+            templateUrl: "/views/offer/traineeship/new.html",
             data: {requireLogin: true}
         }).state('accountPassword', {
             url: "/account/password",

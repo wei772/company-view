@@ -58,6 +58,7 @@
             CREATE TABLE InternshipOffer (
                 internshipOfferId SERIAL PRIMARY KEY,
                 internshipOfferStateId INT NOT NULL REFERENCES internshipOfferState(internshipOfferStateId),
+                creatorAccountId INT NOT NULL REFERENCES account(accountId),
                 title TEXT NOT NULL,
                 content TEXT NOT NULL,
                 expirationDate TIMESTAMP NOT NULL

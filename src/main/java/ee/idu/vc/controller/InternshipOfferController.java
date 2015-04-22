@@ -13,14 +13,12 @@ import ee.idu.vc.util.CVUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 public class InternshipOfferController {
@@ -30,9 +28,27 @@ public class InternshipOfferController {
     @Autowired
     InternshipOfferStateRepository internshipOfferStateRepository;
 
-    @RequestMapping(value = {"/offer/internship", "/offer/internship/new"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/offer/internships", "/offer/internships/new"}, method = RequestMethod.GET)
     @ResponseBody
     public ModelAndView getAngularView() { return new ModelAndView("angular"); }
+
+    @RequireAuth
+    @RequestMapping(value = "/offer/myinternships", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public List<InternshipOffer> getMyInternships(@RequestParam(required = false, defaultValue = "1") String page, @AuthAccount Account account) {
+        Integer pageNumber = CVUtil.parseInt(page);
+        if (pageNumber == null || pageNumber < 1) pageNumber = 1;
+        int from = (pageNumber - 1) * 20;
+        int to = pageNumber * 20;
+        return internshipOfferRepository.getInternshipOffersByAccount(account, from, to);
+    }
+
+    @RequireAuth
+    @RequestMapping(value = "/offer/myinternships/count", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public int getMyInternshipsCount(@AuthAccount Account account) {
+        return internshipOfferRepository.getInternshipOffersCountByAccount(account);
+    }
 
     @RequireAuth
     @RequestMapping(value = "/offer/internship", method = RequestMethod.POST)
@@ -41,11 +57,11 @@ public class InternshipOfferController {
         SimpleResponse response = new SimpleResponse(bindResult);
         Date expirationTime = validatedExpirationTime(form.getExpirationTime(), response);
         if (response.hasErrors()) return response;
-        addInternshipToDB(form.getTitle(), form.getContent(), expirationTime, form.isPublish());
+        addInternshipToDB(form.getTitle(), form.getContent(), expirationTime, form.isPublish(), account);
         return response;
     }
 
-    private void addInternshipToDB(String title, String content, Date expirationTime, boolean publish) {
+    private void addInternshipToDB(String title, String content, Date expirationTime, boolean publish, Account account) {
         String offerState = publish ? InternshipOfferState.PUBLISHED : InternshipOfferState.UNPUBLISHED;
 
         InternshipOffer offer = new InternshipOffer();
@@ -53,6 +69,7 @@ public class InternshipOfferController {
         offer.setContent(content);
         offer.setExpirationDate(CVUtil.dateToTimestamp(expirationTime));
         offer.setInternshipOfferState(internshipOfferStateRepository.findByName(offerState));
+        offer.setAccount(account);
         internshipOfferRepository.create(offer);
     }
 

@@ -1,5 +1,9 @@
 package ee.idu.vc.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import ee.idu.vc.util.CVUtil;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -14,11 +18,16 @@ public class InternshipOffer implements Serializable {
     @JoinColumn(name = "internshipOfferStateId")
     private InternshipOfferState internshipOfferState;
 
-    private String title;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "creatorAccountId")
+    private Account account;
 
-    private String content;
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = CVUtil.DATE_FORMAT_STRING)
     private Timestamp expirationDate;
+
+    private String title;
+    private String content;
 
     public Long getInternshipOfferId() {
         return internshipOfferId;
@@ -58,5 +67,17 @@ public class InternshipOffer implements Serializable {
 
     public void setExpirationDate(Timestamp expirationDate) {
         this.expirationDate = expirationDate;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public Long getCreatorAccountId() {
+        return account.getAccountId();
     }
 }

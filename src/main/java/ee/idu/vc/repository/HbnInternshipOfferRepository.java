@@ -1,16 +1,25 @@
 package ee.idu.vc.repository;
 
+import ee.idu.vc.model.Account;
 import ee.idu.vc.model.InternshipOffer;
 import ee.idu.vc.util.CVUtil;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.List;
+
+import static org.hibernate.criterion.Restrictions.eq;
+
 @Repository
 public class HbnInternshipOfferRepository implements InternshipOfferRepository {
+    private static final int PUBLISHED_STATE_ID = 2;
+
     @Qualifier("mainSessionFactory")
     @Autowired
     private SessionFactory sessionFactory;
@@ -46,5 +55,41 @@ public class HbnInternshipOfferRepository implements InternshipOfferRepository {
     @Override
     public void delete(Long id) {
         throw new NotImplementedException();
+    }
+
+    @Override
+    public List getInternshipOffersByAccount(Account account, int from, int to) {
+        Criteria criteria = currentSession().createCriteria(InternshipOffer.class);
+        criteria.add(eq("account", account));
+        criteria.setFirstResult(from);
+        criteria.setMaxResults(to - from);
+        return criteria.list();
+    }
+
+    @Override
+    public int getInternshipOffersCountByAccount(Account account) {
+        Criteria criteria =  currentSession().createCriteria(InternshipOffer.class);
+        criteria.add(eq("account", account));
+        criteria.setProjection(Projections.rowCount());
+        Number rowsCount = ((Number) criteria.uniqueResult());
+        return rowsCount.intValue();
+    }
+
+    @Override
+    public List getPublishedInternshipOffers(int from, int to) {
+        Criteria criteria = currentSession().createCriteria(InternshipOffer.class);
+        criteria.add(eq("internshipOfferStateId", PUBLISHED_STATE_ID));
+        criteria.setFirstResult(from);
+        criteria.setMaxResults(to - from);
+        return criteria.list();
+    }
+
+    @Override
+    public int getPublishedInternshipOffersCount() {
+        Criteria criteria = currentSession().createCriteria(InternshipOffer.class);
+        criteria.add(eq("internshipOfferStateId", PUBLISHED_STATE_ID));
+        criteria.setProjection(Projections.rowCount());
+        Number rowsCount = ((Number) criteria.uniqueResult());
+        return rowsCount.intValue();
     }
 }

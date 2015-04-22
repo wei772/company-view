@@ -5,6 +5,17 @@ appControllers.controller('NavbarController', navbarController);
 appControllers.controller('UpdatePasswordController', updatePasswordController);
 appControllers.controller('UpdateDetailsController', updateDetailsController);
 appControllers.controller('NewInternshipController', newInternshipController);
+appControllers.controller('InternshipsTableController', internshipsTableController);
+
+function internshipsTableController($scope, $http, $location) {
+    $http.get('/offer/myinternships').then(function(res){
+        $scope.internships = res.data;
+    });
+
+    $scope.openInternship = function (i) {
+        $location.path('/offer/internship/' + i.internshipOfferId);
+    };
+};
 
 function newInternshipController($scope, $http) {
     var addOffer = function(doPublish) {

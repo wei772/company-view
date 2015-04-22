@@ -6,7 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class CVUtil {
-    private static final DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.ENGLISH);
+    public static final String DATE_FORMAT_STRING = "dd.MM.yyyy HH:mm";
+    private static final DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_STRING, Locale.ENGLISH);
 
     public static boolean isStringEmpty(String string) {
         return string == null || string.trim().length() == 0;
@@ -38,5 +39,13 @@ public class CVUtil {
         calendar.setTime(date);
         calendar.set(Calendar.MILLISECOND, 0);
         return new Timestamp(calendar.getTimeInMillis());
+    }
+
+    public static Integer parseInt(String integer) {
+        try {
+            return Integer.parseInt(integer);
+        } catch (Throwable ignored) {
+            return null;
+        }
     }
 }

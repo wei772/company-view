@@ -16,11 +16,11 @@ app.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: "/views/register.html",
             data: {requireLogin: false}
         }).state('internshipOffers', {
-            url: "/offer/internship",
+            url: "/offer/internships",
             templateUrl: "/views/offer/internship/main.html",
             data: {requireLogin: true}
         }).state('internshipNewOffer', {
-            url: "/offer/internship/new",
+            url: "/offer/internships/new",
             templateUrl: "/views/offer/internship/new.html",
             data: {requireLogin: true}
         }).state('accountPassword', {

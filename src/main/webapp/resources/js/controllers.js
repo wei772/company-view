@@ -4,21 +4,21 @@ appControllers.controller('RegistrationController', registrationController);
 appControllers.controller('NavbarController', navbarController);
 appControllers.controller('UpdatePasswordController', updatePasswordController);
 appControllers.controller('UpdateDetailsController', updateDetailsController);
-appControllers.controller('NewTraineeshipController', newTraineeshipController);
+appControllers.controller('NewInternshipController', newInternshipController);
 
-function newTraineeshipController($scope, $http) {
+function newInternshipController($scope, $http) {
     var addOffer = function(doPublish) {
         $scope.isSubmitting = true;
 
         var request = $http({
-            url: '/offer/traineeship',
+            url: '/offer/internship',
             contentType: "application/json",
             dataType: "json",
             method: 'POST',
             params: {
                 'title': $scope.title,
                 'expirationTime': $('#expirationtime').val(),
-                'content': $('#traineeship-content').code(),
+                'content': $('#internship-content').code(),
                 'publish': doPublish
             }
         });

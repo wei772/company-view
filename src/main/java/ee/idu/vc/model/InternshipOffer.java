@@ -5,14 +5,14 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Entity
-public class Traineeship implements Serializable {
+public class InternshipOffer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long traineeshipId;
+    private Long internshipOfferId;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "traineeshipStateId")
-    private TraineeshipState traineeshipState;
+    @JoinColumn(name = "internshipOfferStateId")
+    private InternshipOfferState internshipOfferState;
 
     private String title;
 
@@ -20,20 +20,20 @@ public class Traineeship implements Serializable {
 
     private Timestamp expirationDate;
 
-    public Long getTraineeshipId() {
-        return traineeshipId;
+    public Long getInternshipOfferId() {
+        return internshipOfferId;
     }
 
-    public void setTraineeshipId(Long traineeshipId) {
-        this.traineeshipId = traineeshipId;
+    public void setInternshipOfferId(Long internshipOfferId) {
+        this.internshipOfferId = internshipOfferId;
     }
 
-    public TraineeshipState getTraineeshipState() {
-        return traineeshipState;
+    public InternshipOfferState getInternshipOfferState() {
+        return internshipOfferState;
     }
 
-    public void setTraineeshipState(TraineeshipState traineeshipState) {
-        this.traineeshipState = traineeshipState;
+    public void setInternshipOfferState(InternshipOfferState internshipOfferState) {
+        this.internshipOfferState = internshipOfferState;
     }
 
     public String getTitle() {

@@ -1,6 +1,6 @@
 package ee.idu.vc.repository;
 
-import ee.idu.vc.model.Traineeship;
+import ee.idu.vc.model.InternshipOffer;
 import ee.idu.vc.util.CVUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 @Repository
-public class HbnTraineeshipRepository implements TraineeshipRepository {
+public class HbnInternshipOfferRepository implements InternshipOfferRepository {
     @Qualifier("mainSessionFactory")
     @Autowired
     private SessionFactory sessionFactory;
@@ -20,26 +20,26 @@ public class HbnTraineeshipRepository implements TraineeshipRepository {
     }
 
     @Override
-    public Traineeship findById(Long id) {
+    public InternshipOffer findById(Long id) {
         if (id == null) throw new IllegalArgumentException("Argument id cannot be null.");
-        return CVUtil.tolerantCast(Traineeship.class, currentSession().get(Traineeship.class, id));
+        return CVUtil.tolerantCast(InternshipOffer.class, currentSession().get(InternshipOffer.class, id));
     }
 
     @Override
-    public void create(Traineeship traineeship) {
-        if (traineeship == null) throw new IllegalArgumentException("Argument traineeship cannot be null.");
-        traineeship.setTraineeshipId(null);
-        currentSession().save(traineeship);
+    public void create(InternshipOffer internshipOffer) {
+        if (internshipOffer == null) throw new IllegalArgumentException("Argument internshipOffer cannot be null.");
+        internshipOffer.setInternshipOfferId(null);
+        currentSession().save(internshipOffer);
     }
 
     @Override
-    public void update(Traineeship traineeship) {
-        if (traineeship == null) throw new IllegalArgumentException("Argument traineeship cannot be null.");
-        currentSession().update(traineeship);
+    public void update(InternshipOffer internshipOffer) {
+        if (internshipOffer == null) throw new IllegalArgumentException("Argument internshipOffer cannot be null.");
+        currentSession().update(internshipOffer);
     }
 
     @Override
-    public void delete(Traineeship repositoryObject) {
+    public void delete(InternshipOffer repositoryObject) {
         throw new NotImplementedException();
     }
 

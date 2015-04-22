@@ -2,13 +2,13 @@ package ee.idu.vc.controller;
 
 import ee.idu.vc.auth.AuthAccount;
 import ee.idu.vc.auth.RequireAuth;
-import ee.idu.vc.controller.form.TraineeshipForm;
+import ee.idu.vc.controller.form.InternshipOfferForm;
 import ee.idu.vc.controller.response.SimpleResponse;
 import ee.idu.vc.model.Account;
-import ee.idu.vc.model.Traineeship;
-import ee.idu.vc.model.TraineeshipState;
-import ee.idu.vc.repository.TraineeshipRepository;
-import ee.idu.vc.repository.TraineeshipStateRepository;
+import ee.idu.vc.model.InternshipOffer;
+import ee.idu.vc.model.InternshipOfferState;
+import ee.idu.vc.repository.InternshipOfferRepository;
+import ee.idu.vc.repository.InternshipOfferStateRepository;
 import ee.idu.vc.util.CVUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -23,38 +23,37 @@ import java.util.Calendar;
 import java.util.Date;
 
 @RestController
-public class TraineeshipOfferController {
+public class InternshipOfferController {
     @Autowired
-    public TraineeshipRepository traineeshipRepository;
+    public InternshipOfferRepository internshipOfferRepository;
 
     @Autowired
-    TraineeshipStateRepository traineeshipStateRepository;
+    InternshipOfferStateRepository internshipOfferStateRepository;
 
-    @RequestMapping(value = {"/offer/traineeship", "/offer/traineeship/new"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/offer/internship", "/offer/internship/new"}, method = RequestMethod.GET)
     @ResponseBody
     public ModelAndView getAngularView() { return new ModelAndView("angular"); }
 
     @RequireAuth
-    @RequestMapping(value = "/offer/traineeship", method = RequestMethod.POST)
+    @RequestMapping(value = "/offer/internship", method = RequestMethod.POST)
     @ResponseBody
-    public Object addNewTraineeship(@Validated TraineeshipForm form, BindingResult bindResult, @AuthAccount Account account) {
+    public Object addInternshipOffer(@Validated InternshipOfferForm form, BindingResult bindResult, @AuthAccount Account account) {
         SimpleResponse response = new SimpleResponse(bindResult);
         Date expirationTime = validatedExpirationTime(form.getExpirationTime(), response);
         if (response.hasErrors()) return response;
-        addTraineeshipOfferToDB(form.getTitle(), form.getContent(), expirationTime, form.isPublish());
+        addInternshipToDB(form.getTitle(), form.getContent(), expirationTime, form.isPublish());
         return response;
     }
 
-    private void addTraineeshipOfferToDB(String title, String content, Date expirationTime, boolean publish) {
-        TraineeshipState publishedState = traineeshipStateRepository.findByName(TraineeshipState.PUBLISHED);
-        TraineeshipState unpublishedState = traineeshipStateRepository.findByName(TraineeshipState.UNPUBLISHED);
+    private void addInternshipToDB(String title, String content, Date expirationTime, boolean publish) {
+        String offerState = publish ? InternshipOfferState.PUBLISHED : InternshipOfferState.UNPUBLISHED;
 
-        Traineeship traineeship = new Traineeship();
-        traineeship.setTitle(title);
-        traineeship.setContent(content);
-        traineeship.setExpirationDate(CVUtil.dateToTimestamp(expirationTime));
-        traineeship.setTraineeshipState(publish ? publishedState : unpublishedState);
-        traineeshipRepository.create(traineeship);
+        InternshipOffer offer = new InternshipOffer();
+        offer.setTitle(title);
+        offer.setContent(content);
+        offer.setExpirationDate(CVUtil.dateToTimestamp(expirationTime));
+        offer.setInternshipOfferState(internshipOfferStateRepository.findByName(offerState));
+        internshipOfferRepository.create(offer);
     }
 
     private Date validatedExpirationTime(String expirationTimeString, SimpleResponse response) {

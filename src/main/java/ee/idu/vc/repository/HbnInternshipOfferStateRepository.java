@@ -1,6 +1,6 @@
 package ee.idu.vc.repository;
 
-import ee.idu.vc.model.TraineeshipState;
+import ee.idu.vc.model.InternshipOfferState;
 import ee.idu.vc.util.CVUtil;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import static org.hibernate.criterion.Restrictions.eq;
 
 @Repository
-public class HbnTraineeshipStateRepository implements TraineeshipStateRepository {
+public class HbnInternshipOfferStateRepository implements InternshipOfferStateRepository {
     @Qualifier("mainSessionFactory")
     @Autowired
     private SessionFactory sessionFactory;
@@ -22,14 +22,14 @@ public class HbnTraineeshipStateRepository implements TraineeshipStateRepository
     }
 
     @Override
-    public TraineeshipState findById(Long id) {
-        return CVUtil.tolerantCast(TraineeshipState.class, currentSession().get(TraineeshipState.class, id));
+    public InternshipOfferState findById(Long id) {
+        return CVUtil.tolerantCast(InternshipOfferState.class, currentSession().get(InternshipOfferState.class, id));
     }
 
     @Override
-    public TraineeshipState findByName(String stateName) {
-        Criteria criteria = currentSession().createCriteria(TraineeshipState.class);
+    public InternshipOfferState findByName(String stateName) {
+        Criteria criteria = currentSession().createCriteria(InternshipOfferState.class);
         criteria.add(eq("stateName", stateName));
-        return CVUtil.tolerantCast(TraineeshipState.class, criteria.uniqueResult());
+        return CVUtil.tolerantCast(InternshipOfferState.class, criteria.uniqueResult());
     }
 }

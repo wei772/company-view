@@ -24,8 +24,6 @@ public class SimpleResponse implements JsonResponse {
             addErrorField(fieldError.getField());
             addErrorMessage(fieldError.getDefaultMessage());
         }
-        List<String> errorFields = new ArrayList<>(result.getFieldErrors().size());
-        List<String> errorMessages = new ArrayList<>(result.getFieldErrors().size());
     }
 
     public void addErrorField(String fieldName) {

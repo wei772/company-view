@@ -4,6 +4,54 @@ appControllers.controller('RegistrationController', registrationController);
 appControllers.controller('NavbarController', navbarController);
 appControllers.controller('UpdatePasswordController', updatePasswordController);
 appControllers.controller('UpdateDetailsController', updateDetailsController);
+appControllers.controller('NewTraineeshipController', newTraineeshipController);
+
+function newTraineeshipController($scope, $http) {
+    var addOffer = function(doPublish) {
+        $scope.isSubmitting = true;
+
+        var request = $http({
+            url: '/offer/traineeship',
+            contentType: "application/json",
+            dataType: "json",
+            method: 'POST',
+            params: {
+                'title': $scope.title,
+                'expirationTime': $('#expirationtime').val(),
+                'content': $('#traineeship-content').code(),
+                'publish': doPublish
+            }
+        });
+
+        request.success(function(data) {
+            $scope.isSubmitting = false;
+            if (!data.success) {
+                if (data.errorFields) {
+                    var contentIndex = jQuery.inArray("content", data.errorFields);
+                    if (contentIndex != -1) { data.errorFields.splice(contentIndex, 1); }
+                    addErrorHighlights(convertFieldNamesToFieldIds(data.errorFields));
+                    showFailMessage("Failed to create offer.", createErrorMessagesHtml(data.errorMessages));
+                }
+            } else {
+                console.log("redirect to the view of this offer.");
+                showSuccessMessage("New offer created.", "Your offer has been added.");
+            }
+        });
+
+        request.error(function() {
+            $scope.isSubmitting = false;
+            showFailMessage("Failed to create offer.", "Server might be down or broken.");
+        });
+    };
+
+    $scope.add = function() {
+        addOffer(false);
+    };
+
+    $scope.addAndPublish = function () {
+        addOffer(true);
+    };
+}
 
 function updateDetailsController($scope, $http) {
     $http.get('/account/mydetails').then(function(res){
@@ -46,7 +94,6 @@ function updateDetailsController($scope, $http) {
                 if (data.errorFields) {
                     addBothIfOneExists(data.errorFields, "email", "emailConf");
                     var errorFieldIds = convertFieldNamesToFieldIds(data.errorFields);
-                    console.log(errorFieldIds);
                     addErrorHighlights(errorFieldIds);
                     showFailMessage("Failed to update details.", createErrorMessagesHtml(data.errorMessages));
                 }

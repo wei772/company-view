@@ -1,11 +1,12 @@
 <div ng-include="'/views/shared/navbar.html'"></div>
 <div class="container">
     <div class="cv-content">
+        <div id="response-message"></div>
         <div class="row">
             <div class="col-md-8 col-xs-8 col-sm-8">
                 <h2>Create traineeship offer</h2>
                 <p>Fill the fields to create a new traineeship offering.</p>
-                <form role="form" novalidate>
+                <form ng-submit="add()" role="form" ng-controller="NewTraineeshipController" novalidate>
                     <div class="row">
                         <div class="form-group col-sm-12 col-xs-12 col-md-12" id="cv-title-field">
                             <label>Offer title</label>
@@ -15,9 +16,9 @@
 
                     <div class="row">
                         <div class='form-group col-sm-6 col-xs-6 col-md-6'>
-                            <label>Expiration date</label>
-                            <div class='input-group date' id='cv-expirationdate-field'>
-                                <input ng-model="expirationDate" ng-disabled="isSubmitting" type='text' class="form-control" onkeydown="removeErrorHighlights(['cv-expirationdate-field'])">
+                            <label>Expiration time</label>
+                            <div class='input-group date' id='cv-expirationtime-field'>
+                                <input id="expirationtime" ng-disabled="isSubmitting" type='text' class="form-control" onclick="removeErrorHighlights(['cv-expirationtime-field'])">
                                 <span class="input-group-addon">
                                     <span class="typcn typcn-calendar"></span>
                                 </span>
@@ -28,14 +29,14 @@
                     <div class="row">
                         <div class="form-group col-sm-12 col-xs-12 col-md-12">
                             <label>Offer content</label>
-                            <div id="summernote" ng-disabled="isSubmitting"></div>
+                            <div id="traineeship-content" ng-disabled="isSubmitting"></div>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-sm-12 col-xs-12 col-md-12">
                             <button ng-disabled="isSubmitting" class="btn btn-md btn-primary" type="submit">Save</button>
-                            <button ng-disabled="isSubmitting" class="btn btn-md btn-primary" type="submit">Save and publish</button>
+                            <button ng-disabled="isSubmitting" ng-click="addAndPublish()" class="btn btn-md btn-primary" type="submit">Save and publish</button>
                         </div>
                     </div>
                 </form>
@@ -47,9 +48,9 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-    $('#summernote').summernote({height: 300});
+    $('#traineeship-content').summernote({height: 300});
     $('.note-help').remove();
-    $('#cv-expirationdate-field').datetimepicker({
+    $('#cv-expirationtime-field').datetimepicker({
         locale: 'et'
     });
 });

@@ -46,4 +46,25 @@
             INSERT INTO AccountType (typeName) VALUES ('moderator');
         </sql>
     </changeSet>
+
+    <changeSet id="2" author="frozbit">
+        <comment>Date created: 22.04.2015</comment>
+        <sql>
+            CREATE TABLE TraineeshipState (
+                traineeshipStateId SERIAL PRIMARY KEY,
+                stateName TEXT NOT NULL
+            );
+
+            CREATE TABLE Traineeship (
+                traineeshipId SERIAL PRIMARY KEY,
+                traineeshipStateId INT NOT NULL REFERENCES TraineeshipState(traineeshipStateId),
+                title TEXT NOT NULL,
+                content TEXT NOT NULL,
+                expirationDate TIMESTAMP NOT NULL
+            );
+
+            INSERT INTO TraineeshipState (stateName) VALUES ('unpublished');
+            INSERT INTO TraineeshipState (stateName) VALUES ('published');
+        </sql>
+    </changeSet>
 </databaseChangeLog>

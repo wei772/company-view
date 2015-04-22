@@ -14,11 +14,9 @@ public class RegistrationForm {
     @Size(max = 128, message = "Last name is too long.")
     private String lastName;
 
-    @NotEmpty(message = "Username cannot be empty.")
     @Size(min = 5, max = 48, message = "Username must be between 5 to 48 characters long.")
     private String username;
 
-    @NotEmpty(message = "E-mail cannot be empty.")
     @Pattern(regexp = ".+\\@.+\\..+", message = "Invalid e-mail.")
     private String email;
 
@@ -26,7 +24,6 @@ public class RegistrationForm {
     @Size(max = 200, message = "Organisation name is too long.")
     private String organisation;
 
-    @NotEmpty(message = "Password cannot be empty.")
     @Size(min = 8, max = 32, message = "Password must be between 8 to 32 characters long.")
     private String password;
 

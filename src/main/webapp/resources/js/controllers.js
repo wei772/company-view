@@ -12,6 +12,10 @@ function internshipsTableController($scope, $http, $location) {
         $scope.internships = res.data;
     });
 
+    $http.get('/offer/allinternships').then(function(res){
+        $scope.allInternshipOffers = res.data;
+    });
+
     $scope.openInternship = function (i) {
         $location.path('/offer/internship/' + i.internshipOfferId);
     };

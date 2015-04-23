@@ -28,7 +28,7 @@ public class InternshipOfferController {
     @Autowired
     InternshipOfferStateRepository internshipOfferStateRepository;
 
-    @RequestMapping(value = {"/offer/internships", "/offer/internships/new"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/offer/internships", "/offer/internships/new", "/offer/internships/all"}, method = RequestMethod.GET)
     @ResponseBody
     public ModelAndView getAngularView() { return new ModelAndView("angular"); }
 
@@ -48,6 +48,24 @@ public class InternshipOfferController {
     @ResponseBody
     public int getMyInternshipsCount(@AuthAccount Account account) {
         return internshipOfferRepository.getInternshipOffersCountByAccount(account);
+    }
+
+    @RequireAuth
+    @RequestMapping(value = "/offer/allinternships", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public List<InternshipOffer> getAllInternships(@RequestParam(required = false, defaultValue = "1") String page) {
+        Integer pageNumber = CVUtil.parseInt(page);
+        if (pageNumber == null || pageNumber < 1) pageNumber = 1;
+        int from = (pageNumber - 1) * 2;
+        int to = pageNumber * 2;
+        return internshipOfferRepository.getPublishedInternshipOffers(from, to);
+    }
+
+    @RequireAuth
+    @RequestMapping(value = "/offer/allinternships/count", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public int getAllInternshipsCount() {
+        return internshipOfferRepository.getPublishedInternshipOffersCount();
     }
 
     @RequireAuth

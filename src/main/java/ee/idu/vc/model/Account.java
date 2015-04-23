@@ -13,11 +13,13 @@ public class Account implements Serializable {
 
     private String firstName;
     private String lastName;
-    private String username;
     private String email;
     private String companyName;
     private String phone;
     private String address;
+
+    @JsonIgnore
+    private String username;
 
     @JsonIgnore
     private String passwordHash;

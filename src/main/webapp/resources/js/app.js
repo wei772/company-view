@@ -19,6 +19,10 @@ app.config(function($stateProvider, $urlRouterProvider) {
             url: "/offer/internships",
             templateUrl: "/views/offer/internship/main.html",
             data: {requireLogin: true}
+        }).state('allInternshipOffers', {
+            url: "/offer/internships/all",
+            templateUrl: "/views/offer/internship/all.html",
+            data: {requireLogin: true}
         }).state('internshipNewOffer', {
             url: "/offer/internships/new",
             templateUrl: "/views/offer/internship/new.html",

@@ -18,7 +18,7 @@ public class InternshipOffer implements Serializable {
     @JoinColumn(name = "internshipOfferStateId")
     private InternshipOfferState internshipOfferState;
 
-    @JsonIgnore
+    //@JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "creatorAccountId")
     private Account account;

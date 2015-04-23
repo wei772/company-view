@@ -2,6 +2,7 @@ package ee.idu.vc.repository;
 
 import ee.idu.vc.model.Account;
 import ee.idu.vc.model.InternshipOffer;
+import ee.idu.vc.model.InternshipOfferState;
 import ee.idu.vc.util.CVUtil;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -77,8 +78,12 @@ public class HbnInternshipOfferRepository implements InternshipOfferRepository {
 
     @Override
     public List getPublishedInternshipOffers(int from, int to) {
+        Criteria stateCriteria = currentSession().createCriteria(InternshipOfferState.class);
+        stateCriteria.add(eq("stateName", InternshipOfferState.PUBLISHED));
+        InternshipOfferState publishedState = (InternshipOfferState) stateCriteria.uniqueResult();
+
         Criteria criteria = currentSession().createCriteria(InternshipOffer.class);
-        criteria.add(eq("internshipOfferStateId", PUBLISHED_STATE_ID));
+        criteria.add(eq("internshipOfferState", publishedState));
         criteria.setFirstResult(from);
         criteria.setMaxResults(to - from);
         return criteria.list();
@@ -86,8 +91,12 @@ public class HbnInternshipOfferRepository implements InternshipOfferRepository {
 
     @Override
     public int getPublishedInternshipOffersCount() {
+        Criteria stateCriteria = currentSession().createCriteria(InternshipOfferState.class);
+        stateCriteria.add(eq("stateName", InternshipOfferState.PUBLISHED));
+        InternshipOfferState publishedState = (InternshipOfferState) stateCriteria.uniqueResult();
+
         Criteria criteria = currentSession().createCriteria(InternshipOffer.class);
-        criteria.add(eq("internshipOfferStateId", PUBLISHED_STATE_ID));
+        criteria.add(eq("internshipOfferState", publishedState));
         criteria.setProjection(Projections.rowCount());
         Number rowsCount = ((Number) criteria.uniqueResult());
         return rowsCount.intValue();

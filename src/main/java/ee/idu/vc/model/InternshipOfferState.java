@@ -31,4 +31,11 @@ public class InternshipOfferState implements Serializable {
     public void setStateName(String stateName) {
         this.stateName = stateName;
     }
+
+    public static InternshipOfferState getPublishedState() {
+        InternshipOfferState i = new InternshipOfferState();
+        i.setStateName(InternshipOfferState.PUBLISHED);
+        i.setInternshipOfferStateId((long) 2);
+        return i;
+    }
 }

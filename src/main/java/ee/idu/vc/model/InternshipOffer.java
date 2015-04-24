@@ -26,6 +26,8 @@ public class InternshipOffer implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = CVUtil.DATE_FORMAT_STRING)
     private Timestamp expirationDate;
 
+    public final static int RESULTS_PRE_PAGE = 20;
+
     private String title;
     private String content;
 

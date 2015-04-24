@@ -15,7 +15,9 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
 
+import static org.hibernate.criterion.Restrictions.disjunction;
 import static org.hibernate.criterion.Restrictions.eq;
+import static org.hibernate.criterion.Restrictions.ilike;
 
 @Repository
 public class HbnInternshipOfferRepository implements InternshipOfferRepository {
@@ -78,10 +80,7 @@ public class HbnInternshipOfferRepository implements InternshipOfferRepository {
 
     @Override
     public List getPublishedInternshipOffers(int from, int to) {
-        Criteria stateCriteria = currentSession().createCriteria(InternshipOfferState.class);
-        stateCriteria.add(eq("stateName", InternshipOfferState.PUBLISHED));
-        InternshipOfferState publishedState = (InternshipOfferState) stateCriteria.uniqueResult();
-
+        InternshipOfferState publishedState = getPublishedState(InternshipOfferState.PUBLISHED);
         Criteria criteria = currentSession().createCriteria(InternshipOffer.class);
         criteria.add(eq("internshipOfferState", publishedState));
         criteria.setFirstResult(from);
@@ -90,15 +89,40 @@ public class HbnInternshipOfferRepository implements InternshipOfferRepository {
     }
 
     @Override
-    public int getPublishedInternshipOffersCount() {
-        Criteria stateCriteria = currentSession().createCriteria(InternshipOfferState.class);
-        stateCriteria.add(eq("stateName", InternshipOfferState.PUBLISHED));
-        InternshipOfferState publishedState = (InternshipOfferState) stateCriteria.uniqueResult();
+    public List searchInternshipOffers(String keyword, boolean onlyMyInternships, int from, int to, Account account) {
+        String state = onlyMyInternships ? InternshipOfferState.UNPUBLISHED : InternshipOfferState.PUBLISHED;
+        InternshipOfferState offerState = getPublishedState(state);
+        Criteria criteria = currentSession().createCriteria(InternshipOffer.class);
+        criteria.add(disjunction()
+            .add(ilike("title", keyword))
+            .add(ilike("content", keyword))
+        );
 
+        if (onlyMyInternships)
+            criteria.add(eq("account", account));
+        else
+            criteria.add(eq("internshipOfferState", offerState));
+
+        criteria.setFirstResult(from);
+        criteria.setMaxResults(to - from);
+        return criteria.list();
+    }
+
+    @Override
+    public int getPublishedInternshipOffersCount() {
+        InternshipOfferState publishedState = getPublishedState(InternshipOfferState.PUBLISHED);
         Criteria criteria = currentSession().createCriteria(InternshipOffer.class);
         criteria.add(eq("internshipOfferState", publishedState));
         criteria.setProjection(Projections.rowCount());
         Number rowsCount = ((Number) criteria.uniqueResult());
         return rowsCount.intValue();
     }
+
+    private InternshipOfferState getPublishedState(String state) {
+        Criteria stateCriteria = currentSession().createCriteria(InternshipOfferState.class);
+        stateCriteria.add(eq("stateName", state));
+        return (InternshipOfferState) stateCriteria.uniqueResult();
+    }
+
+
 }

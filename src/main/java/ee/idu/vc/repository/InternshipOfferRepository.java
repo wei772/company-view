@@ -14,6 +14,9 @@ public interface InternshipOfferRepository extends GeneralRepository<InternshipO
     public List getPublishedInternshipOffers(int from, int to);
 
     @Transactional
+    public List searchInternshipOffers(String keyword, boolean onlyMyInternships, int from, int to, Account account);
+
+    @Transactional
     public int getInternshipOffersCountByAccount(Account account);
 
     @Transactional

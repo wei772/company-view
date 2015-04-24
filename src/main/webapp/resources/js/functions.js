@@ -1,7 +1,7 @@
 <!-- utility functions -->
 function createPagesArray(count){
     if (isNaN(count)) return [];
-    count = Math.floor(count / 2);
+    count = Math.floor(count / 20);
     var pagesArray = []
     for (var i = 0; i < count; i++) {
         pagesArray[i] = i + 1;

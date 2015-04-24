@@ -6,7 +6,6 @@ import ee.idu.vc.controller.form.InternshipOfferForm;
 import ee.idu.vc.controller.response.SimpleResponse;
 import ee.idu.vc.model.Account;
 import ee.idu.vc.model.InternshipOffer;
-import ee.idu.vc.model.InternshipOfferState;
 import ee.idu.vc.repository.InternshipOfferRepository;
 import ee.idu.vc.repository.InternshipOfferStateRepository;
 import ee.idu.vc.util.CVUtil;
@@ -56,9 +55,23 @@ public class InternshipOfferController {
     public List<InternshipOffer> getAllInternships(@RequestParam(required = false, defaultValue = "1") String page) {
         Integer pageNumber = CVUtil.parseInt(page);
         if (pageNumber == null || pageNumber < 1) pageNumber = 1;
-        int from = (pageNumber - 1) * 2;
-        int to = pageNumber * 2;
+        int from = (pageNumber - 1) * InternshipOffer.RESULTS_PRE_PAGE;
+        int to = pageNumber * InternshipOffer.RESULTS_PRE_PAGE;
         return internshipOfferRepository.getPublishedInternshipOffers(from, to);
+    }
+
+    @RequireAuth
+    @RequestMapping(value = "/offer/internships/search", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public List<InternshipOffer> getSearchInternships(@AuthAccount Account account,
+                                                        @RequestParam(required = false, defaultValue = "1") String page,
+                                                        @RequestParam(required = true, defaultValue = "") String keyword,
+                                                        @RequestParam(required = true, defaultValue = "false") boolean onlyMyInternships) {
+        Integer pageNumber = CVUtil.parseInt(page);
+        if (pageNumber == null || pageNumber < 1) pageNumber = 1;
+        int from = (pageNumber - 1) * InternshipOffer.RESULTS_PRE_PAGE;
+        int to = pageNumber * InternshipOffer.RESULTS_PRE_PAGE;
+        return internshipOfferRepository.searchInternshipOffers(keyword, onlyMyInternships, from, to, account);
     }
 
     @RequireAuth

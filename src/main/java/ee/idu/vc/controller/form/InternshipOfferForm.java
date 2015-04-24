@@ -18,7 +18,7 @@ public class InternshipOfferForm {
     private String content;
 
     @NotNull
-    private boolean publish;
+    private String publish;
 
     @Override
     public String toString() {
@@ -54,11 +54,9 @@ public class InternshipOfferForm {
         this.content = content;
     }
 
-    public boolean isPublish() {
-        return publish;
-    }
+    public String isPublish() { return publish; }
 
-    public void setPublish(boolean publish) {
+    public void setPublish(String publish) {
         this.publish = publish;
     }
 }

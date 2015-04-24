@@ -34,9 +34,15 @@
                     </div>
 
                     <div class="row">
+                        <div class="form-group col-sm-12 col-xs-12 col-md-12" id="cv-publish-field">
+                            <label>Publishing</label>
+                            <select ng-model="defaultOption" ng-disabled="isSubmitting" ng-options="pub.name for pub in publishOptions track by pub.value" class="selectpicker" id="publish"></select>
+                        </div>
+                    </div>
+
+                    <div class="row">
                         <div class="col-sm-12 col-xs-12 col-md-12">
-                            <button ng-disabled="isSubmitting" class="btn btn-md btn-primary" type="submit">Save</button>
-                            <button ng-disabled="isSubmitting" ng-click="addAndPublish()" class="btn btn-md btn-primary" type="submit">Save and publish</button>
+                            <button ng-disabled="isSubmitting" ng-click="add()" class="btn btn-md btn-primary" type="submit">Save</button>
                         </div>
                     </div>
                 </form>

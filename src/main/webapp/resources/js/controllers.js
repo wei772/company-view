@@ -16,13 +16,17 @@ function internshipsTableController($scope, $http, $location) {
         $scope.allInternshipOffers = res.data;
     });
 
+    $http.get('/offer/allinternships/count').then(function(res){
+        $scope.pages = createPagesArray(res.data);
+    });
+
     $scope.openInternship = function (i) {
         $location.path('/offer/internship/' + i.internshipOfferId);
     };
 };
 
 function newInternshipController($scope, $http) {
-    var addOffer = function(doPublish) {
+    var addOffer = function() {
         $scope.isSubmitting = true;
 
         var request = $http({
@@ -34,7 +38,7 @@ function newInternshipController($scope, $http) {
                 'title': $scope.title,
                 'expirationTime': $('#expirationtime').val(),
                 'content': $('#internship-content').code(),
-                'publish': doPublish
+                'publish': $('#publish').val()
             }
         });
 
@@ -50,6 +54,7 @@ function newInternshipController($scope, $http) {
             } else {
                 console.log("redirect to the view of this offer.");
                 showSuccessMessage("New offer created.", "Your offer has been added.");
+                emptyAllInputs();
             }
         });
 
@@ -57,14 +62,17 @@ function newInternshipController($scope, $http) {
             $scope.isSubmitting = false;
             showFailMessage("Failed to create offer.", "Server might be down or broken.");
         });
+
     };
+
+    $scope.publishOptions = [
+        { "name": 'Unpublished', "value": "unpublished" },
+        { "name": 'Published', "value": "published" }
+    ];
+    $scope.defaultOption = $scope.publishOptions[0];
 
     $scope.add = function() {
-        addOffer(false);
-    };
-
-    $scope.addAndPublish = function () {
-        addOffer(true);
+        addOffer();
     };
 }
 

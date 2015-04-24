@@ -2,9 +2,9 @@
 <div class="container">
     <div class="cv-content">
         <div class="row">
-            <div class="col-md-8 col-xs-8 col-sm-8">
+            <div class="col-md-8 col-xs-8 col-sm-8" ng-controller="InternshipsTableController">
                 <h2>All internship offers</h2>
-                <table class="table table-striped table-hover" ng-controller="InternshipsTableController">
+                <table class="table table-striped table-hover">
                     <tr>
                         <th>Title</th>
                         <th>Expiration date</th>
@@ -21,6 +21,7 @@
                         <td class="{{i.internshipOfferState.stateName}}">{{i.internshipOfferState.stateName}}</td>
                     </tr>
                 </table>
+                <div ng-include="'/views/shared/pagination.html'"></div>
             </div>
             <div ng-include="'/views/offer/internship/sidebar.html'"></div>
         </div>

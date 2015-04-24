@@ -79,14 +79,12 @@ public class InternshipOfferController {
         return response;
     }
 
-    private void addInternshipToDB(String title, String content, Date expirationTime, boolean publish, Account account) {
-        String offerState = publish ? InternshipOfferState.PUBLISHED : InternshipOfferState.UNPUBLISHED;
-
+    private void addInternshipToDB(String title, String content, Date expirationTime, String publish, Account account) {
         InternshipOffer offer = new InternshipOffer();
         offer.setTitle(title);
         offer.setContent(content);
         offer.setExpirationDate(CVUtil.dateToTimestamp(expirationTime));
-        offer.setInternshipOfferState(internshipOfferStateRepository.findByName(offerState));
+        offer.setInternshipOfferState(internshipOfferStateRepository.findByName(publish));
         offer.setAccount(account);
         internshipOfferRepository.create(offer);
     }

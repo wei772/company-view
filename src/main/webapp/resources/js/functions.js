@@ -1,4 +1,14 @@
 <!-- utility functions -->
+function createPagesArray(count){
+    if (isNaN(count)) return [];
+    count = Math.floor(count / 2);
+    var pagesArray = []
+    for (var i = 0; i < count; i++) {
+        pagesArray[i] = i + 1;
+    }
+    return pagesArray;
+}
+
 function FieldsByIDsManipulator(fieldIds) {
     this.fieldIds = fieldIds;
 }
@@ -85,6 +95,9 @@ function createErrorMessagesHtml(errorMessages) {
 function emptyAllInputs() {
     $(":input").each(function() {
         $(this).val("");
+    });
+    $(".note-editable").each(function(){
+       $(this).html("");
     });
 }
 

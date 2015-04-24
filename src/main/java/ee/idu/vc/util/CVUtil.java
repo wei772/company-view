@@ -6,8 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class CVUtil {
-    public static final String DATE_FORMAT_STRING = "dd.MM.yyyy HH:mm";
-    private static final DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_STRING, Locale.ENGLISH);
+    private static final DateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMAT, Locale.ENGLISH);
 
     public static boolean isStringEmpty(String string) {
         return string == null || string.trim().length() == 0;

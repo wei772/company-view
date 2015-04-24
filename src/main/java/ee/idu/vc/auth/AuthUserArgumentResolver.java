@@ -1,6 +1,7 @@
 package ee.idu.vc.auth;
 
 import ch.qos.logback.classic.Logger;
+import ee.idu.vc.service.AuthenticationService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
@@ -29,7 +30,7 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
         Map authDetails = AuthUtil.extractAuthHeader(webRequest.getHeader(AuthUtil.AUTHORIZATION_HEADER));
         String username = authDetails.get(AuthUtil.USERNAME_KEY).toString();
         String tokenString = authDetails.get(AuthUtil.TOKEN_KEY).toString();
-        return authService.authAccount(username, tokenString);
+        return authService.loginWithToken(username, tokenString);
     }
 
     private boolean hasMethodRequireAuthAnnotation(MethodParameter parameter) {

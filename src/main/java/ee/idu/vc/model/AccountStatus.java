@@ -1,9 +1,10 @@
 package ee.idu.vc.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-public class AccountStatus {
+public class AccountStatus implements Serializable {
     public static final String INACTIVE = "inactive", BANNED = "banned", ACTIVE = "active";
 
     @Id

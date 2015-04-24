@@ -1,8 +1,7 @@
 package ee.idu.vc.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import ee.idu.vc.util.CVUtil;
+import ee.idu.vc.util.Constants;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -23,10 +22,8 @@ public class InternshipOffer implements Serializable {
     @JoinColumn(name = "creatorAccountId")
     private Account account;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = CVUtil.DATE_FORMAT_STRING)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT)
     private Timestamp expirationDate;
-
-    public final static int RESULTS_PRE_PAGE = 20;
 
     private String title;
     private String content;

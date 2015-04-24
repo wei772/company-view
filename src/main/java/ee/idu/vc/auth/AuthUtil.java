@@ -16,7 +16,7 @@ public class AuthUtil {
     private static final Logger log = (Logger) LoggerFactory.getLogger(AuthUtil.class);
 
     private static final ObjectMapper jsonMapper = new ObjectMapper();
-    { jsonMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true); }
+    static { jsonMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true); }
 
     public static Map extractAuthHeader(String authHeaderContent) {
         try {

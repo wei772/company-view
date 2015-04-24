@@ -1,9 +1,13 @@
 package ee.idu.vc.controller.form;
 
+import ee.idu.vc.util.Constants;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Date;
 
 public class InternshipOfferForm {
     @NotEmpty(message = "Title cannot be empty.")
@@ -11,14 +15,16 @@ public class InternshipOfferForm {
     private String title;
 
     @NotEmpty(message = "Expiration date must be set.")
-    private String expirationTime;
+    @DateTimeFormat(pattern = Constants.DATE_FORMAT)
+    @Future(message = "The expiration date must be in the future.")
+    private Date expirationTime;
 
     @NotEmpty(message = "Content cannot be empty.")
     @Size(max = 65535, message = "Content is too long.")
     private String content;
 
     @NotNull
-    private String publish;
+    private Boolean publish;
 
     @Override
     public String toString() {
@@ -38,11 +44,11 @@ public class InternshipOfferForm {
         this.title = title;
     }
 
-    public String getExpirationTime() {
+    public Date getExpirationTime() {
         return expirationTime;
     }
 
-    public void setExpirationTime(String expirationTime) {
+    public void setExpirationTime(Date expirationTime) {
         this.expirationTime = expirationTime;
     }
 
@@ -54,9 +60,9 @@ public class InternshipOfferForm {
         this.content = content;
     }
 
-    public String isPublish() { return publish; }
+    public Boolean publish() { return publish; }
 
-    public void setPublish(String publish) {
+    public void setPublish(Boolean publish) {
         this.publish = publish;
     }
 }

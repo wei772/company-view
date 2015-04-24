@@ -3,6 +3,7 @@ package ee.idu.vc.auth;
 import ch.qos.logback.classic.Logger;
 import ee.idu.vc.model.Account;
 import ee.idu.vc.model.AccountStatus;
+import ee.idu.vc.service.AuthenticationService;
 import ee.idu.vc.util.CVUtil;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,10 +49,10 @@ public class RequireAuthInterceptor extends HandlerInterceptorAdapter {
 
     private Account authenticateUser(Map authDetails, RequireAuth authAnnotation) {
         String username = authDetails.get(AuthUtil.USERNAME_KEY).toString();
-        String tokenString = authDetails.get(AuthUtil.TOKEN_KEY).toString();
-        log.debug("Authenticating user " + username + " using token " + tokenString + ".");
+        String tokenUUID = authDetails.get(AuthUtil.TOKEN_KEY).toString();
+        log.debug("Authenticating user " + username + " using token uuid " + tokenUUID + ".");
 
-        Account account = authService.authAccount(username, tokenString);
+        Account account = authService.loginWithToken(username, tokenUUID);
         if (account == null) return null;
         if (!account.hasAnyAccountStatus(authAnnotation.allowedStatuses())) return null;
         if (!account.hasAnyAccountType(authAnnotation.userTypes())) return null;

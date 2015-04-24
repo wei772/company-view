@@ -3,119 +3,54 @@ package ee.idu.vc.controller;
 import ee.idu.vc.auth.AuthAccount;
 import ee.idu.vc.auth.RequireAuth;
 import ee.idu.vc.controller.form.InternshipOfferForm;
+import ee.idu.vc.controller.response.JsonResponse;
 import ee.idu.vc.controller.response.SimpleResponse;
 import ee.idu.vc.model.Account;
 import ee.idu.vc.model.InternshipOffer;
-import ee.idu.vc.repository.InternshipOfferRepository;
-import ee.idu.vc.repository.InternshipOfferStateRepository;
-import ee.idu.vc.util.CVUtil;
+import ee.idu.vc.service.InternshipService;
+import ee.idu.vc.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 @RestController
 public class InternshipOfferController {
     @Autowired
-    public InternshipOfferRepository internshipOfferRepository;
-
-    @Autowired
-    InternshipOfferStateRepository internshipOfferStateRepository;
+    private InternshipService internshipService;
 
     @RequestMapping(value = {"/offer/internships", "/offer/internships/new", "/offer/internships/all"}, method = RequestMethod.GET)
     @ResponseBody
-    public ModelAndView getAngularView() { return new ModelAndView("angular"); }
-
-    @RequireAuth
-    @RequestMapping(value = "/offer/myinternships", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
-    public List<InternshipOffer> getMyInternships(@RequestParam(required = false, defaultValue = "1") String page, @AuthAccount Account account) {
-        Integer pageNumber = CVUtil.parseInt(page);
-        if (pageNumber == null || pageNumber < 1) pageNumber = 1;
-        int from = (pageNumber - 1) * 20;
-        int to = pageNumber * 20;
-        return internshipOfferRepository.getInternshipOffersByAccount(account, from, to);
-    }
-
-    @RequireAuth
-    @RequestMapping(value = "/offer/myinternships/count", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
-    public int getMyInternshipsCount(@AuthAccount Account account) {
-        return internshipOfferRepository.getInternshipOffersCountByAccount(account);
-    }
-
-    @RequireAuth
-    @RequestMapping(value = "/offer/allinternships", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
-    public List<InternshipOffer> getAllInternships(@RequestParam(required = false, defaultValue = "1") String page) {
-        Integer pageNumber = CVUtil.parseInt(page);
-        if (pageNumber == null || pageNumber < 1) pageNumber = 1;
-        int from = (pageNumber - 1) * InternshipOffer.RESULTS_PRE_PAGE;
-        int to = pageNumber * InternshipOffer.RESULTS_PRE_PAGE;
-        return internshipOfferRepository.getPublishedInternshipOffers(from, to);
-    }
+    public ModelAndView angularView() { return new ModelAndView("angular"); }
 
     @RequireAuth
     @RequestMapping(value = "/offer/internships/search", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public List<InternshipOffer> getSearchInternships(@AuthAccount Account account,
-                                                        @RequestParam(required = false, defaultValue = "1") String page,
-                                                        @RequestParam(required = true, defaultValue = "") String keyword,
-                                                        @RequestParam(required = true, defaultValue = "false") boolean onlyMyInternships) {
-        Integer pageNumber = CVUtil.parseInt(page);
-        if (pageNumber == null || pageNumber < 1) pageNumber = 1;
-        int from = (pageNumber - 1) * InternshipOffer.RESULTS_PRE_PAGE;
-        int to = pageNumber * InternshipOffer.RESULTS_PRE_PAGE;
-        return internshipOfferRepository.searchInternshipOffers(keyword, onlyMyInternships, from, to, account);
-    }
-
-    @RequireAuth
-    @RequestMapping(value = "/offer/allinternships/count", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
-    public int getAllInternshipsCount() {
-        return internshipOfferRepository.getPublishedInternshipOffersCount();
+    public List<InternshipOffer> search(@RequestParam(required = false) Integer page, @AuthAccount Account account,
+            @RequestParam(required = false, defaultValue = "false") boolean onlyPublished,
+            @RequestParam(required = false) String keyword) {
+        if (page == null || page < 1) page = 1;
+        return internshipService.searchInternships(calcFrom(page), calcTo(page), onlyPublished, account, keyword);
     }
 
     @RequireAuth
     @RequestMapping(value = "/offer/internship", method = RequestMethod.POST)
     @ResponseBody
-    public Object addInternshipOffer(@Validated InternshipOfferForm form, BindingResult bindResult, @AuthAccount Account account) {
-        SimpleResponse response = new SimpleResponse(bindResult);
-        Date expirationTime = validatedExpirationTime(form.getExpirationTime(), response);
+    public JsonResponse add(@Validated InternshipOfferForm form, BindingResult bind, @AuthAccount Account account) {
+        SimpleResponse response = new SimpleResponse(bind);
         if (response.hasErrors()) return response;
-        addInternshipToDB(form.getTitle(), form.getContent(), expirationTime, form.isPublish(), account);
+        internshipService.createAndSave(form, account);
         return response;
     }
 
-    private void addInternshipToDB(String title, String content, Date expirationTime, String publish, Account account) {
-        InternshipOffer offer = new InternshipOffer();
-        offer.setTitle(title);
-        offer.setContent(content);
-        offer.setExpirationDate(CVUtil.dateToTimestamp(expirationTime));
-        offer.setInternshipOfferState(internshipOfferStateRepository.findByName(publish));
-        offer.setAccount(account);
-        internshipOfferRepository.create(offer);
+    private int calcFrom(int pageNumber) {
+        return (pageNumber - 1) * Constants.RESULTS_PER_PAGE;
     }
 
-    private Date validatedExpirationTime(String expirationTimeString, SimpleResponse response) {
-        Date expirationTime = CVUtil.parseDateTime(expirationTimeString);
-        if (expirationTime == null) {
-            if (expirationTimeString != null && !expirationTimeString.isEmpty())
-                response.addError("expirationTime", "Invalid expiration date format.");
-            return null;
-        }
-
-        Date currentTime = Calendar.getInstance().getTime();
-        if (expirationTime.getTime() < currentTime.getTime() + 24 * 3600 * 1000) {
-            response.addError("expirationTime", "Expiration time must be at least 24h in the future.");
-            return null;
-        }
-
-        return expirationTime;
+    private int calcTo(int pageNumber) {
+        return pageNumber * Constants.RESULTS_PER_PAGE;
     }
 }

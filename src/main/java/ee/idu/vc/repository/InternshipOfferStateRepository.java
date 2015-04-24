@@ -1,13 +1,6 @@
 package ee.idu.vc.repository;
 
 import ee.idu.vc.model.InternshipOfferState;
+import ee.idu.vc.repository.util.ClassificationRepository;
 
-import javax.transaction.Transactional;
-
-public interface InternshipOfferStateRepository {
-    @Transactional
-    public InternshipOfferState findById(Long id);
-
-    @Transactional
-    public InternshipOfferState findByName(String stateName);
-}
+public interface InternshipOfferStateRepository extends ClassificationRepository<InternshipOfferState> {}

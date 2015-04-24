@@ -1,9 +1,10 @@
 package ee.idu.vc.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-public class AccountType {
+public class AccountType implements Serializable {
     public static final String COMPANY = "company", MODERATOR = "moderator";
 
     @Id

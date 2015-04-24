@@ -1,15 +1,6 @@
 package ee.idu.vc.repository;
 
 import ee.idu.vc.model.Token;
-import org.springframework.transaction.annotation.Transactional;
+import ee.idu.vc.repository.util.CRUDRepository;
 
-public interface TokenRepository {
-    @Transactional
-    public Token getMostRecent(Long accountId);
-
-    @Transactional
-    public Token createFreshToken(Long accountId);
-
-    @Transactional
-    public void updateToken(Token token);
-}
+public interface TokenRepository extends CRUDRepository<Token> {}

@@ -49,11 +49,11 @@ public class RegistrationController {
     }
 
     private boolean userAlreadyExists(String username) {
-        return accountRepository.findByUsernameIgnoreCase(username) != null;
+        return accountRepository.findByUsername(username, false) != null;
     }
 
     private boolean emailAlreadyExists(String email) {
-        return accountRepository.findByEmailIgnoreCase(email) != null;
+        return accountRepository.findByEmail(email, false) != null;
     }
 
     private void addAccountToDB(RegistrationForm form) {
@@ -68,6 +68,6 @@ public class RegistrationController {
         account.setCompanyName(form.getOrganisation());
         account.setAccountStatus(accountStatusRepository.findByName(AccountStatus.ACTIVE));
         account.setAccountType(accountTypeRepository.findByName(AccountType.COMPANY));
-        accountRepository.create(account);
+        accountRepository.save(account);
     }
 }

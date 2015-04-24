@@ -1,12 +1,6 @@
 package ee.idu.vc.repository;
 
 import ee.idu.vc.model.AccountStatus;
-import org.springframework.transaction.annotation.Transactional;
+import ee.idu.vc.repository.util.ClassificationRepository;
 
-public interface AccountStatusRepository {
-    @Transactional
-    public AccountStatus findById(Long statusId);
-
-    @Transactional
-    public AccountStatus findByName(String statusName);
-}
+public interface AccountStatusRepository extends ClassificationRepository<AccountStatus> {}

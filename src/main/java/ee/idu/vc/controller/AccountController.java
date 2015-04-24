@@ -26,24 +26,24 @@ public class AccountController {
 
     @RequestMapping(value = {"/account/password", "/account/details"}, method = RequestMethod.GET)
     @ResponseBody
-    public ModelAndView getAngularView() {
+    public ModelAndView angularView() {
         return new ModelAndView("angular");
     }
 
     @RequireAuth
     @RequestMapping(value = "/account/password", method = RequestMethod.POST, produces = "application/json")
-    public JsonResponse updatePassword(@Valid UpdatePasswordForm form, BindingResult bindResult, @AuthAccount Account account) {
-        SimpleResponse response = new SimpleResponse(bindResult);
+    public JsonResponse updatePassword(@Valid UpdatePasswordForm form, BindingResult bind, @AuthAccount Account account) {
+        SimpleResponse response = new SimpleResponse(bind);
         if (!BCrypt.checkpw(form.getPassword(), account.getPasswordHash())) response.addError("password", "Invalid password.");
         if (response.hasErrors()) return response;
-        account.setPasswordHash(BCrypt.hashpw(form.getNewPassword(),  BCrypt.gensalt()));
+        account.setPasswordHash(BCrypt.hashpw(form.getNewPassword(), BCrypt.gensalt()));
         accountRepository.update(account);
         return response;
     }
 
     @RequireAuth
     @RequestMapping(value = "/account/mydetails", method = RequestMethod.GET, produces = "application/json")
-    public Object getAccountDetails(@AuthAccount Account account) {
+    public Account accountDetails(@AuthAccount Account account) {
         return account;
     }
 

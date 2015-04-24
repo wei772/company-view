@@ -1,12 +1,6 @@
 package ee.idu.vc.repository;
 
 import ee.idu.vc.model.AccountType;
-import org.springframework.transaction.annotation.Transactional;
+import ee.idu.vc.repository.util.ClassificationRepository;
 
-public interface AccountTypeRepository {
-    @Transactional
-    public AccountType findById(Long id);
-
-    @Transactional
-    public AccountType findByName(String typeName);
-}
+public interface AccountTypeRepository extends ClassificationRepository<AccountType> {}

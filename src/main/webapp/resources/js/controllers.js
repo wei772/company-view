@@ -5,13 +5,21 @@ appControllers.controller('NavbarController', navbarController);
 appControllers.controller('UpdatePasswordController', updatePasswordController);
 appControllers.controller('UpdateDetailsController', updateDetailsController);
 appControllers.controller('NewInternshipController', newInternshipController);
-appControllers.controller('InternshipsTableController', internshipsTableController);
+appControllers.controller('InternshipViewController', internshipViewController);
 
-function internshipsTableController($scope, $http, $location) {
-};
+function internshipViewController($scope, $http, $stateParams) {
+    var fillFieldsRequest = $http.get('/offer/internship?id=' + $stateParams.internshipOfferId);
+    fillFieldsRequest.then(function (res) {
+        $scope.offer = res.data;
+        $('.internship-content-display').html(res.data.content);
+    });
+    fillFieldsRequest.error(function () {
+        showFailMessage("Failed to request offer with id " + $stateParams.internshipOfferId + ".", "Internship might not exist or is not published yet.");
+    });
+}
 
-function newInternshipController($scope, $http) {
-    var addOffer = function() {
+function newInternshipController($scope, $http, $location) {
+    $scope.addOffer = function() {
         $scope.isSubmitting = true;
 
         var request = $http({
@@ -37,9 +45,8 @@ function newInternshipController($scope, $http) {
                     showFailMessage("Failed to create offer.", createErrorMessagesHtml(data.errorMessages));
                 }
             } else {
-                console.log("redirect to the view of this offer.");
-                showSuccessMessage("New offer created.", "Your offer has been added.");
                 emptyAllInputs();
+                $location.path("/offer/internship/view/" + data.id);
             }
         });
 
@@ -48,16 +55,6 @@ function newInternshipController($scope, $http) {
             showFailMessage("Failed to create offer.", "Server might be down or broken.");
         });
 
-    };
-
-    $scope.publishOptions = [
-        { "name": 'Unpublished', "value": "unpublished" },
-        { "name": 'Published', "value": "published" }
-    ];
-    $scope.defaultOption = $scope.publishOptions[0];
-
-    $scope.add = function() {
-        addOffer();
     };
 }
 

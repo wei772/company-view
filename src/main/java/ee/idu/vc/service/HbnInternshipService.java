@@ -65,7 +65,7 @@ public class HbnInternshipService extends HbnSessionProvider implements Internsh
     }
 
     @Override
-    public void createAndSave(InternshipOfferForm form, Account creator) {
+    public InternshipOffer createAndSave(InternshipOfferForm form, Account creator) {
         InternshipOffer offer = new InternshipOffer();
         offer.setTitle(form.getTitle());
         offer.setContent(form.getContent());
@@ -73,6 +73,7 @@ public class HbnInternshipService extends HbnSessionProvider implements Internsh
         offer.setInternshipOfferState(getPublishAsState(form.publish()));
         offer.setAccount(creator);
         offerRepository.save(offer);
+        return offer;
     }
 
     private InternshipOfferState getPublishAsState(boolean publish) {

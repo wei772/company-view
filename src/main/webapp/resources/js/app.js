@@ -27,6 +27,14 @@ app.config(function($stateProvider, $urlRouterProvider) {
             url: "/offer/internship/new",
             templateUrl: "/views/offer/internship/new.html",
             data: {requireLogin: true}
+        }).state('viewInternshipOffer', {
+            url: "/offer/internship/view/:internshipOfferId",
+            templateUrl: "/views/offer/internship/view.html",
+            data: {requireLogin: true}
+        }).state('editInternshipOffer', {
+            url: "/offer/internship/edit/:internshipOfferId",
+            templateUrl: "/views/offer/internship/edit.html",
+            data: {requireLogin: true}
         }).state('accountPassword', {
             url: "/account/password",
             templateUrl: "/views/account/password.html",

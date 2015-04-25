@@ -3,10 +3,10 @@
     <div class="cv-content">
         <div id="response-message"></div>
         <div class="row">
-            <div class="col-md-8 col-xs-8 col-sm-8">
+            <div class="col-md-8 col-xs-8 col-sm-8" ng-controller="NewInternshipController">
                 <h2>Create internship offer</h2>
                 <p>Fill the fields to create a new internship offering.</p>
-                <form ng-submit="add()" role="form" ng-controller="NewInternshipController" novalidate>
+                <form ng-submit="addOffer()" role="form" novalidate>
                     <div class="row">
                         <div class="form-group col-sm-12 col-xs-12 col-md-12" id="cv-title-field">
                             <label>Offer title</label>
@@ -45,7 +45,7 @@
 
                     <div class="row">
                         <div class="col-sm-12 col-xs-12 col-md-12">
-                            <button ng-disabled="isSubmitting" ng-click="add()" class="btn btn-md btn-primary" type="submit">Save</button>
+                            <button ng-disabled="isSubmitting" class="btn btn-md btn-primary" type="submit">Save</button>
                         </div>
                     </div>
                 </form>

@@ -1,0 +1,44 @@
+<div ng-include="'/views/shared/navbar.html'"></div>
+<div class="container">
+    <div class="cv-content">
+        <div id="response-message"></div>
+        <div class="row">
+            <div class="col-md-8 col-xs-8 col-sm-8" ng-controller="InternshipViewController">
+                <h2>View internship offer</h2>
+                <p>This is how your internship offer looks like to other users.</p>
+                <div class="row">
+                    <div class="col-md-4 col-xs-4 col-sm-4"><b>Title</b></div>
+                    <div class="col-md-8 col-xs-8 col-sm-8">{{offer.title}}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-xs-4 col-sm-4"><b>Creator</b></div>
+                    <div class="col-md-8 col-xs-8 col-sm-8">{{offer.account.firstName}} {{offer.account.lastName}}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-xs-4 col-sm-4"><b>Company</b></div>
+                    <div class="col-md-8 col-xs-8 col-sm-8">{{offer.account.companyName}}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-xs-4 col-sm-4"><b>Expiration date</b></div>
+                    <div class="col-md-8 col-xs-8 col-sm-8">{{offer.expirationDate}}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-xs-4 col-sm-4"><b>Publishing status</b></div>
+                    <div class="col-md-8 col-xs-8 col-sm-8">{{offer.internshipOfferState.stateName}}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-xs-4 col-sm-4"><b>Content</b></div>
+                    <div class="col-md-12 col-xs-12 col-sm-12">
+                        <div class="internship-content-display note-editable" style="background-color: white;" contenteditable="false"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-xs-12 col-md-12">
+                        <a class="btn btn-md btn-primary" href="/offer/internship/edit/{{offer.internshipOfferId}}">Edit this internship</a>
+                    </div>
+                </div>
+            </div>
+            <div ng-include="'/views/offer/internship/sidebar.html'"></div>
+        </div>
+    </div>
+</div>

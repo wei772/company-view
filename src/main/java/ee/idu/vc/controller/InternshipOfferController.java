@@ -4,9 +4,13 @@ import ee.idu.vc.auth.AuthAccount;
 import ee.idu.vc.auth.RequireAuth;
 import ee.idu.vc.controller.form.InternshipOfferForm;
 import ee.idu.vc.controller.response.JsonResponse;
+import ee.idu.vc.controller.response.NewItemResponse;
 import ee.idu.vc.controller.response.SimpleResponse;
 import ee.idu.vc.model.Account;
+import ee.idu.vc.model.InternshipOffer;
+import ee.idu.vc.model.InternshipOfferState;
 import ee.idu.vc.repository.AccountRepository;
+import ee.idu.vc.repository.InternshipOfferRepository;
 import ee.idu.vc.service.AuthenticationService;
 import ee.idu.vc.service.InternshipService;
 import ee.idu.vc.util.CVUtil;
@@ -25,12 +29,16 @@ public class InternshipOfferController {
     private InternshipService internshipService;
 
     @Autowired
+    private InternshipOfferRepository internshipOfferRepository;
+
+    @Autowired
     private AuthenticationService authenticationService;
 
     @Autowired
     private AccountRepository accountRepository;
 
-    @RequestMapping(value = {"/offer/internship/your", "/offer/internship/new", "/offer/internship/all"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/offer/internship/your", "/offer/internship/new", "/offer/internship/all",
+            "/offer/internship/edit/*", "/offer/internship/view/*"}, method = RequestMethod.GET)
     @ResponseBody
     public ModelAndView angularView() { return new ModelAndView("angular"); }
 
@@ -54,8 +62,26 @@ public class InternshipOfferController {
     @ResponseBody
     public JsonResponse add(@Validated InternshipOfferForm form, BindingResult bind, @AuthAccount Account account) {
         SimpleResponse response = new SimpleResponse(bind);
-        if (!response.hasErrors()) internshipService.createAndSave(form, account);
-        return response;
+        if (response.hasErrors()) return response;
+        Long internshipOfferId = internshipService.createAndSave(form, account).getInternshipOfferId();
+        return new NewItemResponse(internshipOfferId);
+    }
+
+    @RequireAuth
+    @RequestMapping(value = "/offer/internship", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public Object internship(@RequestParam Long id, @AuthAccount Account account) {
+        InternshipOffer offer = internshipOfferRepository.findById(id);
+        if (offer == null) return new ResponseEntity<>("Internship with id " + id + " doesn't exist.",
+                HttpStatus.NOT_FOUND);
+        if (isPublished(offer)) return offer;
+        if (!account.equals(offer.getAccount())) return new ResponseEntity<>("It is forbidden to view other users " +
+                "unpublished offers.", HttpStatus.UNAUTHORIZED);
+        return offer;
+    }
+
+    private boolean isPublished(InternshipOffer offer) {
+        return InternshipOfferState.PUBLISHED.equalsIgnoreCase(offer.getInternshipOfferState().getStateName());
     }
 
     private int calcFrom(int pageNumber) {

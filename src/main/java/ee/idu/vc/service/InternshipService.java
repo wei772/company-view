@@ -72,7 +72,8 @@ public interface InternshipService {
      * Creates a new offer based on the form and saves it to the database.
      * @param form Offer form.
      * @param creator Offer creator.
+     * @return Internship that has been saved.
      */
     @Transactional
-    void createAndSave(InternshipOfferForm form, Account creator);
+    InternshipOffer createAndSave(InternshipOfferForm form, Account creator);
 }

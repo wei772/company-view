@@ -6,7 +6,6 @@ import ee.idu.vc.controller.form.InternshipOfferForm;
 import ee.idu.vc.controller.response.JsonResponse;
 import ee.idu.vc.controller.response.SimpleResponse;
 import ee.idu.vc.model.Account;
-import ee.idu.vc.model.InternshipOffer;
 import ee.idu.vc.repository.AccountRepository;
 import ee.idu.vc.service.AuthenticationService;
 import ee.idu.vc.service.InternshipService;
@@ -19,9 +18,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 @RestController
 public class InternshipOfferController {
@@ -39,10 +35,10 @@ public class InternshipOfferController {
     public ModelAndView angularView() { return new ModelAndView("angular"); }
 
     @RequireAuth
-    @RequestMapping(value = "/offer/internships/search", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/offer/internship/search", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Object search(@RequestParam(required = false) Integer page, @RequestParam(required = false) String username,
-                         @RequestParam(required = false, defaultValue = "false") boolean onlyPublished,
+                         @RequestParam(required = false, defaultValue = "true") boolean onlyPublished,
                          @RequestParam(required = false) String keyword, @AuthAccount Account requester) {
         if (page == null || page < 1) page = 1;
         Account account = CVUtil.isStringEmpty(username) ? null : accountRepository.findByUsername(username, false);

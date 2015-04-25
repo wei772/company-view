@@ -3,11 +3,59 @@
     <div class="cv-content">
         <div id="response-message"></div>
         <div class="row">
-            <div class="col-md-8 col-xs-8 col-sm-8">
-                <h2>Edit internship offer</h2>
-                <p>Here you can edit your internship.</p>
+            <div class="col-md-8 col-xs-8 col-sm-8" ng-controller="EditInternshipController">
+                <h2>Edit your internship</h2>
+                <p>Here you can edit internship fields.</p>
+                <form ng-submit="editOffer()" role="form" novalidate>
+                    <div class="row">
+                        <div class="form-group col-sm-12 col-xs-12 col-md-12" id="cv-title-field">
+                            <label>Offer title</label>
+                            <input ng-model="title" ng-disabled="isSubmitting" type="text" class="form-control" onkeydown="removeErrorHighlights(['cv-title-field'])">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class='form-group col-sm-6 col-xs-6 col-md-6'>
+                            <label>Expiration time</label>
+                            <div class='input-group date' id='cv-expirationtime-field'>
+                                <input id="expirationtime" ng-disabled="isSubmitting" type='text' class="form-control">
+                                <span class="input-group-addon" onclick="removeErrorHighlights(['cv-expirationtime-field'])">
+                                    <span class="typcn typcn-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-6 col-xs-6 col-md-6" id="cv-publish-field">
+                            <label>Publishing status</label>
+                            <select ng-model="publish" ng-options="o.name for o in internshipOfferStateOptions" class="form-control" ng-disabled="isSubmitting" onkeydown="removeErrorHighlights(['cv-publish-field'])"></select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-12 col-xs-12 col-md-12">
+                            <label>Offer content</label>
+                            <div id="internship-content" ng-disabled="isSubmitting"></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12 col-xs-12 col-md-12">
+                            <button ng-disabled="isSubmitting" class="btn btn-md btn-primary" type="submit">Update</button>
+                        </div>
+                    </div>
+                </form>
             </div>
             <div ng-include="'/views/offer/internship/sidebar.html'"></div>
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#internship-content').summernote({height: 300});
+        $('.note-help').remove();
+        $('#cv-expirationtime-field').datetimepicker({
+            locale: 'et'
+        });
+    });
+</script>

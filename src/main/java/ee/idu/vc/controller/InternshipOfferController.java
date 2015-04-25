@@ -72,12 +72,32 @@ public class InternshipOfferController {
     @ResponseBody
     public Object internship(@RequestParam Long id, @AuthAccount Account account) {
         InternshipOffer offer = internshipOfferRepository.findById(id);
-        if (offer == null) return new ResponseEntity<>("Internship with id " + id + " doesn't exist.",
-                HttpStatus.NOT_FOUND);
+        if (offer == null) return new ResponseEntity<>("Internship with id " + id + " doesn't exist.", HttpStatus.NOT_FOUND);
         if (isPublished(offer)) return offer;
         if (!account.equals(offer.getAccount())) return new ResponseEntity<>("It is forbidden to view other users " +
                 "unpublished offers.", HttpStatus.UNAUTHORIZED);
         return offer;
+    }
+
+    @RequireAuth
+    @RequestMapping(value = "/offer/internship", method = RequestMethod.PUT)
+    @ResponseBody
+    public Object update(@RequestParam Long id, @AuthAccount Account account, @Validated InternshipOfferForm form,
+                               BindingResult bind) {
+        SimpleResponse response = new SimpleResponse(bind);
+        if (response.hasErrors()) return response;
+
+        InternshipOffer offer = internshipOfferRepository.findById(id);
+        if (offer == null)
+            return new ResponseEntity<>("Cannot update offer, offer doesn't exist.", HttpStatus.BAD_REQUEST);
+        if (!offer.getAccount().equals(account) && !authenticationService.isModerator(account))
+            return new ResponseEntity<>("You are not authorized to edit other users offers.", HttpStatus.FORBIDDEN);
+
+        offer.setContent(form.getContent());
+        offer.setTitle(form.getTitle());
+        offer.setExpirationDate(CVUtil.toTimestamp(form.getExpirationTime()));
+        internshipOfferRepository.update(offer);
+        return response;
     }
 
     private boolean isPublished(InternshipOffer offer) {

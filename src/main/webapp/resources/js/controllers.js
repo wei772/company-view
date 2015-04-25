@@ -6,19 +6,86 @@ appControllers.controller('UpdatePasswordController', updatePasswordController);
 appControllers.controller('UpdateDetailsController', updateDetailsController);
 appControllers.controller('NewInternshipController', newInternshipController);
 appControllers.controller('InternshipViewController', internshipViewController);
+appControllers.controller('EditInternshipController', editInternshipController);
+
+var internshipOfferStates = [{name: "published", id: 0, value: "true"}, {name: "unpublished", id: 1, value: "false"}];
+
+function getInternshipOfferState(stateName) {
+    for (var index = 0; index < internshipOfferStates.length; index++) {
+        if (internshipOfferStates[index].name == stateName) return internshipOfferStates[index];
+    }
+}
+
+function editInternshipController($scope, $http, $stateParams, $location) {
+    $scope.internshipOfferStateOptions = internshipOfferStates;
+
+    var fillFieldsRequest = $http.get('/offer/internship?id=' + $stateParams.internshipOfferId);
+    fillFieldsRequest.then(function (res) {
+        $scope.title = res.data.title;
+        $scope.publish = getInternshipOfferState(res.data.internshipOfferState.stateName);
+        $scope.offerId = res.data.internshipOfferId;
+        $('#expirationtime').val(res.data.expirationDate);
+        $('#internship-content').code(res.data.content);
+    });
+
+    fillFieldsRequest.error(function () {
+        showFailMessage("Failed to request offer with id " + $stateParams.internshipOfferId + ".", "Internship might not exist or is not published yet.");
+    });
+
+    $scope.editOffer = function() {
+        $scope.isSubmitting = true;
+
+        var request = $http({
+            url: '/offer/internship?id=' + $scope.offerId,
+            contentType: "application/json",
+            dataType: "json",
+            method: 'PUT',
+            params: {
+                'title': $scope.title,
+                'expirationTime': $('#expirationtime').val(),
+                'content': $('#internship-content').code(),
+                'publish': $scope.publish.value
+            }
+        });
+
+        request.success(function(data) {
+            $scope.isSubmitting = false;
+            if (!data.success) {
+                if (data.errorFields) {
+                    var contentIndex = jQuery.inArray("content", data.errorFields);
+                    if (contentIndex != -1) { data.errorFields.splice(contentIndex, 1); }
+                    addErrorHighlights(convertFieldNamesToFieldIds(data.errorFields));
+                    showFailMessage("Failed to edit offer.", createErrorMessagesHtml(data.errorMessages));
+                }
+            } else {
+                emptyAllInputs();
+                $location.path("/offer/internship/view/" + $scope.offerId);
+            }
+        });
+
+        request.error(function() {
+            $scope.isSubmitting = false;
+            showFailMessage("Failed to update offer.", "Something went wrong. You might not have privileges to edit this offer or this offer doesn't exist.");
+        });
+    };
+}
 
 function internshipViewController($scope, $http, $stateParams) {
     var fillFieldsRequest = $http.get('/offer/internship?id=' + $stateParams.internshipOfferId);
+
     fillFieldsRequest.then(function (res) {
         $scope.offer = res.data;
         $('.internship-content-display').html(res.data.content);
     });
+
     fillFieldsRequest.error(function () {
         showFailMessage("Failed to request offer with id " + $stateParams.internshipOfferId + ".", "Internship might not exist or is not published yet.");
     });
 }
 
 function newInternshipController($scope, $http, $location) {
+    $scope.internshipOfferStateOptions = internshipOfferStates;
+
     $scope.addOffer = function() {
         $scope.isSubmitting = true;
 
@@ -31,7 +98,7 @@ function newInternshipController($scope, $http, $location) {
                 'title': $scope.title,
                 'expirationTime': $('#expirationtime').val(),
                 'content': $('#internship-content').code(),
-                'publish': $scope.publish
+                'publish': $scope.publish.value
             }
         });
 
@@ -54,7 +121,6 @@ function newInternshipController($scope, $http, $location) {
             $scope.isSubmitting = false;
             showFailMessage("Failed to create offer.", "Server might be down or broken.");
         });
-
     };
 }
 

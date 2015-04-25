@@ -13,4 +13,7 @@ public interface AuthenticationService {
 
     @Transactional
     boolean isValidPassword(Account passwordOwner, String passwordToCheck);
+
+    @Transactional
+    boolean isBanned(Account account);
 }

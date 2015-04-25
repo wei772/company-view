@@ -8,21 +8,6 @@ appControllers.controller('NewInternshipController', newInternshipController);
 appControllers.controller('InternshipsTableController', internshipsTableController);
 
 function internshipsTableController($scope, $http, $location) {
-    $http.get('/offer/myinternships').then(function(res){
-        $scope.internships = res.data;
-    });
-
-    $http.get('/offer/allinternships').then(function(res){
-        $scope.allInternshipOffers = res.data;
-    });
-
-    $http.get('/offer/allinternships/count').then(function(res){
-        $scope.pages = createPagesArray(res.data);
-    });
-
-    $scope.openInternship = function (i) {
-        $location.path('/offer/internship/' + i.internshipOfferId);
-    };
 };
 
 function newInternshipController($scope, $http) {
@@ -38,7 +23,7 @@ function newInternshipController($scope, $http) {
                 'title': $scope.title,
                 'expirationTime': $('#expirationtime').val(),
                 'content': $('#internship-content').code(),
-                'publish': $('#publish').val()
+                'publish': $scope.publish
             }
         });
 

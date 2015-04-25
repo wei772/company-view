@@ -34,9 +34,12 @@
                     </div>
 
                     <div class="row">
-                        <div class="form-group col-sm-12 col-xs-12 col-md-12" id="cv-publish-field">
-                            <label>Publishing</label>
-                            <select ng-model="defaultOption" ng-disabled="isSubmitting" ng-options="pub.name for pub in publishOptions track by pub.value" class="selectpicker" id="publish"></select>
+                        <div class="form-group col-sm-6 col-xs-6 col-md-6" id="cv-publish-field">
+                            <label>Publishing status</label>
+                            <select ng-model="publish" class="form-control" ng-disabled="isSubmitting" onkeydown="removeErrorHighlights(['cv-publish-field'])">
+                                <option value="true">Published</option>
+                                <option value="false">Unpublished</option>
+                            </select>
                         </div>
                     </div>
 

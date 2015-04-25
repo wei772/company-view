@@ -14,16 +14,16 @@ public class InternshipOfferForm {
     @Size(max = 128, message = "Title is too long.")
     private String title;
 
-    @NotEmpty(message = "Expiration date must be set.")
     @DateTimeFormat(pattern = Constants.DATE_FORMAT)
-    @Future(message = "The expiration date must be in the future.")
+    @Future(message = "Expiration date must be in the future.")
+    @NotNull(message = "Expiration date must be set.")
     private Date expirationTime;
 
     @NotEmpty(message = "Content cannot be empty.")
     @Size(max = 65535, message = "Content is too long.")
     private String content;
 
-    @NotNull
+    @NotNull(message = "Publishing status must be set.")
     private Boolean publish;
 
     @Override

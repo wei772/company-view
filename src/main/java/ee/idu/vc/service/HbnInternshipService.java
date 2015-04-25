@@ -69,7 +69,7 @@ public class HbnInternshipService extends HbnSessionProvider implements Internsh
         InternshipOffer offer = new InternshipOffer();
         offer.setTitle(form.getTitle());
         offer.setContent(form.getContent());
-        offer.setExpirationDate(CVUtil.dateToTimestamp(form.getExpirationTime()));
+        offer.setExpirationDate(CVUtil.toTimestamp(form.getExpirationTime()));
         offer.setInternshipOfferState(getPublishAsState(form.publish()));
         offer.setAccount(creator);
         offerRepository.save(offer);

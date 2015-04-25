@@ -22,7 +22,11 @@ public class SimpleResponse implements JsonResponse {
     public SimpleResponse(BindingResult result) {
         for (FieldError fieldError : result.getFieldErrors()) {
             addErrorField(fieldError.getField());
-            addErrorMessage(fieldError.getDefaultMessage());
+            if (fieldError.getDefaultMessage().contains("Failed to convert property value")) {
+                addErrorMessage("Field " + fieldError.getField() + " is of invalid type.");
+            } else {
+                addErrorMessage(fieldError.getDefaultMessage());
+            }
         }
     }
 

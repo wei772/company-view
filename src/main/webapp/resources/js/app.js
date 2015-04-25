@@ -15,16 +15,16 @@ app.config(function($stateProvider, $urlRouterProvider) {
             url: "/register",
             templateUrl: "/views/register.html",
             data: {requireLogin: false}
-        }).state('internshipOffers', {
-            url: "/offer/internships",
-            templateUrl: "/views/offer/internship/main.html",
+        }).state('yourInternshipOffers', {
+            url: "/offer/internship/your",
+            templateUrl: "/views/offer/internship/your.html",
             data: {requireLogin: true}
         }).state('allInternshipOffers', {
-            url: "/offer/internships/all",
+            url: "/offer/internship/all",
             templateUrl: "/views/offer/internship/all.html",
             data: {requireLogin: true}
-        }).state('internshipNewOffer', {
-            url: "/offer/internships/new",
+        }).state('newInternshipOffer', {
+            url: "/offer/internship/new",
             templateUrl: "/views/offer/internship/new.html",
             data: {requireLogin: true}
         }).state('accountPassword', {

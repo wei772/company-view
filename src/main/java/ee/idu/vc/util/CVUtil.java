@@ -1,20 +1,35 @@
 package ee.idu.vc.util;
 
+import ch.qos.logback.classic.Logger;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class CVUtil {
-    private static final DateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMAT, Locale.ENGLISH);
+    private static final Logger log = (Logger) LoggerFactory.getLogger(CVUtil.class);
+    private static final ObjectMapper jsonMapper = new ObjectMapper();
+
+    static { jsonMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true); }
+
+    public static <T> T readJsonField(String jsonObjContent, String key, Class<T> type) {
+        try {
+            return tolerantCast(type, jsonMapper.readValue(jsonObjContent, HashMap.class).get(key));
+        } catch (IOException exception) {
+            log.error("Failed to read json field from json object content: " + jsonObjContent, exception);
+            return null;
+        }
+    }
+
+    public static String readJsonField(String jsonObjContent, String key) {
+        return readJsonField(jsonObjContent, key, String.class);
+    }
 
     public static boolean isStringEmpty(String string) {
         return string == null || string.trim().length() == 0;
-    }
-
-    public static boolean isAnyStringEmpty(String ... strings) {
-        for (String string : strings) if (isStringEmpty(string)) return true;
-        return false;
     }
 
     public static <T> T tolerantCast(Class<T> type, Object object) {
@@ -25,26 +40,10 @@ public class CVUtil {
         return new Timestamp(Calendar.getInstance().getTimeInMillis());
     }
 
-    public static Date parseDateTime(String dateTime) {
-        try {
-            return dateFormat.parse(dateTime);
-        } catch (Throwable throwable) {
-            return null;
-        }
-    }
-
-    public static Timestamp dateToTimestamp(Date date) {
+    public static Timestamp toTimestamp(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.set(Calendar.MILLISECOND, 0);
         return new Timestamp(calendar.getTimeInMillis());
-    }
-
-    public static Integer parseInt(String integer) {
-        try {
-            return Integer.parseInt(integer);
-        } catch (Throwable ignored) {
-            return null;
-        }
     }
 }

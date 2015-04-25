@@ -16,7 +16,7 @@
 
     <mvc:annotation-driven>
         <mvc:argument-resolvers>
-            <bean class="ee.idu.vc.auth.AuthUserArgumentResolver"/>
+            <bean class="ee.idu.vc.auth.AuthAccountArgResolver"/>
         </mvc:argument-resolvers>
     </mvc:annotation-driven>
 

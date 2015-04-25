@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 public class Account implements Serializable {
@@ -122,20 +123,6 @@ public class Account implements Serializable {
         this.accountStatus = accountStatus;
     }
 
-    public boolean hasAnyAccountStatus(String ... statusNames) {
-        for (String statusName : statusNames) {
-            if (statusName.equalsIgnoreCase(getAccountStatus().getStatusName())) return true;
-        }
-        return false;
-    }
-
-    public boolean hasAnyAccountType(String ... typeNames) {
-        for (String typeName : typeNames) {
-            if (typeName.equalsIgnoreCase(getAccountType().getTypeName())) return true;
-        }
-        return false;
-    }
-
     @Override
     public String toString() {
         return "Account{" +
@@ -147,7 +134,27 @@ public class Account implements Serializable {
                 '}';
     }
 
-    public boolean statusEquals(String statusName) {
-        return accountStatus.getStatusName().equals(statusName);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return Objects.equals(accountId, account.accountId) &&
+                Objects.equals(firstName, account.firstName) &&
+                Objects.equals(lastName, account.lastName) &&
+                Objects.equals(email, account.email) &&
+                Objects.equals(companyName, account.companyName) &&
+                Objects.equals(phone, account.phone) &&
+                Objects.equals(address, account.address) &&
+                Objects.equals(username, account.username) &&
+                Objects.equals(passwordHash, account.passwordHash) &&
+                Objects.equals(accountType.getAccountTypeId(), account.accountType.getAccountTypeId()) &&
+                Objects.equals(accountStatus.getAccountStatusId(), account.accountStatus.getAccountStatusId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(accountId, firstName, lastName, email, companyName, phone, address, username, passwordHash,
+                accountType.getAccountTypeId(), accountStatus.getAccountStatusId());
     }
 }

@@ -1,5 +1,6 @@
 package ee.idu.vc.service;
 
+import ee.idu.vc.model.AccountStatus;
 import ee.idu.vc.model.Token;
 import ee.idu.vc.model.Account;
 import ee.idu.vc.repository.AccountRepository;
@@ -39,7 +40,9 @@ public class HbnAuthenticationService implements AuthenticationService {
         Token token = tokenService.latestToken(account);
         if (token == null) return null;
 
-        return token.getUuid().equals(UUID.fromString(tokenUUID)) ? account : null;
+        if (!token.getUuid().equals(UUID.fromString(tokenUUID))) return null;
+        tokenService.extendToken(token);
+        return account;
     }
 
     @Override
@@ -47,5 +50,10 @@ public class HbnAuthenticationService implements AuthenticationService {
         if (passwordOwner == null) throw new IllegalArgumentException("Argument passwordOwner cannot be null.");
         if (passwordToCheck == null) throw new IllegalArgumentException("Argument passwordToCheck cannot be null.");
         return BCrypt.checkpw(passwordToCheck, passwordOwner.getPasswordHash());
+    }
+
+    @Override
+    public boolean isBanned(Account account) {
+        return account.getAccountStatus().getStatusName().equalsIgnoreCase(AccountStatus.BANNED);
     }
 }

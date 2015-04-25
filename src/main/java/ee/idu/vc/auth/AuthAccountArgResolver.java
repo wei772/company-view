@@ -1,7 +1,10 @@
 package ee.idu.vc.auth;
 
 import ch.qos.logback.classic.Logger;
+import ee.idu.vc.model.Account;
 import ee.idu.vc.service.AuthenticationService;
+import ee.idu.vc.util.CVUtil;
+import ee.idu.vc.util.Constants;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
@@ -10,9 +13,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import java.util.Map;
-
-public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
+public class AuthAccountArgResolver implements HandlerMethodArgumentResolver {
     private Logger log = (Logger) LoggerFactory.getLogger(getClass());
 
     @Autowired
@@ -24,21 +25,22 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+    public Account resolveArgument(MethodParameter methodParameter, ModelAndViewContainer movContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        if (!hasMethodRequireAuthAnnotation(parameter)) return null;
-        Map authDetails = AuthUtil.extractAuthHeader(webRequest.getHeader(AuthUtil.AUTHORIZATION_HEADER));
-        String username = authDetails.get(AuthUtil.USERNAME_KEY).toString();
-        String tokenString = authDetails.get(AuthUtil.TOKEN_KEY).toString();
+        if (!hasMethodRequireAuthAnnotation(methodParameter)) return null;
+        String authHeader = webRequest.getHeader((Constants.AUTHORIZATION_HEADER));
+        if (CVUtil.isStringEmpty(authHeader)) return null;
+
+        String username = CVUtil.readJsonField(authHeader, Constants.PARAM_USERNAME);
+        String tokenString = CVUtil.readJsonField(authHeader, Constants.PARAM_TOKEN);
+        if (username == null || tokenString == null) return null;
+
         return authService.loginWithToken(username, tokenString);
     }
 
     private boolean hasMethodRequireAuthAnnotation(MethodParameter parameter) {
-        if (parameter.getMethodAnnotation(RequireAuth.class) == null) {
-            log.warn("When using @AuthUser annotation then method must be " +
-                    "annotated using the @RequireAuth annotation. Returning user as null.");
-            return false;
-        }
-        return true;
+        if (parameter.getMethodAnnotation(RequireAuth.class) != null) return true;
+        log.warn("Using @AuthAccount requires using @RequireAuth annotation.");
+        return false;
     }
 }

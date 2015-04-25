@@ -11,6 +11,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RequireAuth {
-    String[] userTypes() default {AccountType.COMPANY};
-    String[] allowedStatuses() default {AccountStatus.ACTIVE, AccountStatus.INACTIVE};
+    String[] requiredTypes() default {AccountType.COMPANY};
+    String[] requiredStatuses() default {AccountStatus.ACTIVE, AccountStatus.INACTIVE};
 }

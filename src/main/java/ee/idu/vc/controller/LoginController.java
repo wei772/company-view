@@ -6,7 +6,6 @@ import ee.idu.vc.controller.response.JsonResponse;
 import ee.idu.vc.controller.response.SimpleResponse;
 import ee.idu.vc.controller.response.TokenResponse;
 import ee.idu.vc.controller.form.LoginForm;
-import ee.idu.vc.model.AccountStatus;
 import ee.idu.vc.model.Account;
 import ee.idu.vc.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,7 @@ public class LoginController {
     public JsonResponse login(LoginForm form) {
         Account account = authService.loginWithCredentials(form.getUsername(), form.getPassword());
         if (account == null) return new SimpleResponse("Invalid username or password.");
-        if (account.statusEquals(AccountStatus.BANNED)) return new SimpleResponse("Your account is banned.");
+        if (authService.isBanned(account)) return new SimpleResponse("Your account is banned.");
 
         Token token = tokenService.latestValidToken(account);
         if (token == null) token = tokenService.newToken(account);

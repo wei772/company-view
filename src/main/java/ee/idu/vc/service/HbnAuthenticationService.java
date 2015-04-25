@@ -1,6 +1,7 @@
 package ee.idu.vc.service;
 
 import ee.idu.vc.model.AccountStatus;
+import ee.idu.vc.model.AccountType;
 import ee.idu.vc.model.Token;
 import ee.idu.vc.model.Account;
 import ee.idu.vc.repository.AccountRepository;
@@ -55,5 +56,10 @@ public class HbnAuthenticationService implements AuthenticationService {
     @Override
     public boolean isBanned(Account account) {
         return account.getAccountStatus().getStatusName().equalsIgnoreCase(AccountStatus.BANNED);
+    }
+
+    @Override
+    public boolean isModerator(Account account) {
+        return account.getAccountType().getTypeName().equalsIgnoreCase(AccountType.MODERATOR);
     }
 }

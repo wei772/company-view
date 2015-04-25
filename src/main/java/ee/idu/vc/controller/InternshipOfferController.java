@@ -8,21 +8,28 @@ import ee.idu.vc.controller.response.SimpleResponse;
 import ee.idu.vc.model.Account;
 import ee.idu.vc.model.InternshipOffer;
 import ee.idu.vc.repository.AccountRepository;
+import ee.idu.vc.service.AuthenticationService;
 import ee.idu.vc.service.InternshipService;
 import ee.idu.vc.util.CVUtil;
 import ee.idu.vc.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
 public class InternshipOfferController {
     @Autowired
     private InternshipService internshipService;
+
+    @Autowired
+    private AuthenticationService authenticationService;
 
     @Autowired
     private AccountRepository accountRepository;
@@ -34,15 +41,14 @@ public class InternshipOfferController {
     @RequireAuth
     @RequestMapping(value = "/offer/internships/search", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public List<InternshipOffer> search(@RequestParam(required = false) Integer page,
-                                        @RequestParam(required = false) String username,
-                                        @RequestParam(required = false, defaultValue = "false") boolean onlyPublished,
-                                        @RequestParam(required = false) String keyword,
-                                        @AuthAccount Account requester) {
+    public Object search(@RequestParam(required = false) Integer page, @RequestParam(required = false) String username,
+                         @RequestParam(required = false, defaultValue = "false") boolean onlyPublished,
+                         @RequestParam(required = false) String keyword, @AuthAccount Account requester) {
         if (page == null || page < 1) page = 1;
         Account account = CVUtil.isStringEmpty(username) ? null : accountRepository.findByUsername(username, false);
-        if (!requester.equals(account) && !onlyPublished) {
-            
+        if (!requester.equals(account) && !onlyPublished && !authenticationService.isModerator(requester)) {
+            return new ResponseEntity<>("Non-moderator accounts can only search other users published internship " +
+                    "offers.", HttpStatus.UNAUTHORIZED);
         }
         return internshipService.searchInternships(calcFrom(page), calcTo(page), onlyPublished, account, keyword);
     }

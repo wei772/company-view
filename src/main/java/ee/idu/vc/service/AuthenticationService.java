@@ -16,4 +16,7 @@ public interface AuthenticationService {
 
     @Transactional
     boolean isBanned(Account account);
+
+    @Transactional
+    boolean isModerator(Account account);
 }

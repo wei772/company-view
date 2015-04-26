@@ -7,12 +7,10 @@ import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import static org.hibernate.criterion.Restrictions.eq;
 
 @Service
 public class HbnInternshipApplicantService extends HbnSessionProvider implements InternshipApplicantService{
-
     @Autowired
     private InternshipOfferRepository offerRepository;
 

@@ -8,20 +8,18 @@ import ee.idu.vc.controller.response.NewItemResponse;
 import ee.idu.vc.controller.response.SimpleResponse;
 import ee.idu.vc.model.Account;
 import ee.idu.vc.model.InternshipOffer;
-import ee.idu.vc.model.InternshipOfferState;
 import ee.idu.vc.repository.AccountRepository;
 import ee.idu.vc.repository.InternshipOfferRepository;
 import ee.idu.vc.service.AuthenticationService;
 import ee.idu.vc.service.InternshipService;
-import ee.idu.vc.util.CVUtil;
-import ee.idu.vc.util.Constants;
+import ee.idu.vc.util.Responses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import static ee.idu.vc.util.CVUtil.*;
 
 @RestController
 public class InternshipOfferController {
@@ -48,13 +46,12 @@ public class InternshipOfferController {
     public Object search(@RequestParam(required = false) Integer page, @RequestParam(required = false) String username,
                          @RequestParam(required = false, defaultValue = "true") boolean onlyPublished,
                          @RequestParam(required = false) String keyword, @AuthAccount Account requester) {
+        Account account = isStringEmpty(username) ? null : accountRepository.findByUsername(username, false);
+        if (!requester.equals(account) && !onlyPublished && !authenticationService.isModerator(requester))
+            return Responses.notAuthorizedToSearchUnpublished();
+
         if (page == null || page < 1) page = 1;
-        Account account = CVUtil.isStringEmpty(username) ? null : accountRepository.findByUsername(username, false);
-        if (!requester.equals(account) && !onlyPublished && !authenticationService.isModerator(requester)) {
-            return new ResponseEntity<>("Non-moderator accounts can only search other users published internship " +
-                    "offers.", HttpStatus.UNAUTHORIZED);
-        }
-        return internshipService.searchInternships(CVUtil.calcFrom(page), CVUtil.calcTo(page), onlyPublished, account, keyword);
+        return internshipService.searchInternships(calcFrom(page), calcTo(page), onlyPublished, account, keyword);
     }
 
     @RequireAuth
@@ -72,11 +69,9 @@ public class InternshipOfferController {
     @ResponseBody
     public Object internship(@RequestParam Long id, @AuthAccount Account account) {
         InternshipOffer offer = internshipOfferRepository.findById(id);
-        if (offer == null) return new ResponseEntity<>("Internship with id " + id + " doesn't exist.", HttpStatus.NOT_FOUND);
-        if (CVUtil.isPublished(offer)) return offer;
-        if (!account.equals(offer.getAccount())) return new ResponseEntity<>("It is forbidden to view other users " +
-                "unpublished offers.", HttpStatus.UNAUTHORIZED);
-        return offer;
+        if (offer == null) return Responses.internshipNotExisting(id);
+        if (isPublished(offer)) return offer;
+        return account.equals(offer.getAccount()) ? offer : Responses.notAuthorizedToViewUnpublished();
     }
 
     @RequireAuth
@@ -88,16 +83,15 @@ public class InternshipOfferController {
         if (response.hasErrors()) return response;
 
         InternshipOffer offer = internshipOfferRepository.findById(id);
-        if (offer == null)
-            return new ResponseEntity<>("Cannot update offer, offer doesn't exist.", HttpStatus.BAD_REQUEST);
+        if (offer == null) return Responses.internshipNotExisting(id);
+
         if (!offer.getAccount().equals(account) && !authenticationService.isModerator(account))
-            return new ResponseEntity<>("You are not authorized to edit other users offers.", HttpStatus.FORBIDDEN);
+            return Responses.notAuthorizedToEditOffer();
 
         offer.setContent(form.getContent());
         offer.setTitle(form.getTitle());
-        offer.setExpirationDate(CVUtil.toTimestamp(form.getExpirationTime()));
+        offer.setExpirationDate(toTimestamp(form.getExpirationTime()));
         internshipOfferRepository.update(offer);
         return response;
     }
-
 }

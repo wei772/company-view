@@ -2,14 +2,15 @@ package ee.idu.vc.controller.response;
 
 import ee.idu.vc.model.InternshipOffer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InternshipsSearchResponse {
-    private List<InternshipOffer> offers;
+    private final List<InternshipOffer> offers = new ArrayList<>();
     private int count;
 
-    public InternshipsSearchResponse(List offers, int count) {
-        this.offers = offers;
+    public InternshipsSearchResponse(List<InternshipOffer> offers, int count) {
+        if (offers != null) addOffers(offers);
         this.count = count;
     }
 
@@ -25,7 +26,7 @@ public class InternshipsSearchResponse {
         return offers;
     }
 
-    public void setOffers(List<InternshipOffer> offers) {
-        this.offers = offers;
+    public void addOffers(List<InternshipOffer> offers) {
+        this.offers.addAll(offers);
     }
 }

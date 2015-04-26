@@ -7,7 +7,6 @@ import java.io.Serializable;
 
 @Entity
 public class InternshipApplicant implements Serializable {
-
     @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

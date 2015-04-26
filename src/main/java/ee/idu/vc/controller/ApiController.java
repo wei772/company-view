@@ -1,8 +1,10 @@
 package ee.idu.vc.controller;
 
 import ee.idu.vc.controller.response.NewItemResponse;
+import ee.idu.vc.model.Account;
 import ee.idu.vc.model.InternshipApplicant;
 import ee.idu.vc.model.InternshipOffer;
+import ee.idu.vc.repository.AccountRepository;
 import ee.idu.vc.repository.InternshipApplicantRepository;
 import ee.idu.vc.repository.InternshipOfferRepository;
 import ee.idu.vc.service.InternshipApplicantService;
@@ -22,6 +24,9 @@ public class ApiController {
     private InternshipApplicantService internshipApplicantService;
 
     @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
     private InternshipOfferRepository internshipOfferRepository;
 
     @Autowired
@@ -29,7 +34,7 @@ public class ApiController {
 
     @RequestMapping(value = "/api/internships", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public Object search(
+    public Object searchInternships(
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) String keyword) {
         if (page == null || page < 1) page = 1;
@@ -38,7 +43,7 @@ public class ApiController {
 
     @RequestMapping(value = "/api/internship", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public Object search(
+    public Object getInternshipById(
             @RequestParam(required = true) Long id){
         InternshipOffer offer = internshipOfferRepository.findById(id);
         if (offer == null) return new ResponseEntity<>("Internship with id "+id+" doesn't exist.", HttpStatus.NOT_FOUND);
@@ -48,7 +53,7 @@ public class ApiController {
 
     @RequestMapping(value = "/api/internship", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    public Object search(@RequestParam(required = true) Long id, @RequestParam(required = true) Long studentId){
+    public Object applyForInternship(@RequestParam(required = true) Long id, @RequestParam(required = true) Long studentId){
         InternshipOffer offer = internshipOfferRepository.findById(id);
         if (offer == null) return new ResponseEntity<>("Internship with id "+id+" doesn't exist.", HttpStatus.NOT_FOUND);
         if (!CVUtil.isPublished(offer)) return new ResponseEntity<>("Internship with id "+id+" is unpublished.",
@@ -61,5 +66,13 @@ public class ApiController {
         applicant.setStudentId(studentId);
         internshipApplicantRepository.save(applicant);
         return new NewItemResponse(applicant.getInternshipApplicantId());
+    }
+
+    @RequestMapping(value = "/api/account", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public Object getAccountById(@RequestParam(required = true) Long id) {
+        Account account =  accountRepository.findById(id);
+        if (account == null) return new ResponseEntity<>("Account with id "+id+" doesn't exist.", HttpStatus.NOT_FOUND);
+        return account;
     }
 }

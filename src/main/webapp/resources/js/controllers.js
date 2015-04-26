@@ -88,6 +88,8 @@ function newInternshipController($scope, $http, $location) {
 
     $scope.addOffer = function() {
         $scope.isSubmitting = true;
+        var publish;
+        if ($scope.publish) {publish = $scope.publish.value;}
 
         var request = $http({
             url: '/offer/internship',
@@ -98,7 +100,7 @@ function newInternshipController($scope, $http, $location) {
                 'title': $scope.title,
                 'expirationTime': $('#expirationtime').val(),
                 'content': $('#internship-content').code(),
-                'publish': $scope.publish.value
+                'publish': publish
             }
         });
 

@@ -5,6 +5,7 @@ import ee.idu.vc.model.InternshipApplicant;
 import ee.idu.vc.model.InternshipOffer;
 import ee.idu.vc.repository.InternshipApplicantRepository;
 import ee.idu.vc.repository.InternshipOfferRepository;
+import ee.idu.vc.service.InternshipApplicantService;
 import ee.idu.vc.service.InternshipService;
 import ee.idu.vc.util.CVUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-public class ServiceController {
+public class ApiController {
     @Autowired
     private InternshipService internshipService;
+
+    @Autowired
+    private InternshipApplicantService internshipApplicantService;
 
     @Autowired
     private InternshipOfferRepository internshipOfferRepository;
@@ -47,7 +51,11 @@ public class ServiceController {
     public Object search(@RequestParam(required = true) Long id, @RequestParam(required = true) Long studentId){
         InternshipOffer offer = internshipOfferRepository.findById(id);
         if (offer == null) return new ResponseEntity<>("Internship with id "+id+" doesn't exist.", HttpStatus.NOT_FOUND);
-        if (!CVUtil.isPublished(offer)) return new ResponseEntity<>("Internship with id "+id+" is unpublished.", HttpStatus.UNAUTHORIZED);
+        if (!CVUtil.isPublished(offer)) return new ResponseEntity<>("Internship with id "+id+" is unpublished.",
+                HttpStatus.UNAUTHORIZED);
+        InternshipApplicant existingApplicant = internshipApplicantService.getInternshipApplicant(studentId, id);
+        if (existingApplicant != null) return new ResponseEntity<>(
+                "Internship with id "+id+" already has student with id "+studentId, HttpStatus.CONFLICT);
         InternshipApplicant applicant = new InternshipApplicant();
         applicant.setInternshipOffer(offer);
         applicant.setStudentId(studentId);

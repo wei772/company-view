@@ -7,12 +7,60 @@ appControllers.controller('UpdateDetailsController', updateDetailsController);
 appControllers.controller('NewInternshipController', newInternshipController);
 appControllers.controller('InternshipViewController', internshipViewController);
 appControllers.controller('EditInternshipController', editInternshipController);
+appControllers.controller('ViewAllInternshipsController', viewAllInternshipsController);
+appControllers.controller('ViewYourInternshipsController', viewYourInternshipsController);
 
 var internshipOfferStates = [{name: "published", id: 0, value: "true"}, {name: "unpublished", id: 1, value: "false"}];
 
 function getInternshipOfferState(stateName) {
     for (var index = 0; index < internshipOfferStates.length; index++) {
         if (internshipOfferStates[index].name == stateName) return internshipOfferStates[index];
+    }
+}
+
+function viewYourInternshipsController($scope, $http, $stateParams, $location, $window) {
+    var currentPage = 1;
+    if ($stateParams.page) { currentPage = $stateParams.page; }
+    var getOffers = $http.get('/offer/internship/search?page=' + currentPage + "&username=" + $window.localStorage['username'] + "&onlyPublished=false");
+
+    getOffers.then(function (res) {
+        $scope.internshipOffers = res.data.offers;
+        console.log("received " + res.data.offers.length + " offers.");
+        $scope.pages = generatePagination(res.data.totalResults, currentPage, "/offer/internship/your?page=");
+        $scope.previousPage = getPreviousPage($scope.pages, currentPage);
+        $scope.nextPage = getNextPage($scope.pages, currentPage);
+        $scope.totalResults = res.data.totalResults;
+    });
+
+    getOffers.error(function () {
+        showFailMessage("Something went wrong when querying internship offers.", "If this error persists then contact the developers.");
+    });
+
+    $scope.openInternshipOffer = function(internshipOffer) {
+        $location.path("/offer/internship/view/" + internshipOffer.internshipOfferId);
+    }
+}
+
+function viewAllInternshipsController($scope, $http, $stateParams, $location) {
+    var currentPage = 1;
+    if ($stateParams.page) { currentPage = $stateParams.page; }
+    var getOffers = $http.get('/offer/internship/search?page=' + currentPage);
+
+    getOffers.then(function (res) {
+        $scope.internshipOffers = res.data.offers;
+        console.log("received " + res.data.offers.length + " offers.");
+        $scope.pages = generatePagination(res.data.totalResults, currentPage, "/offer/internship/all?page=");
+        $scope.previousPage = getPreviousPage($scope.pages, currentPage);
+        $scope.nextPage = getNextPage($scope.pages, currentPage);
+        $scope.totalResults = res.data.totalResults;
+    });
+
+    getOffers.error(function () {
+        showFailMessage("Something went wrong when querying internship offers.", "If this error persists then contact the developers.");
+    });
+
+    $scope.openInternshipOffer = function(internshipOffer) {
+        $location.path("/offer/internship/view/" + internshipOffer.internshipOfferId);
     }
 }
 

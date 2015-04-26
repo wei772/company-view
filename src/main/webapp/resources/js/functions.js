@@ -120,3 +120,29 @@ function validateConfirmations(firstFieldId, secondFieldId, messages, message) {
     addErrorHighlights(errorFields);
     messages.push(message);
 }
+
+function generatePagination(offersCount, currentPage, searchWithPageParamEmptyAndLast) {
+    var pagesCount = (offersCount / 20) + 1;
+    var pages = [];
+    for (var index = 1; index <= pagesCount; index++) {
+        var page = {pageNumber: index, pageLink: searchWithPageParamEmptyAndLast + index, isActive: index == currentPage};
+        pages.push(page);
+    }
+    return pages;
+}
+
+function getPreviousPage(pages, currentPage) {
+    var previousPageIndex = currentPage - 1;
+    if (previousPageIndex < 1) {
+        previousPageIndex = 1;
+    }
+    return pages[previousPageIndex - 1];
+}
+
+function getNextPage(pages, currentPage) {
+    var nextPageIndex = currentPage + 1;
+    if (nextPageIndex > pages.length) {
+        nextPageIndex = pages.length;
+    }
+    return pages[nextPageIndex - 1];
+}

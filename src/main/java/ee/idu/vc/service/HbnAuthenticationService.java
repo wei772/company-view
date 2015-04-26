@@ -1,15 +1,14 @@
 package ee.idu.vc.service;
 
-import ee.idu.vc.model.AccountStatus;
-import ee.idu.vc.model.AccountType;
-import ee.idu.vc.model.Token;
-import ee.idu.vc.model.Account;
+import ee.idu.vc.model.*;
 import ee.idu.vc.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+
+import static ee.idu.vc.util.CVUtil.isPublished;
 
 @Service
 public class HbnAuthenticationService implements AuthenticationService {
@@ -61,5 +60,25 @@ public class HbnAuthenticationService implements AuthenticationService {
     @Override
     public boolean isModerator(Account account) {
         return account.getAccountType().getTypeName().equalsIgnoreCase(AccountType.MODERATOR);
+    }
+
+    @Override
+    public boolean hasRightsToSearch(Account searcher, Account target, boolean onlyPublished) {
+        if (searcher == null) throw new IllegalArgumentException("Argument searcher cannot be null.");
+        return isModerator(searcher) || onlyPublished || target != null && searcher.equals(target);
+    }
+
+    @Override
+    public boolean hasRightsToView(Account viewer, InternshipOffer offer) {
+        if (viewer == null) throw new IllegalArgumentException("Argument viewer cannot be null.");
+        if (offer == null) throw new IllegalArgumentException("Argument offer cannot be null.");
+        return isPublished(offer) || isModerator(viewer) || viewer.equals(offer.getAccount());
+    }
+
+    @Override
+    public boolean hasRightsToEdit(Account editor, InternshipOffer offer) {
+        if (editor == null) throw new IllegalArgumentException("Argument editor cannot be null.");
+        if (offer == null) throw new IllegalArgumentException("Argument offer cannot be null.");
+        return editor.equals(offer.getAccount()) || isModerator(editor);
     }
 }

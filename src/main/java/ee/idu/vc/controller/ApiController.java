@@ -5,7 +5,6 @@ import ee.idu.vc.controller.response.NewItemResponse;
 import ee.idu.vc.model.Account;
 import ee.idu.vc.model.InternshipApplicant;
 import ee.idu.vc.model.InternshipOffer;
-import ee.idu.vc.model.InternshipOfferState;
 import ee.idu.vc.repository.AccountRepository;
 import ee.idu.vc.repository.InternshipApplicantRepository;
 import ee.idu.vc.repository.InternshipOfferRepository;
@@ -13,8 +12,6 @@ import ee.idu.vc.service.InternshipApplicantService;
 import ee.idu.vc.service.InternshipService;
 import ee.idu.vc.util.Responses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -54,17 +51,17 @@ public class ApiController {
     @ResponseBody
     public Object getInternshipById(@RequestParam(required = true) Long id) {
         InternshipOffer offer = internshipOfferRepository.findById(id);
-        if (offer == null) return Responses.internshipNotExisting(id);
+        if (offer == null) return Responses.notFoundInternship(id);
         if (isPublished(offer)) return offer;
-        return Responses.internshipUnpublished(id);
+        return Responses.forbiddenToViewUnpublishedInternship(id);
     }
 
     @RequestMapping(value = "/api/internship", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
     public Object applyForInternship(@RequestParam(required = true) Long id, @RequestParam(required = true) Long studentId){
         InternshipOffer offer = internshipOfferRepository.findById(id);
-        if (offer == null) return Responses.internshipNotExisting(id);
-        if (!isPublished(offer)) return Responses.internshipUnpublished(id);
+        if (offer == null) return Responses.notFoundInternship(id);
+        if (!isPublished(offer)) return Responses.forbiddenToViewUnpublishedInternship(id);
 
         InternshipApplicant existingApplicant = internshipApplicantService.getInternshipApplicant(studentId, id);
         if (existingApplicant != null) return Responses.alreadyAppliedToInternship(id, studentId);

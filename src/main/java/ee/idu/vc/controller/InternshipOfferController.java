@@ -12,7 +12,6 @@ import ee.idu.vc.repository.AccountRepository;
 import ee.idu.vc.repository.InternshipOfferRepository;
 import ee.idu.vc.service.AuthenticationService;
 import ee.idu.vc.service.InternshipService;
-import ee.idu.vc.util.Responses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -20,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import static ee.idu.vc.util.CVUtil.*;
+import static ee.idu.vc.util.Responses.*;
+import static ee.idu.vc.util.Responses.forbiddenToViewAlienUnpublished;
 
 @RestController
 public class InternshipOfferController {
@@ -30,7 +31,7 @@ public class InternshipOfferController {
     private InternshipOfferRepository internshipOfferRepository;
 
     @Autowired
-    private AuthenticationService authenticationService;
+    private AuthenticationService authService;
 
     @Autowired
     private AccountRepository accountRepository;
@@ -45,13 +46,11 @@ public class InternshipOfferController {
     @ResponseBody
     public Object search(@RequestParam(required = false) Integer page, @RequestParam(required = false) String username,
                          @RequestParam(required = false, defaultValue = "true") boolean onlyPublished,
-                         @RequestParam(required = false) String keyword, @AuthAccount Account requester) {
-        Account account = isStringEmpty(username) ? null : accountRepository.findByUsername(username, false);
-        if (!requester.equals(account) && !onlyPublished && !authenticationService.isModerator(requester))
-            return Responses.notAuthorizedToSearchUnpublished();
-
+                         @RequestParam(required = false) String keyword, @AuthAccount Account searcher) {
+        Account target = isStringEmpty(username) ? null : accountRepository.findByUsername(username, false);
+        if (!authService.hasRightsToSearch(searcher, target, onlyPublished)) return forbiddenToSearchAlienUnpublished();
         if (page == null || page < 1) page = 1;
-        return internshipService.searchInternships(calcFrom(page), calcTo(page), onlyPublished, account, keyword);
+        return internshipService.searchInternships(calcFrom(page), calcTo(page), onlyPublished, target, keyword);
     }
 
     @RequireAuth
@@ -60,6 +59,7 @@ public class InternshipOfferController {
     public JsonResponse add(@Validated InternshipOfferForm form, BindingResult bind, @AuthAccount Account account) {
         SimpleResponse response = new SimpleResponse(bind);
         if (response.hasErrors()) return response;
+
         Long internshipOfferId = internshipService.createAndSave(form, account).getInternshipOfferId();
         return new NewItemResponse(internshipOfferId);
     }
@@ -67,26 +67,23 @@ public class InternshipOfferController {
     @RequireAuth
     @RequestMapping(value = "/offer/internship", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public Object internship(@RequestParam Long id, @AuthAccount Account account) {
+    public Object internship(@RequestParam Long id, @AuthAccount Account viewer) {
         InternshipOffer offer = internshipOfferRepository.findById(id);
-        if (offer == null) return Responses.internshipNotExisting(id);
-        if (isPublished(offer)) return offer;
-        return account.equals(offer.getAccount()) ? offer : Responses.notAuthorizedToViewUnpublished();
+        if (offer == null) return notFoundInternship(id);
+        return authService.hasRightsToView(viewer, offer) ? offer : forbiddenToViewAlienUnpublished();
     }
 
     @RequireAuth
     @RequestMapping(value = "/offer/internship", method = RequestMethod.PUT)
     @ResponseBody
-    public Object update(@RequestParam Long id, @AuthAccount Account account, @Validated InternshipOfferForm form,
+    public Object update(@RequestParam Long id, @AuthAccount Account editor, @Validated InternshipOfferForm form,
                                BindingResult bind) {
         SimpleResponse response = new SimpleResponse(bind);
         if (response.hasErrors()) return response;
 
         InternshipOffer offer = internshipOfferRepository.findById(id);
-        if (offer == null) return Responses.internshipNotExisting(id);
-
-        if (!offer.getAccount().equals(account) && !authenticationService.isModerator(account))
-            return Responses.notAuthorizedToEditOffer();
+        if (offer == null) return notFoundInternship(id);
+        if (!authService.hasRightsToEdit(editor, offer)) return forbiddenToEditAlienOffer();
 
         offer.setContent(form.getContent());
         offer.setTitle(form.getTitle());

@@ -1,6 +1,7 @@
 package ee.idu.vc.service;
 
 import ee.idu.vc.model.Account;
+import ee.idu.vc.model.InternshipOffer;
 
 import javax.transaction.Transactional;
 
@@ -19,4 +20,13 @@ public interface AuthenticationService {
 
     @Transactional
     boolean isModerator(Account account);
+
+    @Transactional
+    boolean hasRightsToSearch(Account searcher, Account searchTargetAccount, boolean onlyPublished);
+
+    @Transactional
+    boolean hasRightsToView(Account viewer, InternshipOffer offer);
+
+    @Transactional
+    boolean hasRightsToEdit(Account editor, InternshipOffer offer);
 }

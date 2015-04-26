@@ -11,6 +11,8 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static ee.idu.vc.util.Responses.sendUnauthorized;
+
 public class RequireAuthInterceptor extends HandlerInterceptorAdapter {
     @Autowired
     private AuthenticationService authService;
@@ -29,25 +31,25 @@ public class RequireAuthInterceptor extends HandlerInterceptorAdapter {
             throws Exception {
         String authHeader = httpRequest.getHeader(Constants.AUTHORIZATION_HEADER);
         if (CVUtil.isStringEmpty(authHeader)) {
-            httpResponse.sendError(401, "Authentication header cannot be empty.");
+            sendUnauthorized(httpResponse, "Authentication header cannot be empty.");
             return false;
         }
 
         String username = CVUtil.readJsonField(authHeader, Constants.PARAM_USERNAME);
         String tokenUUID = CVUtil.readJsonField(authHeader, Constants.PARAM_TOKEN);
         if (username == null || tokenUUID == null) {
-            httpResponse.sendError(401, "Authentication header doesn't contain username and/or token.");
+            sendUnauthorized(httpResponse, "Authentication header doesn't contain username and/or token.");
             return false;
         }
 
         Account account = authService.loginWithToken(username, tokenUUID);
         if (account == null) {
-            httpResponse.sendError(401, "Invalid username or token.");
+            sendUnauthorized(httpResponse, "Invalid username or token.");
             return false;
         }
 
         if (!meetsPrivileges(account, reqAuth)) {
-            httpResponse.sendError(401, "Account " + username + " has no privileges to this resource.");
+            sendUnauthorized(httpResponse, "Account " + username + " has no privileges to this resource.");
             return false;
         }
 

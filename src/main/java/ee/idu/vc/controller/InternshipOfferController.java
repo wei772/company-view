@@ -3,6 +3,7 @@ package ee.idu.vc.controller;
 import ee.idu.vc.auth.AuthAccount;
 import ee.idu.vc.auth.RequireAuth;
 import ee.idu.vc.controller.form.InternshipOfferForm;
+import ee.idu.vc.controller.response.InternshipsSearchResponse;
 import ee.idu.vc.controller.response.JsonResponse;
 import ee.idu.vc.controller.response.NewItemResponse;
 import ee.idu.vc.controller.response.SimpleResponse;
@@ -17,6 +18,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 import static ee.idu.vc.util.CVUtil.*;
 import static ee.idu.vc.util.Responses.*;
@@ -47,10 +50,13 @@ public class InternshipOfferController {
     public Object search(@RequestParam(required = false) Integer page, @RequestParam(required = false) String username,
                          @RequestParam(required = false, defaultValue = "true") boolean onlyPublished,
                          @RequestParam(required = false) String keyword, @AuthAccount Account searcher) {
-        Account target = isStringEmpty(username) ? null : accountRepository.findByUsername(username, false);
-        if (!authService.hasRightsToSearch(searcher, target, onlyPublished)) return forbiddenToSearchAlienUnpublished();
+        Account accountToSearch = isStringEmpty(username) ? null : accountRepository.findByUsername(username, false);
+        if (!authService.hasRightsToSearch(searcher, accountToSearch, onlyPublished)) return forbiddenToSearchAlienUnpublished();
         if (page == null || page < 1) page = 1;
-        return internshipService.searchInternships(calcFrom(page), calcTo(page), onlyPublished, target, keyword);
+        List<InternshipOffer> offers = internshipService
+                .searchInternships(calcFrom(page), calcTo(page), onlyPublished, accountToSearch, keyword);
+        int count = internshipService.internshipSearchResultsCount(onlyPublished, accountToSearch, keyword);
+        return new InternshipsSearchResponse(offers, count);
     }
 
     @RequireAuth

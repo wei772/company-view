@@ -1,9 +1,11 @@
 package ee.idu.vc.controller;
 
+import ee.idu.vc.controller.response.InternshipsSearchResponse;
 import ee.idu.vc.controller.response.NewItemResponse;
 import ee.idu.vc.model.Account;
 import ee.idu.vc.model.InternshipApplicant;
 import ee.idu.vc.model.InternshipOffer;
+import ee.idu.vc.model.InternshipOfferState;
 import ee.idu.vc.repository.AccountRepository;
 import ee.idu.vc.repository.InternshipApplicantRepository;
 import ee.idu.vc.repository.InternshipOfferRepository;
@@ -14,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class ApiController {
@@ -38,7 +42,9 @@ public class ApiController {
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) String keyword) {
         if (page == null || page < 1) page = 1;
-        return internshipService.searchInternships(CVUtil.calcFrom(page), CVUtil.calcTo(page), true, null, keyword);
+        List offers = internshipService.searchInternships(CVUtil.calcFrom(page), CVUtil.calcTo(page), true, null, keyword);
+        int count = internshipService.internshipSearchResultsCount(true, null, keyword);
+        return new InternshipsSearchResponse(offers, count);
     }
 
     @RequestMapping(value = "/api/internship", method = RequestMethod.GET, produces = "application/json")

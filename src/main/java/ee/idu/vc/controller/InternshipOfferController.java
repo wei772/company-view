@@ -56,7 +56,7 @@ public class InternshipOfferController {
     @RequireAuth
     @RequestMapping(value = "/offer/internship", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResponse add(@Validated InternshipOfferForm form, BindingResult bind, @AuthAccount Account account) {
+    public JsonResponse postInternship(@Validated InternshipOfferForm form, BindingResult bind, @AuthAccount Account account) {
         SimpleResponse response = new SimpleResponse(bind);
         if (response.hasErrors()) return response;
 
@@ -67,7 +67,7 @@ public class InternshipOfferController {
     @RequireAuth
     @RequestMapping(value = "/offer/internship", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public Object internship(@RequestParam Long id, @AuthAccount Account viewer) {
+    public Object getInternship(@RequestParam Long id, @AuthAccount Account viewer) {
         InternshipOffer offer = internshipOfferRepository.findById(id);
         if (offer == null) return notFoundInternship(id);
         return authService.hasRightsToView(viewer, offer) ? offer : forbiddenToViewAlienUnpublished();
@@ -76,7 +76,7 @@ public class InternshipOfferController {
     @RequireAuth
     @RequestMapping(value = "/offer/internship", method = RequestMethod.PUT)
     @ResponseBody
-    public Object update(@RequestParam Long id, @AuthAccount Account editor, @Validated InternshipOfferForm form,
+    public Object updateInternship(@RequestParam Long id, @AuthAccount Account editor, @Validated InternshipOfferForm form,
                                BindingResult bind) {
         SimpleResponse response = new SimpleResponse(bind);
         if (response.hasErrors()) return response;

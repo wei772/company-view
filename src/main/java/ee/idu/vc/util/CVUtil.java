@@ -3,6 +3,8 @@ package ee.idu.vc.util;
 import ch.qos.logback.classic.Logger;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ee.idu.vc.model.InternshipOffer;
+import ee.idu.vc.model.InternshipOfferState;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -45,5 +47,17 @@ public class CVUtil {
         calendar.setTime(date);
         calendar.set(Calendar.MILLISECOND, 0);
         return new Timestamp(calendar.getTimeInMillis());
+    }
+
+    public static int calcFrom(int pageNumber) {
+        return (pageNumber - 1) * Constants.RESULTS_PER_PAGE;
+    }
+
+    public static int calcTo(int pageNumber) {
+        return pageNumber * Constants.RESULTS_PER_PAGE;
+    }
+
+    public static boolean isPublished(InternshipOffer offer) {
+        return InternshipOfferState.PUBLISHED.equalsIgnoreCase(offer.getInternshipOfferState().getStateName());
     }
 }

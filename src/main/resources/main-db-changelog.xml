@@ -68,4 +68,15 @@
             INSERT INTO internshipOfferState (stateName) VALUES ('published');
         </sql>
     </changeSet>
+
+    <changeSet id="3" author="frozbit">
+        <comment>Date created: 26.04.2015</comment>
+        <sql>
+            CREATE TABLE InternshipApplicant (
+                internshipApplicantId SERIAL PRIMARY KEY,
+                internshipOfferId INT NOT NULL REFERENCES internshipOffer(internshipOfferId),
+                studentId INT NOT NULL
+            );
+        </sql>
+    </changeSet>
 </databaseChangeLog>

@@ -54,7 +54,7 @@ public class InternshipOfferController {
             return new ResponseEntity<>("Non-moderator accounts can only search other users published internship " +
                     "offers.", HttpStatus.UNAUTHORIZED);
         }
-        return internshipService.searchInternships(calcFrom(page), calcTo(page), onlyPublished, account, keyword);
+        return internshipService.searchInternships(CVUtil.calcFrom(page), CVUtil.calcTo(page), onlyPublished, account, keyword);
     }
 
     @RequireAuth
@@ -73,7 +73,7 @@ public class InternshipOfferController {
     public Object internship(@RequestParam Long id, @AuthAccount Account account) {
         InternshipOffer offer = internshipOfferRepository.findById(id);
         if (offer == null) return new ResponseEntity<>("Internship with id " + id + " doesn't exist.", HttpStatus.NOT_FOUND);
-        if (isPublished(offer)) return offer;
+        if (CVUtil.isPublished(offer)) return offer;
         if (!account.equals(offer.getAccount())) return new ResponseEntity<>("It is forbidden to view other users " +
                 "unpublished offers.", HttpStatus.UNAUTHORIZED);
         return offer;
@@ -100,15 +100,4 @@ public class InternshipOfferController {
         return response;
     }
 
-    private boolean isPublished(InternshipOffer offer) {
-        return InternshipOfferState.PUBLISHED.equalsIgnoreCase(offer.getInternshipOfferState().getStateName());
-    }
-
-    private int calcFrom(int pageNumber) {
-        return (pageNumber - 1) * Constants.RESULTS_PER_PAGE;
-    }
-
-    private int calcTo(int pageNumber) {
-        return pageNumber * Constants.RESULTS_PER_PAGE;
-    }
 }

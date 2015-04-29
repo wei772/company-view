@@ -1,9 +1,9 @@
 <div ng-include="'/views/shared/navbar.html'"></div>
 <div class="container">
-    <div class="cv-content">
+    <div class="cv-content" ng-controller="InternshipViewController">
         <div id="response-message"></div>
         <div class="row">
-            <div class="col-md-8 col-xs-8 col-sm-8" ng-controller="InternshipViewController">
+            <div class="col-md-8 col-xs-8 col-sm-8">
                 <h2>View internship offer</h2>
                 <p>This is how your internship offer looks like to other users.</p>
                 <div class="row">
@@ -32,7 +32,7 @@
                         <div class="internship-content-display note-editable" style="background-color: white;" contenteditable="false"></div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" ng-if="canEdit">
                     <div class="col-sm-12 col-xs-12 col-md-12">
                         <a class="btn btn-md btn-primary" href="/offer/internship/edit/{{offer.internshipOfferId}}">Edit this internship</a>
                     </div>

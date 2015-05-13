@@ -17,8 +17,8 @@
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
-                <value>WEB-INF/db-main-properties.xml</value>
                 <value>WEB-INF/db-default-properties.xml</value>
+                <value>WEB-INF/db-main-properties.xml</value>
             </list>
         </property>
         <property name="ignoreResourceNotFound" value="true"/>

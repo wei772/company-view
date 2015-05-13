@@ -118,12 +118,14 @@ function editInternshipController($scope, $http, $stateParams, $location) {
     };
 }
 
-function internshipViewController($scope, $http, $stateParams) {
+function internshipViewController($scope, $http, $stateParams, $window) {
     var fillFieldsRequest = $http.get('/offer/internship?id=' + $stateParams.internshipOfferId);
+    $scope.canEdit = false;
 
     fillFieldsRequest.then(function (res) {
         $scope.offer = res.data;
         $('.internship-content-display').html(res.data.content);
+        $scope.canEdit = $window.localStorage['username'] == res.data.account.username;
     });
 
     fillFieldsRequest.error(function () {

@@ -123,6 +123,7 @@ function validateConfirmations(firstFieldId, secondFieldId, messages, message) {
 
 function generatePagination(offersCount, currentPage, searchWithPageParamEmptyAndLast) {
     var pagesCount = (offersCount / 20) + 1;
+    pagesCount = offersCount % 20 == 0 ? pagesCount - 1 : pagesCount;
     var pages = [];
     for (var index = 1; index <= pagesCount; index++) {
         var page = {pageNumber: index, pageLink: searchWithPageParamEmptyAndLast + index, isActive: index == currentPage};

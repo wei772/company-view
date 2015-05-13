@@ -18,8 +18,6 @@ public class Account implements Serializable {
     private String companyName;
     private String phone;
     private String address;
-
-    @JsonIgnore
     private String username;
 
     @JsonIgnore

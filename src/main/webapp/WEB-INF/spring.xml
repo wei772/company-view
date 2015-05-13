@@ -14,6 +14,16 @@
        http://www.springframework.org/schema/tx/spring-tx.xsd">
     <context:component-scan base-package="ee.idu.vc"/>
 
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>WEB-INF/db-main-properties.xml</value>
+                <value>WEB-INF/db-default-properties.xml</value>
+            </list>
+        </property>
+        <property name="ignoreResourceNotFound" value="true"/>
+    </bean>
+
     <mvc:annotation-driven>
         <mvc:argument-resolvers>
             <bean class="ee.idu.vc.auth.AuthAccountArgResolver"/>
@@ -33,9 +43,9 @@
     <!-- data storage setup (currently using test db created with liquibase) -->
     <bean id="mainDataSource" class="org.apache.commons.dbcp2.BasicDataSource">
         <property name="driverClassName" value="org.postgresql.Driver"/>
-        <property name="url" value="jdbc:postgresql://localhost:5432/cv"/>
-        <property name="username" value="postgres"/>
-        <property name="password" value="goodpass"/>
+        <property name="url" value="jdbc:postgresql://${db.host}:${db.port}/${db.name}"/>
+        <property name="username" value="${db.user}"/>
+        <property name="password" value="${db.pass}"/>
     </bean>
 
     <bean id="mainSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">

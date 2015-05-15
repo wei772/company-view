@@ -1,9 +1,9 @@
 <div class="col-md-4 col-xs-4 col-sm-4">
-    <form role="form" class="search-form">
+    <form role="form" ng-submit="searchOffer()" class="search-form" ng-controller="SearchFormController">
         <div class="input-group">
-            <input type="text" class="form-control" placeholder="Offer search">
+            <input ng-model="keyword" type="text" class="form-control" placeholder="Offer search">
             <span class="input-group-btn">
-                <button class="btn btn-default" type="button" id="search" ng-click="search()">Search</button>
+                <button class="btn btn-default" type="submit" id="search">Search</button>
             </span>
         </div>
     </form>

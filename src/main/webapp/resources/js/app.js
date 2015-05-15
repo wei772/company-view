@@ -43,6 +43,10 @@ app.config(function($stateProvider, $urlRouterProvider) {
             url: "/account/details",
             templateUrl: "/views/account/details.html",
             data: {requireLogin: true}
+        }).state('searchInternships', {
+            url: "/offer/internship/search?page&keyword",
+            templateUrl: "/views/offer/internship/search.html",
+            data: {requireLogin: true}
         });
 });
 

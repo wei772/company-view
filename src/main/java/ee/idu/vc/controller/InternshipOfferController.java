@@ -40,7 +40,8 @@ public class InternshipOfferController {
     private AccountRepository accountRepository;
 
     @RequestMapping(value = {"/offer/internship/your", "/offer/internship/new", "/offer/internship/all",
-            "/offer/internship/edit/*", "/offer/internship/view/*"}, method = RequestMethod.GET)
+            "/offer/internship/edit/*", "/offer/internship/view/*", "/offer/internship/search"},
+            method = RequestMethod.GET)
     @ResponseBody
     public ModelAndView angularView() { return new ModelAndView("angular"); }
 

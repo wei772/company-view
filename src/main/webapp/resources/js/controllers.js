@@ -9,6 +9,8 @@ appControllers.controller('InternshipViewController', internshipViewController);
 appControllers.controller('EditInternshipController', editInternshipController);
 appControllers.controller('ViewAllInternshipsController', viewAllInternshipsController);
 appControllers.controller('ViewYourInternshipsController', viewYourInternshipsController);
+appControllers.controller('SearchController', searchController);
+appControllers.controller('SearchFormController', searchFormController);
 
 var internshipOfferStates = [{name: "published", id: 0, value: "true"}, {name: "unpublished", id: 1, value: "false"}];
 
@@ -16,6 +18,45 @@ function getInternshipOfferState(stateName) {
     for (var index = 0; index < internshipOfferStates.length; index++) {
         if (internshipOfferStates[index].name == stateName) return internshipOfferStates[index];
     }
+}
+
+function searchController($scope, $http, $stateParams, $location) {
+    console.log($stateParams.keyword);
+    var currentPage = 1;
+    var keyword = "";
+    if ($stateParams.page) currentPage = $stateParams.page;
+    if ($stateParams.keyword) keyword = $stateParams.keyword;
+
+    var getOffers = $http.get('/offer/internship/search?page=' + currentPage + "&onlyPublished=true&keyword=" + keyword);
+
+    getOffers.then(function (res) {
+        $scope.internshipOffers = res.data.offers;
+        console.log("received " + res.data.offers.length + " offers.");
+        $scope.pages = generatePagination(res.data.totalResults, currentPage, "/offer/internship/search?keyword=" + keyword + "&onlyPublished=true&page=");
+        $scope.previousPage = getPreviousPage($scope.pages, currentPage);
+        $scope.nextPage = getNextPage($scope.pages, currentPage);
+        $scope.totalResults = res.data.totalResults;
+    });
+
+    getOffers.error(function () {
+        showFailMessage("Something went wrong when querying internship offers.", "If this error persists then contact the developers.");
+    });
+
+    $scope.openInternshipOffer = function(internshipOffer) {
+        $location.path("/offer/internship/view/" + internshipOffer.internshipOfferId);
+    };
+}
+
+function searchFormController($scope, $location, $stateParams) {
+    if ($stateParams.keyword) $scope.keyword = $stateParams.keyword;
+
+    $scope.searchOffer = function() {
+        $location.path("/offer/internship/search").search({
+            page: 1,
+            keyword: $scope.keyword,
+            onlyPublished: "true"
+        });
+    };
 }
 
 function viewYourInternshipsController($scope, $http, $stateParams, $location, $window) {

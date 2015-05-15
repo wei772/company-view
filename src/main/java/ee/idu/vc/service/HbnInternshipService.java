@@ -9,6 +9,7 @@ import ee.idu.vc.repository.InternshipOfferStateRepository;
 import ee.idu.vc.util.CVUtil;
 import ee.idu.vc.util.HbnSessionProvider;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -85,7 +86,12 @@ public class HbnInternshipService extends HbnSessionProvider implements Internsh
         Criteria criteria = currentSession().createCriteria(InternshipOffer.class);
         if (onlyPublished) criteria.add(eq("internshipOfferState", stateRepository.findByName("published")));
         if (account != null) criteria.add(eq("account", account));
-        if (keyword != null) criteria.add(disjunction().add(ilike("title", keyword)).add(ilike("content", keyword)));
+        if (keyword != null && !keyword.isEmpty()) {
+            Disjunction disjunction = disjunction();
+            disjunction.add(ilike("title", "%" + keyword + "%"));
+            disjunction.add(ilike("content", "%" + keyword + "%"));
+            criteria.add(disjunction);
+        }
         return criteria;
     }
 }

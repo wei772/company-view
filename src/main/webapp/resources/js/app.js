@@ -10,7 +10,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
         }).state('home', {
             url: "/",
             data: {requireLogin: true},
-            templateUrl: "/views/home.html"
+            templateUrl: "/views/offer/internship/all.html"
         }).state('register', {
             url: "/register",
             templateUrl: "/views/register.html",

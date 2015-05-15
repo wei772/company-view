@@ -1,9 +1,9 @@
 package ee.idu.vc.controller.response;
 
-public class NewItemResponse implements JsonResponse {
+public class ItemIdResponse implements JsonResponse {
     private final Long id;
 
-    public NewItemResponse(Long id) {
+    public ItemIdResponse(Long id) {
         this.id = id;
     }
 

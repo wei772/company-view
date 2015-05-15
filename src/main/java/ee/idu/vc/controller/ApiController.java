@@ -1,7 +1,7 @@
 package ee.idu.vc.controller;
 
 import ee.idu.vc.controller.response.InternshipsSearchResponse;
-import ee.idu.vc.controller.response.NewItemResponse;
+import ee.idu.vc.controller.response.ItemIdResponse;
 import ee.idu.vc.model.Account;
 import ee.idu.vc.model.InternshipApplicant;
 import ee.idu.vc.model.InternshipOffer;
@@ -58,20 +58,29 @@ public class ApiController {
 
     @RequestMapping(value = "/api/internship", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    public Object applyForInternship(@RequestParam(required = true) Long id, @RequestParam(required = true) Long studentId){
-        InternshipOffer offer = internshipOfferRepository.findById(id);
-        if (offer == null) return Responses.notFoundInternship(id);
-        if (!isPublished(offer)) return Responses.forbiddenToViewUnpublishedInternship(id);
+    public Object applyForInternship(@RequestParam(required = true) Long internshipOfferId, @RequestParam(required = true) Long studentId){
+        InternshipOffer offer = internshipOfferRepository.findById(internshipOfferId);
+        if (offer == null) return Responses.notFoundInternship(internshipOfferId);
+        if (!isPublished(offer)) return Responses.forbiddenToViewUnpublishedInternship(internshipOfferId);
 
-        InternshipApplicant existingApplicant = internshipApplicantService.getInternshipApplicant(studentId, id);
-        if (existingApplicant != null) return Responses.alreadyAppliedToInternship(id, studentId);
+        InternshipApplicant existingApplicant = internshipApplicantService.getInternshipApplicant(studentId, internshipOfferId);
+        if (existingApplicant != null) return Responses.alreadyAppliedToInternship(internshipOfferId, studentId);
 
         InternshipApplicant applicant = new InternshipApplicant();
         applicant.setInternshipOffer(offer);
         applicant.setStudentId(studentId);
         internshipApplicantRepository.save(applicant);
 
-        return new NewItemResponse(applicant.getInternshipApplicantId());
+        return new ItemIdResponse(applicant.getInternshipApplicantId());
+    }
+
+    @RequestMapping(value = "/api/internship", method = RequestMethod.DELETE)
+    @ResponseBody
+    public Object deleteInternshipApplication(@RequestParam(required = true) Long internshipOfferId, @RequestParam(required = true) Long studentId){
+        InternshipApplicant applicant = internshipApplicantService.getInternshipApplicant(studentId, internshipOfferId);
+        if (applicant == null) return Responses.notFound("Cannot delete a non-existing application.");
+        internshipApplicantRepository.delete(applicant);
+        return new ItemIdResponse(applicant.getInternshipApplicantId());
     }
 
     @RequestMapping(value = "/api/account", method = RequestMethod.GET, produces = "application/json")

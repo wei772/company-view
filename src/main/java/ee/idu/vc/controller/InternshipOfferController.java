@@ -5,7 +5,7 @@ import ee.idu.vc.auth.RequireAuth;
 import ee.idu.vc.controller.form.InternshipOfferForm;
 import ee.idu.vc.controller.response.InternshipsSearchResponse;
 import ee.idu.vc.controller.response.JsonResponse;
-import ee.idu.vc.controller.response.NewItemResponse;
+import ee.idu.vc.controller.response.ItemIdResponse;
 import ee.idu.vc.controller.response.SimpleResponse;
 import ee.idu.vc.model.Account;
 import ee.idu.vc.model.InternshipOffer;
@@ -68,7 +68,7 @@ public class InternshipOfferController {
         if (response.hasErrors()) return response;
 
         Long internshipOfferId = internshipService.createAndSave(form, account).getInternshipOfferId();
-        return new NewItemResponse(internshipOfferId);
+        return new ItemIdResponse(internshipOfferId);
     }
 
     @RequireAuth
